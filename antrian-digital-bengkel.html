@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antrian Digital — Bengkel Servis Mobil</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root{
+  --bg:#12151A;
+  --panel:#1A1F26;
+  --panel-2:#20262E;
+  --line:#2B323C;
+  --text:#EDEFF2;
+  --text-dim:#8D97A3;
+  --accent:#FFB020;
+  --ok:#3DDC97;
+  --danger:#FF5C5C;
+  --plate-bg:#0C0F13;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh;}
+.hidden{display:none !important;}
+
+/* ===== top bar ===== */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 26px; border-bottom:1px solid var(--line); background:var(--panel);
+  position:sticky; top:0; z-index:20; flex-wrap:wrap; gap:12px;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:42px; height:42px; border-radius:9px; background:var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:19px; color:#14181D;
+}
+.brand-text .b-title{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:19px; text-transform:uppercase; letter-spacing:0.3px; line-height:1;}
+.brand-text .b-title span{color:var(--accent);}
+.brand-text .b-sub{font-size:11.5px; color:var(--text-dim); margin-top:2px;}
+
+.tabs{display:flex; gap:6px; background:var(--panel-2); padding:5px; border-radius:10px; border:1px solid var(--line);}
+.tab-btn{
+  padding:9px 16px; border-radius:7px; border:none; background:transparent; color:var(--text-dim);
+  font-weight:700; font-size:12.5px; cursor:pointer; text-transform:uppercase; letter-spacing:0.4px;
+}
+.tab-btn.active{background:var(--accent); color:#14181D;}
+
+.clock{font-family:'Space Mono',monospace; color:var(--text-dim); font-size:13px;}
+
+.page{display:none; padding:28px;}
+.page.active{display:block;}
+
+/* ===================== AMBIL NOMOR (KIOSK) ===================== */
+.kiosk-wrap{max-width:900px; margin:0 auto; text-align:center;}
+.kiosk-head{margin-bottom:8px;}
+.kiosk-eyebrow{font-size:11.5px; letter-spacing:1.2px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:8px;}
+.kiosk-title{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:36px; text-transform:uppercase;}
+.kiosk-desc{color:var(--text-dim); font-size:14px; margin:8px 0 30px;}
+
+.service-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin-bottom:10px;}
+.service-card{
+  background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:26px 20px;
+  cursor:pointer; text-align:left; transition:border-color .15s, transform .12s;
+}
+.service-card:hover{border-color:var(--accent); transform:translateY(-2px);}
+.service-card .sc-prefix{
+  width:40px; height:40px; border-radius:9px; background:var(--panel-2); border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-weight:700;
+  color:var(--accent); font-size:16px; margin-bottom:14px;
+}
+.service-card .sc-name{font-weight:700; font-size:15px; margin-bottom:6px;}
+.service-card .sc-desc{color:var(--text-dim); font-size:12.5px; margin-bottom:14px; line-height:1.4;}
+.service-card .sc-wait{
+  display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:var(--text-dim);
+  border-top:1px solid var(--line); padding-top:12px; font-family:'Space Mono',monospace;
+}
+.service-card .sc-wait b{color:var(--text); font-weight:700;}
+
+/* tiket modal */
+.ticket-overlay{
+  display:none; position:fixed; inset:0; background:rgba(8,10,13,0.75); z-index:60;
+  align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(3px);
+}
+.ticket-overlay.active{display:flex;}
+.ticket{
+  width:100%; max-width:320px; background:var(--panel); border:1px solid var(--line); border-radius:16px;
+  padding:0; overflow:hidden; text-align:center;
+}
+.ticket-top{background:var(--accent); color:#14181D; padding:18px; font-weight:800; font-family:'Big Shoulders Display',sans-serif; text-transform:uppercase; letter-spacing:0.5px; font-size:15px;}
+.ticket-body{padding:30px 24px;}
+.ticket-label{font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin-bottom:10px;}
+.ticket-number{font-family:'Space Mono',monospace; font-size:56px; font-weight:700; letter-spacing:2px; color:var(--text); margin-bottom:16px;}
+.ticket-divider{border-top:1px dashed var(--line); margin:16px 0;}
+.ticket-row{display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-dim); margin-bottom:8px;}
+.ticket-row b{color:var(--text); font-weight:600;}
+.ticket-foot{padding:18px 24px 24px;}
+
+.plate-chip{
+  display:inline-block; background:var(--plate-bg); color:#F4F5F7;
+  border:2px solid #3a4048; border-radius:5px; padding:3px 9px;
+  font-family:'Space Mono',monospace; font-weight:700; letter-spacing:1.5px; font-size:12px;
+}
+.detail-form{padding:24px;}
+.detail-form .field-label{
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px;
+  color:var(--text-dim); margin-bottom:7px; display:block;
+}
+.detail-form .form-row{margin-bottom:16px;}
+.detail-form input, .detail-form select{
+  width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:9px;
+  padding:12px 14px; color:var(--text); font-size:14px; outline:none; font-family:'Space Mono',monospace; letter-spacing:0.5px;
+}
+.detail-form input:focus, .detail-form select:focus{border-color:var(--accent);}
+.detail-actions{display:flex; gap:10px; margin-top:6px;}
+.detail-actions .btn{flex:1;}
+
+/* ===================== PANEL PETUGAS ===================== */
+.loket-selector{display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap;}
+.loket-pill{
+  padding:10px 18px; border-radius:9px; border:1px solid var(--line); background:var(--panel);
+  cursor:pointer; font-size:13px; font-weight:700; color:var(--text-dim);
+}
+.loket-pill.active{border-color:var(--accent); color:var(--accent); background:rgba(255,176,32,0.08);}
+
+.kategori-toggle{display:flex; gap:8px; margin:16px 0 4px;}
+.kategori-btn{
+  flex:1; padding:10px; border-radius:9px; border:1px solid var(--line); background:var(--panel-2);
+  color:var(--text-dim); font-size:12.5px; font-weight:700; cursor:pointer; text-align:center;
+}
+.kategori-btn.active{border-color:var(--accent); color:var(--accent); background:rgba(255,176,32,0.1);}
+
+.panel-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+@media (max-width:880px){.panel-grid{grid-template-columns:1fr;}}
+.panel{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:24px;}
+.panel-title{font-weight:700; font-size:14px; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-dim); margin-bottom:16px;}
+
+.serving-display{text-align:center; padding:22px 0 8px;}
+.serving-num{font-family:'Space Mono',monospace; font-weight:700; font-size:72px; color:var(--accent); line-height:1;}
+.serving-num.empty{color:var(--text-dim); font-size:22px; font-family:'Inter',sans-serif; font-weight:600;}
+.serving-cust{color:var(--text-dim); font-size:13px; margin-top:10px;}
+
+.action-row{display:flex; gap:10px; margin-top:20px;}
+.btn{padding:13px 18px; border-radius:10px; border:none; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:0.4px; flex:1;}
+.btn-primary{background:var(--accent); color:#14181D;}
+.btn-primary:hover{filter:brightness(1.08);}
+.btn-primary:disabled{opacity:0.35; cursor:not-allowed;}
+.btn-ghost{background:var(--panel-2); border:1px solid var(--line); color:var(--text);}
+.btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+.btn-danger{background:transparent; border:1px solid rgba(255,92,92,0.35); color:var(--danger);}
+
+.queue-list{list-style:none; margin-top:6px;}
+.queue-list li{
+  display:flex; align-items:center; justify-content:space-between; padding:11px 4px;
+  border-bottom:1px solid var(--line); font-size:13px;
+}
+.queue-list li:last-child{border-bottom:none;}
+.q-num{font-family:'Space Mono',monospace; font-weight:700; color:var(--text);}
+.q-time{color:var(--text-dim); font-size:11.5px; font-family:'Space Mono',monospace;}
+.q-empty{color:var(--text-dim); font-size:12.5px; text-align:center; padding:20px 0;}
+.q-info{color:var(--text-dim); font-size:11px; margin-top:3px;}
+
+.table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px;}
+table{width:100%; border-collapse:collapse; font-size:13px;}
+thead th{text-align:left; padding:12px 14px; background:var(--panel-2); color:var(--text-dim); font-size:10.5px; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--line); white-space:nowrap;}
+tbody td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:middle; white-space:nowrap;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(255,255,255,0.015);}
+.cell-num{font-family:'Space Mono',monospace; font-weight:700;}
+.priority-badge{font-size:10px; font-weight:700; padding:4px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:0.3px;}
+.priority-badge.A{background:rgba(255,176,32,0.14); color:var(--accent);}
+.priority-badge.C{background:rgba(61,220,151,0.12); color:var(--ok);}
+.priority-badge.R{background:rgba(255,92,92,0.14); color:#ff8080;}
+.car-icon{width:38px; height:22px; color:var(--text-dim); display:inline-block; vertical-align:middle;}
+.row-idx{color:var(--text-dim); font-family:'Space Mono',monospace; font-size:12px;}
+
+.serving-vehicle{margin-top:12px; display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;}
+.serving-vehicle .v-model{font-size:13px; color:var(--text); font-weight:600;}
+
+.stat-row{display:flex; gap:12px; margin-top:18px;}
+.mini-stat{flex:1; background:var(--panel-2); border:1px solid var(--line); border-radius:9px; padding:12px; text-align:center;}
+.mini-stat .m-val{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:22px; color:var(--text);}
+.mini-stat .m-lbl{font-size:10px; text-transform:uppercase; color:var(--text-dim); margin-top:2px;}
+
+/* ===================== LAYAR ANTRIAN (TV) ===================== */
+.tv-wrap{background:#0C0F13; border-radius:16px; padding:30px; border:1px solid var(--line);}
+.tv-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:10px;}
+.tv-brand{display:flex; align-items:center; gap:12px;}
+.tv-brand .brand-mark{width:48px; height:48px; font-size:22px;}
+.tv-brand-title{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:22px; text-transform:uppercase;}
+.tv-brand-title span{color:var(--accent);}
+.tv-clock{font-family:'Space Mono',monospace; font-size:20px; color:var(--text-dim);}
+
+.tv-qr-box{
+  display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--line);
+  border-radius:12px; padding:10px 16px 10px 10px;
+}
+.tv-qr-box canvas{border-radius:6px; display:block; background:#fff; padding:5px;}
+.tv-qr-text{font-size:11.5px; color:var(--text-dim); line-height:1.4; max-width:150px;}
+.tv-qr-text b{color:var(--accent); display:block; font-size:12.5px; margin-bottom:2px;}
+
+.tv-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(480px,1fr)); gap:20px;}
+.tv-category-section{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px;}
+.tv-category-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;}
+.tv-category-title{font-family:'Big Shoulders Display',sans-serif; font-weight:800; font-size:19px; text-transform:uppercase; color:var(--accent); letter-spacing:0.3px;}
+.tv-stall-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.tv-stall-row .tv-card{padding:14px 10px; background:var(--panel-2);}
+.tv-stall-row .tv-serving-num{font-size:34px;}
+.tv-stall-row .tv-loket-name{font-size:10px;}
+.tv-stall-row .tv-serving-label{font-size:9.5px; margin-bottom:6px;}
+.tv-stall-row .tv-vehicle .v-model{font-size:11px;}
+.tv-stall-row .tv-vehicle .plate-chip{font-size:10px; padding:2px 7px;}
+.tv-card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px; text-align:center; position:relative; overflow:hidden;}
+.tv-card.flash{animation:flashCard 1.2s ease 2;}
+@keyframes flashCard{0%,100%{background:var(--panel);} 50%{background:rgba(255,176,32,0.16);}}
+.tv-loket-name{font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin-bottom:6px; font-weight:700;}
+.tv-serving-label{font-size:11px; color:var(--accent); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; font-weight:700;}
+.tv-serving-num{font-family:'Space Mono',monospace; font-weight:700; font-size:64px; color:var(--text); line-height:1;}
+.tv-serving-num.empty{font-size:18px; color:var(--text-dim); font-family:'Inter',sans-serif;}
+.tv-vehicle{margin-top:10px; display:flex; flex-direction:column; align-items:center; gap:6px;}
+.tv-vehicle .v-model{font-size:13px; color:var(--text-dim); font-weight:600;}
+.tv-next{margin-top:16px; padding-top:14px; border-top:1px dashed var(--line);}
+.tv-next-label{font-size:10px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; letter-spacing:0.5px;}
+.tv-next-nums{display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
+.tv-next-chip{
+  font-family:'Space Mono',monospace; font-size:13px; font-weight:700; background:var(--panel-2);
+  border:1px solid var(--line); padding:5px 10px; border-radius:6px; color:var(--text-dim);
+}
+
+.tv-done-wrap{margin-top:26px; padding-top:26px; border-top:1px solid var(--line);}
+.tv-done-head{display:flex; align-items:center; gap:10px; margin-bottom:18px;}
+.tv-done-head svg{width:26px; height:26px; color:var(--ok);}
+.tv-done-title{font-family:'Big Shoulders Display',sans-serif; font-size:20px; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; color:var(--ok);}
+.tv-done-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px;}
+.tv-done-card{
+  background:var(--panel); border:1px solid rgba(61,220,151,0.3); border-radius:12px; padding:16px 18px;
+  display:flex; flex-direction:column; gap:8px; align-items:flex-start;
+}
+.tv-done-card .d-num{font-family:'Space Mono',monospace; font-weight:700; color:var(--ok); font-size:22px;}
+.tv-done-card .d-sa{font-size:13px; color:var(--text-dim); font-weight:600;}
+.tv-done-empty{color:var(--text-dim); font-size:13px; padding:6px 0;}
+
+/* Tabel di layar TV dibuat lebih besar supaya mudah dibaca dari jarak jauh */
+.tv-wrap table{font-size:17px;}
+.tv-wrap thead th{font-size:13px; padding:14px 16px;}
+.tv-wrap tbody td{padding:14px 16px; font-size:17px;}
+.tv-wrap .cell-num{font-size:18px;}
+.tv-wrap .plate-chip{font-size:15px; padding:6px 12px;}
+.tv-wrap .priority-badge{font-size:12.5px; padding:5px 12px;}
+
+.staff-qr-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px;}
+.staff-qr-card{background:var(--panel-2); border:1px solid var(--line); border-radius:11px; padding:14px; text-align:center;}
+.staff-qr-card canvas{background:#fff; border-radius:6px; padding:6px; margin-bottom:8px;}
+.staff-qr-card .sq-label{font-size:12px; font-weight:700; color:var(--text);}
+
+.staff-locked-banner{
+  display:flex; align-items:center; gap:10px; background:rgba(255,176,32,0.1); border:1px solid rgba(255,176,32,0.3);
+  border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:var(--accent); font-weight:700;
+}
+.sync-dot{width:8px; height:8px; border-radius:50%; background:var(--text-dim); display:inline-block; margin-right:6px;}
+.sync-dot.on{background:var(--ok); box-shadow:0 0 6px var(--ok);}
+
+.toast-stack{position:fixed; bottom:20px; right:20px; z-index:100; display:flex; flex-direction:column; gap:10px;}
+.toast{
+  background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent);
+  padding:13px 18px; border-radius:9px; font-size:13px; min-width:230px; box-shadow:0 8px 24px rgba(0,0,0,0.4);
+  animation:slideIn .25s ease;
+}
+.toast.ok{border-left-color:var(--ok);}
+@keyframes slideIn{from{transform:translateX(30px); opacity:0;} to{transform:translateX(0); opacity:1;}}
+
+@media (max-width:700px){
+  .topbar{flex-direction:column; align-items:flex-start;}
+  .tabs{width:100%; overflow-x:auto;}
+  .serving-num{font-size:52px;}
+  .tv-serving-num{font-size:48px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">TP</div>
+    <div class="brand-text">
+      <div class="b-title">Antrian <span>Digital</span></div>
+      <div class="b-sub">Toyota Perintis Perkasa — Antrian Service Plus</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-page="kiosk">Ambil Nomor</button>
+    <button class="tab-btn" data-page="petugas">Panel Petugas</button>
+    <button class="tab-btn" data-page="tv">Layar Antrian</button>
+  </div>
+  <div class="clock" id="topClock">--:--:--</div>
+</div>
+
+<!-- ===================== AMBIL NOMOR ===================== -->
+<div class="page active" id="pageKiosk">
+  <div class="staff-locked-banner hidden" id="staffLockedBanner"></div>
+  <div class="kiosk-wrap">
+    <div class="kiosk-head">
+      <div class="kiosk-eyebrow">Selamat Datang</div>
+      <div class="kiosk-title">Pilih Layanan Anda</div>
+      <div class="kiosk-desc">Sentuh salah satu layanan di bawah untuk mengambil nomor antrian.</div>
+    </div>
+    <div class="service-grid" id="serviceGrid"></div>
+  </div>
+</div>
+
+<!-- ===================== PANEL PETUGAS ===================== -->
+<div class="page" id="pagePetugas">
+  <div class="loket-selector" id="loketSelector"></div>
+  <div class="panel-grid" style="grid-template-columns:1fr;">
+    <div class="panel">
+      <div class="panel-title">Sedang Dilayani</div>
+      <div class="serving-display">
+        <div class="serving-num empty" id="servingNum">—</div>
+        <div class="serving-cust" id="servingCust">Belum ada pelanggan dipanggil</div>
+      </div>
+      <div class="action-row" id="callButtonsRow" style="flex-direction:column; gap:8px;"></div>
+      <div class="action-row">
+        <button class="btn btn-ghost" id="btnDone">Selesai</button>
+        <button class="btn btn-danger" id="btnSkip">Lewati</button>
+      </div>
+      <div class="stat-row">
+        <div class="mini-stat"><div class="m-val" id="statWaiting">0</div><div class="m-lbl">Menunggu</div></div>
+        <div class="mini-stat"><div class="m-val" id="statDone">0</div><div class="m-lbl">Selesai</div></div>
+        <div class="mini-stat"><div class="m-val" id="statSkip">0</div><div class="m-lbl">Dilewati</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Daftar Menunggu — Gabungan Robotic, Booking &amp; Walk In</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Nomor</th><th>Kategori</th><th>SA</th><th>Plat Nopol</th></tr>
+        </thead>
+        <tbody id="queueListEl"></tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <div class="panel" id="foremanQrPanel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title">QR Foreman — Ambil Nomor</div>
+        <div class="panel-sub">Satu QR ini untuk Foreman. Scan dari HP, langsung terbuka menu Ambil Nomor (Robotic/Booking/Walk In) tanpa perlu buka tab lain — mempermudah Foreman mengambilkan nomor antrian di lapangan.</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+      <canvas id="foremanQrCanvas" style="background:#fff; border-radius:8px; padding:10px;"></canvas>
+      <div class="panel-sub" style="max-width:280px;">Cetak/tempel QR ini di area kerja Foreman, atau kirim tangkapan layarnya langsung ke HP Foreman.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LAYAR ANTRIAN (TV) ===================== -->
+<div class="page" id="pageTv">
+  <div class="tv-wrap">
+    <div class="tv-head">
+      <div class="tv-brand">
+        <div class="brand-mark">TP</div>
+        <div class="tv-brand-title">Toyota Perintis <span>Perkasa</span></div>
+      </div>
+      <div class="tv-clock" id="tvClock">--:--:--</div>
+    </div>
+    <div class="tv-grid" id="tvGrid"></div>
+
+    <div class="tv-done-wrap">
+      <div class="tv-done-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6h11M9 12h11M9 18h11M5 6h.01M5 12h.01M5 18h.01"/></svg>
+        <div class="tv-done-title">Daftar Menunggu</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Nomor</th><th>Kategori</th><th>SA</th><th>Plat Nopol</th></tr>
+          </thead>
+          <tbody id="tvQueueListEl"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tv-done-wrap">
+      <div class="tv-done-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        <div class="tv-done-title">Selesai Dicuci — Siap Diambil</div>
+      </div>
+      <div class="tv-done-grid" id="tvDoneGrid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ticket-overlay" id="ticketOverlay">
+  <div class="ticket">
+    <div class="ticket-top" id="ticketLoketName">Loket</div>
+    <div class="ticket-body">
+      <div class="ticket-label">Nomor Antrian Anda</div>
+      <div class="ticket-number" id="ticketNumber">A001</div>
+      <div class="ticket-divider"></div>
+      <div class="ticket-row"><span>Layanan</span><b id="ticketService">-</b></div>
+      <div class="ticket-row"><span>Nama Pelanggan</span><b id="ticketNama">-</b></div>
+      <div class="ticket-row"><span>Model Kendaraan</span><b id="ticketModel">-</b></div>
+      <div class="ticket-row"><span>Plat Nopol</span><b id="ticketPlat">-</b></div>
+      <div class="ticket-row"><span>SA</span><b id="ticketSa">-</b></div>
+      <div class="ticket-row"><span>Antrian di depan Anda</span><b id="ticketAhead">0 orang</b></div>
+      <div class="ticket-row"><span>Estimasi tunggu</span><b id="ticketWait">~0 menit</b></div>
+      <div class="ticket-row"><span>Waktu ambil</span><b id="ticketTime">-</b></div>
+    </div>
+    <div class="ticket-foot">
+      <button class="btn btn-primary" id="btnCloseTicket" style="width:100%;">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div class="ticket-overlay" id="detailOverlay">
+  <div class="ticket" style="max-width:360px;">
+    <div class="ticket-top" id="detailLoketName">Loket</div>
+    <div class="detail-form">
+      <div class="form-row">
+        <label class="field-label">Plat Nopol</label>
+        <input type="text" id="detailPlat" placeholder="Contoh: BK 1234 XYZ">
+      </div>
+      <div class="form-row" id="matchNoteRow" style="display:none; margin-top:-10px;">
+        <div id="matchNote" style="font-size:11.5px; padding:8px 10px; border-radius:7px;"></div>
+      </div>
+      <div class="form-row">
+        <label class="field-label">Nama Pelanggan</label>
+        <input type="text" id="detailNama" placeholder="Otomatis terisi jika terdaftar">
+      </div>
+      <div class="form-row" style="margin-bottom:6px;">
+        <label class="field-label">Model Kendaraan</label>
+        <input type="text" id="detailModel" placeholder="Contoh: Toyota Avanza 2021">
+      </div>
+      <div class="form-row" style="margin-bottom:6px;">
+        <label class="field-label">Nama SA (Service Advisor)</label>
+        <select id="detailSa">
+          <option value="">— Pilih SA —</option>
+        </select>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-ghost" id="btnCancelDetail">Batal</button>
+        <button class="btn btn-primary" id="btnConfirmDetail">Ambil Nomor</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+/* ===================== DATA ===================== */
+const SA_LIST = [
+  'M. Nur Syahputra',
+  'Adhitya Dwi Prasetya',
+  'Hengki Pranata',
+  'Rudianto',
+  'Popo Hariansyah',
+  'Tomy Surya',
+  'Dedi Ashdarma',
+  'Khoirul Alhuda',
+  'Yudi Rahmanto',
+];
+
+const loketConfig = [
+  {id:'R', nama:'Robotic', desc:'Pengerjaan cuci robotic otomatis — diprioritaskan', avgMin:35},
+  {id:'A', nama:'Booking', desc:'Pelanggan dengan jadwal servis yang sudah dipesan sebelumnya', avgMin:20},
+  {id:'C', nama:'Walk In', desc:'Pelanggan datang langsung tanpa janji sebelumnya', avgMin:30},
+];
+
+let counters = {R:0, A:0, C:0};
+let queues = {
+  R:{waiting:[], doneCount:0, skipCount:0},
+  A:{waiting:[], doneCount:0, skipCount:0},
+  C:{waiting:[], doneCount:0, skipCount:0},
+};
+
+/* 3 stall cuci gabungan — melayani Booking maupun Walk In, petugas yang pilih
+   mau ambil antrian dari kategori mana saat menekan "Panggil Berikutnya". */
+const stalls = [
+  {id:'S1', label:'Stall 1'},
+  {id:'S2', label:'Stall 2'},
+  {id:'S3', label:'Stall 3'},
+];
+let servingByStall = {};
+stalls.forEach(s=>{ servingByStall[s.id] = null; });
+
+let activeLoket = stalls[0].id;
+let lastFlashed = {};
+
+/* ===================== QR FOREMAN — LANGSUNG KE AMBIL NOMOR ===================== */
+/* Isi jika aplikasi sudah di-hosting di alamat publik. Kosongkan untuk
+   memakai alamat halaman saat ini secara otomatis. */
+const HOSTED_BASE_URL = '';
+
+function getBaseUrl(){
+  return HOSTED_BASE_URL || (window.location.origin + window.location.pathname);
+}
+function getForemanUrl(){
+  return getBaseUrl() + '?foreman=1';
+}
+
+function renderForemanQr(){
+  const canvas = document.getElementById('foremanQrCanvas');
+  if(!canvas || typeof QRious === 'undefined') return;
+  new QRious({ element: canvas, value: getForemanUrl(), size: 130, background:'#ffffff', foreground:'#0C0F13', level:'M' });
+}
+
+function checkForemanMode(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('foreman') !== '1') return;
+
+  // Mode Foreman: langsung ke Ambil Nomor, sembunyikan tab Panel Petugas &
+  // Layar Antrian supaya HP Foreman fokus cuma untuk ambilkan nomor.
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    if(b.dataset.page !== 'kiosk') b.style.display = 'none';
+  });
+  switchToPage('kiosk');
+
+  const banner = document.getElementById('staffLockedBanner');
+  banner.classList.remove('hidden');
+  banner.innerHTML = '<span class="sync-dot" id="syncDot"></span> Mode Foreman — Ambil Nomor';
+}
+function switchToPage(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.page===name));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('active');
+}
+
+/* ===================== KONEKSI KE GOOGLE SHEET BOOKING ===================== */
+/* Isi dua nilai ini setelah Anda deploy Apps Script (lihat file
+   apps-script-jembatan-sheet.gs). Kosongkan untuk tetap pakai data contoh. */
+const SHEET_API_URL = '';   // contoh: 'https://script.google.com/macros/s/xxxxx/exec'
+const SHEET_API_KEY = '';   // sama dengan KUNCI_RAHASIA di Apps Script
+
+let sheetConnected = false;
+
+/* ===================== DATABASE PELANGGAN TERDAFTAR ===================== */
+/* Data contoh — dipakai jika SHEET_API_URL belum diisi. Begitu terhubung ke
+   Google Sheet booking, data ini otomatis digantikan data asli. */
+const customerDatabase = [
+  {plat:'BK 1234 XYZ', nama:'Andi Saputra', model:'Toyota Avanza 2021'},
+  {plat:'BK 5678 ABC', nama:'Siti Nurhaliza', model:'Toyota Innova 2022'},
+  {plat:'BK 9012 DEF', nama:'Budi Santoso', model:'Toyota Fortuner 2020'},
+];
+
+async function loadCustomerDatabaseFromSheet(){
+  if(!SHEET_API_URL) return;
+  try{
+    const res = await fetch(SHEET_API_URL + '?action=customers&key=' + encodeURIComponent(SHEET_API_KEY));
+    const rows = await res.json();
+    if(rows.error){ toast('Gagal konek ke sheet: ' + rows.error, 'err'); return; }
+    customerDatabase.length = 0;
+    rows.forEach(r=>{
+      if(r.plat) customerDatabase.push({plat:r.plat, nama:r.nama, model:r.model, hp:r.hp, baris:r.baris, sumber:r.sumber});
+    });
+    sheetConnected = true;
+    toast('Terhubung ke Google Sheet booking — ' + customerDatabase.length + ' data pelanggan dimuat', 'ok');
+  }catch(err){
+    toast('Gagal memuat data dari Google Sheet', 'err');
+  }
+}
+
+async function tulisNoAntrianKeSheet(baris, noAntrian){
+  if(!SHEET_API_URL || !baris) return;
+  try{
+    await fetch(SHEET_API_URL, {
+      method:'POST',
+      body: JSON.stringify({key: SHEET_API_KEY, baris, noAntrian})
+    });
+  }catch(err){ /* gagal diam-diam, tidak mengganggu alur antrian */ }
+}
+
+/* ===================== SINKRONISASI ANTRIAN REAL-TIME ===================== */
+/* Kalau SHEET_API_URL diisi, semua perangkat (TV, HP tiap petugas, kiosk)
+   polling ke backend yang sama setiap beberapa detik supaya datanya selalu
+   sinkron — bukan cuma tersimpan di memori masing-masing perangkat. */
+
+async function apiCall(action, payload){
+  const res = await fetch(SHEET_API_URL, {
+    method:'POST',
+    body: JSON.stringify(Object.assign({key:SHEET_API_KEY, action}, payload||{}))
+  });
+  return res.json();
+}
+
+async function refreshLiveState(){
+  if(!SHEET_API_URL) return;
+  try{
+    const res = await fetch(SHEET_API_URL + '?action=state&key=' + encodeURIComponent(SHEET_API_KEY));
+    const data = await res.json();
+    if(data.error) return;
+    const entries = data.entries || [];
+
+    // reset & bangun ulang dari data backend (sumber kebenaran tunggal)
+    loketConfig.forEach(cat=>{ queues[cat.id].waiting = []; queues[cat.id].doneCount = 0; queues[cat.id].skipCount = 0; });
+    stalls.forEach(s=>{ servingByStall[s.id] = null; });
+    completedWash = [];
+
+    entries.forEach(e=>{
+      const item = {id:e.id, nomor:e.nomor, nama:e.nama, model:e.model, plat:e.plat, sa:e.sa, kategori:e.kategori, waktu:e.waktuAmbil, calledAt:e.waktuDipanggil};
+      if(e.status==='waiting' && queues[e.kategori]) queues[e.kategori].waiting.push(item);
+      else if(e.status==='serving' && servingByStall.hasOwnProperty(e.stall)) servingByStall[e.stall] = item;
+      else if(e.status==='done'){
+        queues[e.kategori].doneCount++;
+        completedWash.push({nomor:e.nomor, plat:e.plat, model:e.model, sa:e.sa, kategori:e.kategori, waktu:e.waktuSelesai});
+      }
+      else if(e.status==='skip' && queues[e.kategori]) queues[e.kategori].skipCount++;
+    });
+    completedWash = completedWash.slice(-12).reverse();
+
+    const dot = document.getElementById('syncDot');
+    if(dot) dot.classList.add('on');
+    renderAll();
+  }catch(err){
+    const dot = document.getElementById('syncDot');
+    if(dot) dot.classList.remove('on');
+  }
+}
+function normalizePlat(p){
+  return String(p||'').toUpperCase().replace(/\s+/g,'').trim();
+}
+function findCustomerByPlat(p){
+  const norm = normalizePlat(p);
+  if(!norm) return null;
+  return customerDatabase.find(c=>normalizePlat(c.plat)===norm) || null;
+}
+
+/* ===================== HELPERS ===================== */
+function toast(msg, type){
+  const stack = document.getElementById('toastStack');
+  const el = document.createElement('div');
+  el.className = 'toast ' + (type||'');
+  el.textContent = msg;
+  stack.appendChild(el);
+  setTimeout(()=>el.remove(), 3500);
+}
+function nowTime(){
+  return new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+function fmtNum(prefix, n){ return prefix + String(n).padStart(3,'0'); }
+function beep(){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880;
+    g.gain.setValueAtTime(0.08, ctx.currentTime);
+    o.start();
+    o.frequency.setValueAtTime(880, ctx.currentTime);
+    o.frequency.setValueAtTime(660, ctx.currentTime+0.15);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.4);
+    o.stop(ctx.currentTime+0.4);
+  }catch(e){}
+}
+
+/* ===================== TABS ===================== */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page'+btn.dataset.page.charAt(0).toUpperCase()+btn.dataset.page.slice(1)).classList.add('active');
+  });
+});
+
+/* ===================== KIOSK ===================== */
+const serviceGrid = document.getElementById('serviceGrid');
+function renderServiceGrid(){
+  serviceGrid.innerHTML = '';
+  loketConfig.forEach(cfg=>{
+    const q = queues[cfg.id];
+    const estWait = q.waiting.length * cfg.avgMin;
+    const div = document.createElement('div');
+    div.className = 'service-card';
+    div.innerHTML = `
+      <div class="sc-prefix">${cfg.id}</div>
+      <div class="sc-name">${cfg.nama}</div>
+      <div class="sc-desc">${cfg.desc}</div>
+      <div class="sc-wait"><span>Menunggu: <b>${q.waiting.length} orang</b></span><span>~<b>${estWait}</b> mnt</span></div>
+    `;
+    div.addEventListener('click', ()=>ambilNomor(cfg.id));
+    serviceGrid.appendChild(div);
+  });
+}
+
+let pendingLoket = null;
+
+const detailSaSelect = document.getElementById('detailSa');
+SA_LIST.forEach(nama=>{
+  const opt = document.createElement('option');
+  opt.value = nama;
+  opt.textContent = nama;
+  detailSaSelect.appendChild(opt);
+});
+
+function ambilNomor(loketId){
+  pendingLoket = loketId;
+  const cfg = loketConfig.find(c=>c.id===loketId);
+  document.getElementById('detailLoketName').textContent = cfg.nama;
+  document.getElementById('detailPlat').value = '';
+  document.getElementById('detailNama').value = '';
+  document.getElementById('detailModel').value = '';
+  document.getElementById('detailSa').value = '';
+  document.getElementById('matchNoteRow').style.display = 'none';
+  document.getElementById('detailOverlay').classList.add('active');
+  document.getElementById('detailPlat').focus();
+}
+document.getElementById('btnCancelDetail').addEventListener('click', ()=>{
+  document.getElementById('detailOverlay').classList.remove('active');
+  pendingLoket = null;
+});
+
+/* pencocokan otomatis setiap kali plat nopol diketik */
+document.getElementById('detailPlat').addEventListener('input', (e)=>{
+  const val = e.target.value;
+  const noteRow = document.getElementById('matchNoteRow');
+  const note = document.getElementById('matchNote');
+  const namaInput = document.getElementById('detailNama');
+  const modelInput = document.getElementById('detailModel');
+
+  if(normalizePlat(val).length < 4){
+    noteRow.style.display = 'none';
+    return;
+  }
+  const match = findCustomerByPlat(val);
+  noteRow.style.display = 'block';
+  if(match){
+    namaInput.value = match.nama;
+    modelInput.value = match.model;
+    note.style.background = 'rgba(61,220,151,0.1)';
+    note.style.color = 'var(--ok)';
+    note.textContent = '✓ Pelanggan terdaftar — data otomatis terisi';
+  } else {
+    note.style.background = 'rgba(255,176,32,0.08)';
+    note.style.color = 'var(--accent)';
+    note.textContent = 'Pelanggan baru — silakan isi nama & model kendaraan';
+  }
+});
+
+document.getElementById('btnConfirmDetail').addEventListener('click', async ()=>{
+  if(!pendingLoket) return;
+  const plat = document.getElementById('detailPlat').value.trim();
+  const nama = document.getElementById('detailNama').value.trim();
+  const model = document.getElementById('detailModel').value.trim();
+  const sa = document.getElementById('detailSa').value;
+  if(!plat || !model){ toast('Plat nopol dan model kendaraan wajib diisi', 'err'); return; }
+  if(!sa){ toast('Pilih nama SA terlebih dahulu', 'err'); return; }
+
+  const loketId = pendingLoket;
+  const cfg = loketConfig.find(c=>c.id===loketId);
+  const namaFinal = nama || 'Pelanggan Baru';
+  let nomor, entry;
+
+  if(SHEET_API_URL){
+    const res = await apiCall('ambil', {kategori:loketId, nama:namaFinal, model, plat, sa});
+    if(res.error){ toast('Gagal ambil nomor: ' + res.error, 'err'); return; }
+    nomor = res.nomor;
+    await refreshLiveState();
+  } else {
+    counters[loketId]++;
+    nomor = fmtNum(loketId, counters[loketId]);
+    entry = {nomor, waktu: nowTime(), model, plat, nama: namaFinal, sa, kategori: loketId};
+    queues[loketId].waiting.push(entry);
+  }
+
+  // kalau plat ini cocok dengan data booking dari sheet, tuliskan nomor antriannya kembali
+  const matched = findCustomerByPlat(plat);
+  if(matched && matched.baris && matched.sumber === 'booking'){
+    tulisNoAntrianKeSheet(matched.baris, nomor);
+  }
+
+  document.getElementById('detailOverlay').classList.remove('active');
+  pendingLoket = null;
+
+  const posisiDepan = queues[loketId].waiting.length - (SHEET_API_URL ? 0 : 1);
+  document.getElementById('ticketLoketName').textContent = cfg.nama;
+  document.getElementById('ticketNumber').textContent = nomor;
+  document.getElementById('ticketService').textContent = cfg.nama;
+  document.getElementById('ticketNama').textContent = namaFinal;
+  document.getElementById('ticketModel').textContent = model;
+  document.getElementById('ticketPlat').textContent = plat;
+  document.getElementById('ticketSa').textContent = sa;
+  document.getElementById('ticketAhead').textContent = Math.max(0,posisiDepan) + ' orang';
+  document.getElementById('ticketWait').textContent = '~' + (Math.max(0,posisiDepan) * cfg.avgMin) + ' menit';
+  document.getElementById('ticketTime').textContent = nowTime();
+  document.getElementById('ticketOverlay').classList.add('active');
+
+  renderAll();
+});
+document.getElementById('btnCloseTicket').addEventListener('click', ()=>{
+  document.getElementById('ticketOverlay').classList.remove('active');
+});
+
+/* ===================== PANEL PETUGAS ===================== */
+const loketSelector = document.getElementById('loketSelector');
+function renderLoketSelector(){
+  loketSelector.innerHTML = '';
+  stalls.forEach(s=>{
+    const pill = document.createElement('div');
+    pill.className = 'loket-pill' + (s.id===activeLoket ? ' active':'');
+    pill.textContent = s.label;
+    pill.addEventListener('click', ()=>{ activeLoket = s.id; renderAll(); });
+    loketSelector.appendChild(pill);
+  });
+}
+
+/* Gabungkan antrian Robotic, Booking & Walk In dengan aturan:
+   - Robotic SELALU paling atas (prioritas tertinggi, urut FIFO sesamanya)
+   - Setelah itu: 2 unit Booking dulu, baru 1 unit Walk In, berulang — B1,B2,W1,B3,B4,W2,...
+   Kunci urutan dihitung dari nomor tiket itu sendiri (bukan dihitung ulang dari
+   sisa antrian), supaya posisi tidak ikut bergeser lagi walau ada nomor lain
+   yang sudah dipanggil/dihapus dari daftar. */
+function hitungKunciPrioritas(nomor){
+  const kategori = nomor.charAt(0);
+  const n = parseInt(String(nomor).slice(1), 10) || 0;
+  if(kategori === 'R') return n - 1000000; // Robotic: selalu di atas segalanya
+  if(kategori === 'A') return n + Math.floor((n-1)/2); // Booking: posisi 1,2,4,5,7,8,...
+  return n * 3; // Walk In: posisi 3,6,9,...
+}
+function gabungkanAntrianPrioritas(){
+  let semua = [];
+  loketConfig.forEach(cat=>{ semua = semua.concat(queues[cat.id].waiting); });
+  return semua.sort((a,b)=> hitungKunciPrioritas(a.nomor) - hitungKunciPrioritas(b.nomor));
+}
+
+/* Ikon siluet mobil berdasarkan tipe bodi — dicocokkan dari kata kunci nama
+   model. Ini ikon representatif per kategori bodi (sedan/MPV/SUV/pickup/
+   hatchback), bukan foto asli sesuai unit persis, karena aplikasi ini
+   berjalan offline tanpa akses foto real-time per model. */
+const IKON_MOBIL = {
+  sedan: '<svg class="car-icon" viewBox="0 0 100 40" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 28 L12 28 L20 15 L38 11 L62 11 L74 17 L94 22 L94 28 L88 28" stroke-linejoin="round"/><circle cx="26" cy="29" r="5" fill="currentColor" stroke="none"/><circle cx="74" cy="29" r="5" fill="currentColor" stroke="none"/><line x1="20" y1="15" x2="38" y2="15"/></svg>',
+  mpv: '<svg class="car-icon" viewBox="0 0 100 40" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 28 L8 15 L14 9 L82 9 L92 15 L94 28 L88 28" stroke-linejoin="round"/><circle cx="24" cy="29" r="5" fill="currentColor" stroke="none"/><circle cx="76" cy="29" r="5" fill="currentColor" stroke="none"/><line x1="34" y1="9" x2="34" y2="22"/><line x1="60" y1="9" x2="60" y2="22"/></svg>',
+  suv: '<svg class="car-icon" viewBox="0 0 100 40" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 26 L9 13 L16 8 L80 8 L90 14 L96 26 L88 26" stroke-linejoin="round"/><circle cx="24" cy="28" r="6" fill="currentColor" stroke="none"/><circle cx="78" cy="28" r="6" fill="currentColor" stroke="none"/><line x1="36" y1="8" x2="36" y2="20"/><line x1="62" y1="8" x2="62" y2="20"/></svg>',
+  pickup: '<svg class="car-icon" viewBox="0 0 100 40" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 28 L4 18 L44 18 L52 9 L70 9 L70 18 L96 18 L96 28 L90 28" stroke-linejoin="round"/><circle cx="20" cy="29" r="5" fill="currentColor" stroke="none"/><circle cx="80" cy="29" r="5" fill="currentColor" stroke="none"/></svg>',
+  hatch: '<svg class="car-icon" viewBox="0 0 100 40" fill="none" stroke="currentColor" stroke-width="3"><path d="M8 28 L12 27 L20 14 L36 10 L58 10 L68 20 L90 24 L90 28 L84 28" stroke-linejoin="round"/><circle cx="26" cy="29" r="5" fill="currentColor" stroke="none"/><circle cx="72" cy="29" r="5" fill="currentColor" stroke="none"/></svg>',
+  generic: '<svg class="car-icon" viewBox="0 0 100 40" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 27 L14 27 L22 14 L78 14 L88 27 L94 27" stroke-linejoin="round"/><circle cx="26" cy="28" r="5" fill="currentColor" stroke="none"/><circle cx="76" cy="28" r="5" fill="currentColor" stroke="none"/></svg>',
+};
+function getIkonMobil(model){
+  const m = (model||'').toLowerCase();
+  if(/(hilux|dyna|pickup|pick up|pick-up)/.test(m)) return IKON_MOBIL.pickup;
+  if(/(fortuner|rush|raize|land cruiser|rav4|corolla cross|yaris cross|hilux surf|4runner|suv)/.test(m)) return IKON_MOBIL.suv;
+  if(/(avanza|veloz|innova|voxy|alphard|vellfire|calya|sienta|granvia|hiace|mpv)/.test(m)) return IKON_MOBIL.mpv;
+  if(/(vios|camry|corolla altis|corolla(?! cross)|yaris ativ|crown|sedan)/.test(m)) return IKON_MOBIL.sedan;
+  if(/(agya|yaris(?! cross| ativ)|aygo|hatchback)/.test(m)) return IKON_MOBIL.hatch;
+  return IKON_MOBIL.generic;
+}
+
+function renderPetugas(){
+  const antrianGabungan = gabungkanAntrianPrioritas();
+  const serving = servingByStall[activeLoket];
+  const servingEl = document.getElementById('servingNum');
+  const custEl = document.getElementById('servingCust');
+  if(serving){
+    servingEl.textContent = serving.nomor;
+    servingEl.classList.remove('empty');
+    custEl.innerHTML = 'Dipanggil pukul ' + serving.calledAt +
+      '<div class="serving-vehicle"><span class="v-model">' + escapeHtml(serving.nama) + ' · ' + escapeHtml(serving.model) + '</span><span class="plate-chip">' + escapeHtml(serving.plat) + '</span></div>' +
+      '<div class="q-info" style="margin-top:8px; text-align:center;">SA: <b style="color:var(--text);">' + escapeHtml(serving.sa || '-') + '</b></div>';
+  } else {
+    servingEl.textContent = '—';
+    servingEl.classList.add('empty');
+    custEl.textContent = 'Belum ada pelanggan dipanggil';
+  }
+
+  // tombol panggil manual, satu per kategori
+  const callRow = document.getElementById('callButtonsRow');
+  callRow.innerHTML = '';
+  loketConfig.forEach(cat=>{
+    const jumlah = queues[cat.id].waiting.length;
+    const btn = document.createElement('button');
+    btn.className = 'btn ' + (cat.id==='R' ? 'btn-primary' : 'btn-ghost');
+    btn.textContent = 'Panggil ' + cat.nama + ' (' + jumlah + ')';
+    btn.disabled = jumlah===0;
+    btn.addEventListener('click', ()=>panggilDariKategori(cat.id));
+    callRow.appendChild(btn);
+  });
+
+  document.getElementById('btnDone').disabled = !serving;
+  document.getElementById('btnSkip').disabled = !serving;
+
+  document.getElementById('statWaiting').textContent = antrianGabungan.length;
+  document.getElementById('statDone').textContent = loketConfig.reduce((a,c)=>a+queues[c.id].doneCount,0);
+  document.getElementById('statSkip').textContent = loketConfig.reduce((a,c)=>a+queues[c.id].skipCount,0);
+
+  const tbody = document.getElementById('queueListEl');
+  tbody.innerHTML = '';
+  if(antrianGabungan.length===0){
+    tbody.innerHTML = '<tr><td colspan="4" class="q-empty">Tidak ada antrian menunggu</td></tr>';
+  } else {
+    antrianGabungan.forEach((e,idx)=>{
+      const catNama = loketConfig.find(c=>c.id===e.kategori).nama;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="cell-num">${e.nomor}</td>
+        <td><span class="priority-badge ${e.kategori}">${catNama}</span></td>
+        <td>${escapeHtml(e.sa || '-')}</td>
+        <td><span class="plate-chip">${escapeHtml(e.plat)}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+}
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+async function panggilDariKategori(kategoriId){
+  const stallLabel = stalls.find(s=>s.id===activeLoket).label;
+  const catNama = loketConfig.find(c=>c.id===kategoriId).nama;
+  const q = queues[kategoriId];
+  if(q.waiting.length===0) return;
+
+  if(SHEET_API_URL){
+    const res = await apiCall('panggil', {kategori:kategoriId, stall:activeLoket});
+    if(!res.success){ toast(res.message || 'Tidak ada antrian', 'err'); return; }
+    lastFlashed[activeLoket] = Date.now();
+    beep();
+    toast('Memanggil nomor ' + res.nomor + ' (' + catNama + ') di ' + stallLabel, 'ok');
+    await refreshLiveState();
+    return;
+  }
+
+  const prevServing = servingByStall[activeLoket];
+  if(prevServing) queues[prevServing.kategori].waiting.unshift(prevServing); // kembalikan yang lama jika belum selesai
+  const next = q.waiting.shift();
+  next.calledAt = nowTime();
+  servingByStall[activeLoket] = next;
+  lastFlashed[activeLoket] = Date.now();
+  beep();
+  toast('Memanggil nomor ' + next.nomor + ' (' + catNama + ') di ' + stallLabel, 'ok');
+  renderAll();
+}
+let completedWash = [];
+
+document.getElementById('btnDone').addEventListener('click', async ()=>{
+  const serving = servingByStall[activeLoket];
+  if(!serving) return;
+
+  if(SHEET_API_URL){
+    await apiCall('selesai', {id:serving.id});
+    toast('Nomor ' + serving.nomor + ' selesai dicuci', 'ok');
+    await refreshLiveState();
+    return;
+  }
+
+  queues[serving.kategori].doneCount++;
+  completedWash.unshift({nomor:serving.nomor, plat:serving.plat, model:serving.model, sa:serving.sa, kategori:serving.kategori, waktu: nowTime()});
+  completedWash = completedWash.slice(0, 12);
+  toast('Nomor ' + serving.nomor + ' selesai dicuci', 'ok');
+  servingByStall[activeLoket] = null;
+  renderAll();
+});
+document.getElementById('btnSkip').addEventListener('click', async ()=>{
+  const serving = servingByStall[activeLoket];
+  if(!serving) return;
+
+  if(SHEET_API_URL){
+    await apiCall('lewati', {id:serving.id});
+    toast('Nomor ' + serving.nomor + ' dilewati');
+    await refreshLiveState();
+    return;
+  }
+
+  queues[serving.kategori].skipCount++;
+  toast('Nomor ' + serving.nomor + ' dilewati');
+  servingByStall[activeLoket] = null;
+  renderAll();
+});
+
+/* ===================== TV DISPLAY ===================== */
+const tvGrid = document.getElementById('tvGrid');
+const tvDoneGrid = document.getElementById('tvDoneGrid');
+function renderTv(){
+  tvGrid.innerHTML = '';
+
+  const stallCardsHtml = stalls.map(s=>{
+    const serving = servingByStall[s.id];
+    const shouldFlash = lastFlashed[s.id] && (Date.now() - lastFlashed[s.id] < 2400);
+    const kategoriNama = serving ? (loketConfig.find(c=>c.id===serving.kategori) || {}).nama : '';
+    return `
+      <div class="tv-card${shouldFlash ? ' flash' : ''}">
+        <div class="tv-loket-name">${s.label}</div>
+        <div class="tv-serving-label">Sedang Dicuci ${serving ? '· ' + kategoriNama : ''}</div>
+        <div class="tv-serving-num ${serving?'':'empty'}">${serving ? serving.nomor : 'Kosong'}</div>
+        ${serving ? `<div class="tv-vehicle"><span class="v-model">${serving.model}</span><span class="plate-chip">${serving.plat}</span></div>` : ''}
+      </div>`;
+  }).join('');
+
+  // gabungkan antrian Booking & Walk In jadi satu daftar "berikutnya", urut waktu ambil
+  const semuaMenunggu = gabungkanAntrianPrioritas();
+  const nextNums = semuaMenunggu.slice(0,6).map(e=>`<div class="tv-next-chip">${e.nomor}</div>`).join('');
+
+  const section = document.createElement('div');
+  section.className = 'tv-category-section';
+  section.innerHTML = `
+    <div class="tv-category-head">
+      <div class="tv-category-title">Antrian Cuci</div>
+      <div class="tv-next">
+        <div class="tv-next-label">Berikutnya</div>
+        <div class="tv-next-nums">${nextNums || '<span style="color:var(--text-dim); font-size:12px;">Tidak ada antrian</span>'}</div>
+      </div>
+    </div>
+    <div class="tv-stall-row">${stallCardsHtml}</div>
+  `;
+  tvGrid.appendChild(section);
+
+  const tvTbody = document.getElementById('tvQueueListEl');
+  tvTbody.innerHTML = '';
+  if(semuaMenunggu.length===0){
+    tvTbody.innerHTML = '<tr><td colspan="4" class="q-empty">Tidak ada antrian menunggu</td></tr>';
+  } else {
+    semuaMenunggu.forEach((e,idx)=>{
+      const catNama = loketConfig.find(c=>c.id===e.kategori).nama;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="cell-num">${e.nomor}</td>
+        <td><span class="priority-badge ${e.kategori}">${catNama}</span></td>
+        <td>${e.sa || '-'}</td>
+        <td><span class="plate-chip">${e.plat}</span></td>
+      `;
+      tvTbody.appendChild(tr);
+    });
+  }
+
+  tvDoneGrid.innerHTML = '';
+  if(completedWash.length===0){
+    tvDoneGrid.innerHTML = '<div class="tv-done-empty">Belum ada kendaraan yang selesai dicuci</div>';
+  } else {
+    completedWash.forEach(c=>{
+      const catNama = loketConfig.find(cat=>cat.id===c.kategori) ? loketConfig.find(cat=>cat.id===c.kategori).nama : '';
+      const card = document.createElement('div');
+      card.className = 'tv-done-card';
+      card.innerHTML = `
+        <div class="d-num">${c.nomor}</div>
+        ${catNama ? `<span class="priority-badge ${c.kategori}">${catNama}</span>` : ''}
+        <span class="plate-chip">${c.plat}</span>
+        <div class="d-sa">SA: ${c.sa || '-'}</div>
+      `;
+      tvDoneGrid.appendChild(card);
+    });
+  }
+}
+
+/* ===================== CLOCK ===================== */
+function tickClock(){
+  const t = nowTime();
+  document.getElementById('topClock').textContent = t;
+  document.getElementById('tvClock').textContent = t;
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+/* ===================== RENDER ALL ===================== */
+function renderAll(){
+  renderServiceGrid();
+  renderLoketSelector();
+  renderPetugas();
+  renderTv();
+}
+renderAll();
+checkForemanMode();
+renderForemanQr();
+loadCustomerDatabaseFromSheet();
+if(SHEET_API_URL){
+  refreshLiveState();
+  setInterval(refreshLiveState, 4000); // polling sinkronisasi antar perangkat
+}
+setInterval(renderTv, 1000); // refresh flash animation timing
+</script>
+</body>
+</html>
