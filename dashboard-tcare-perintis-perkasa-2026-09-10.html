@@ -1,0 +1,2826 @@
+<title>Dashboard T-Care Perintis Perkasa</title>
+<title>Data Retention T-CARE 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --page-bg:#f9f9f7;
+    --surface-1:#fcfcfb;
+    --surface-2:#f2f1ec;
+    --text-primary:#0b0b0b;
+    --text-secondary:#52514e;
+    --text-muted:#898781;
+    --gridline:#e1e0d9;
+    --baseline:#c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --accent:#2a78d6;
+    --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100;
+    --series-5:#e87ba4;
+    --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
+    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#d03b3b;
+    --success-text:#006300;
+    --font-display:'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body:'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page-bg:#0d0d0d; --surface-1:#1a1a19; --surface-2:#232322;
+      --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8d86;
+      --gridline:#2c2c2a; --baseline:#383835; --border: rgba(255,255,255,0.10);
+      --accent:#3987e5;
+      --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+      --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
+      --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
+      --success-text:#3fca3f;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page-bg:#0d0d0d; --surface-1:#1a1a19; --surface-2:#232322;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8d86;
+    --gridline:#2c2c2a; --baseline:#383835; --border: rgba(255,255,255,0.10);
+    --accent:#3987e5;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+    --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
+    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
+    --success-text:#3fca3f;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ background: var(--page-bg); color: var(--text-primary); font-family: var(--font-body); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; margin:0; text-wrap:balance; }
+  p{ margin:0; }
+  a{ color:var(--accent); }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px 80px; }
+  header.top{ border-bottom:1px solid var(--border); background:var(--surface-1); }
+  .top-inner{ max-width:1180px; margin:0 auto; padding:22px 28px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:14px; }
+  .brand-mark{ width:40px; height:40px; border-radius:10px; background: linear-gradient(155deg, var(--ord-1), var(--ord-4)); display:flex; align-items:center; justify-content:center; flex:none; }
+  .brand-mark svg{ width:22px; height:22px; display:block; }
+  .brand-text h1{ font-size:19px; letter-spacing:-0.01em; }
+  .brand-text .sub{ font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .meta-pills{ display:flex; gap:8px; flex-wrap:wrap; }
+  .pill{ font-family:var(--font-mono); font-size:11.5px; font-weight:500; color:var(--text-secondary); background:var(--surface-2); border:1px solid var(--border); border-radius:100px; padding:5px 12px; white-space:nowrap; }
+  .pill b{ color:var(--text-primary); font-weight:600; }
+  section{ padding-top:52px; }
+  .section-head{ margin-bottom:22px; display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .section-head h2{ font-size:22px; letter-spacing:-0.01em; }
+  .eyebrow{ font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+  .lede{ color:var(--text-secondary); font-size:14.5px; max-width:70ch; margin-top:8px; }
+  .card{ background:var(--surface-1); border:1px solid var(--border); border-radius:14px; }
+  .kpi-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:20px; }
+  @media (max-width:980px){ .kpi-row{ grid-template-columns:repeat(2,1fr); } }
+  .kpi-tile{ padding:17px 18px; }
+  .kpi-tile .label{ font-size:12.5px; color:var(--text-muted); font-weight:500; }
+  .kpi-tile .value{ font-family:var(--font-display); font-size:25px; font-weight:600; margin-top:8px; letter-spacing:-0.01em; }
+  .kpi-tile .sub{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
+  .kpi-tile.warn .value{ color:var(--series-4); }
+  .kpi-tile.good .value{ color:var(--success-text); }
+  .insight-strip{ margin-top:16px; padding:14px 18px; border-radius:12px; background: color-mix(in srgb, var(--accent) 8%, var(--surface-1)); border:1px solid color-mix(in srgb, var(--accent) 22%, var(--border)); font-size:13.5px; color:var(--text-secondary); display:flex; gap:10px; align-items:flex-start; }
+  .insight-strip svg{ flex:none; width:17px; height:17px; margin-top:2px; color:var(--accent); }
+  .insight-strip b{ color:var(--text-primary); }
+  .panel{ padding:20px 22px; margin-top:20px; }
+  .panel h3{ font-size:13.5px; font-weight:600; }
+  .panel .n-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted); font-weight:500; }
+  .panel .panel-desc{ font-size:12px; color:var(--text-secondary); margin-top:3px; margin-bottom:16px; }
+  .tbl-scroll{ overflow-x:auto; border-radius:10px; border:1px solid var(--border); }
+  table.retention{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:920px; }
+  table.retention thead th{ text-align:left; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); background:var(--surface-2); padding:9px 12px; white-space:nowrap; position:sticky; top:0; }
+  table.retention tbody td{ padding:9px 12px; border-top:1px solid var(--border); vertical-align:top; }
+  table.retention tbody tr:hover{ background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  table.retention td.num{ color:var(--text-muted); font-family:var(--font-mono); font-size:11.5px; }
+  table.retention td.model{ white-space:nowrap; }
+  table.retention td.vin{ font-family:var(--font-mono); font-size:11px; color:var(--text-secondary); white-space:nowrap; }
+  table.retention td.note{ color:var(--text-secondary); max-width:280px; }
+  table.retention td.booking{ min-width:170px; }
+  .edit-field{
+    width:100%; font-family:var(--font-body); font-size:12.5px; color:var(--text-primary);
+    background:var(--surface-2); border:1px dashed var(--baseline); border-radius:6px;
+    padding:6px 8px; resize:vertical; box-sizing:border-box;
+  }
+  .edit-field:focus{ outline:2px solid var(--accent); outline-offset:1px; border-style:solid; border-color:transparent; background:var(--surface-1); }
+  .edit-field:not(:placeholder-shown){ border-style:solid; border-color:var(--border); background:var(--surface-1); }
+  textarea.edit-field{ min-height:32px; line-height:1.35; }
+  .save-status{ display:block; margin-top:3px; font-size:10.5px; color:var(--text-muted); min-height:13px; }
+  .save-status.saved{ color:var(--success-text); }
+  .save-status.saving{ color:var(--text-muted); }
+  .save-status.error{ color:var(--status-critical); }
+  .db-banner{ margin-top:14px; padding:10px 14px; border-radius:10px; font-size:12.5px; background: color-mix(in srgb, var(--status-warning) 14%, var(--surface-1)); border:1px solid color-mix(in srgb, var(--status-warning) 30%, var(--border)); color:var(--text-secondary); display:none; }
+  .db-banner.show{ display:block; }
+  footer{ margin-top:64px; border-top:1px solid var(--border); padding:26px 28px 40px; max-width:1180px; margin-left:auto; margin-right:auto; }
+  footer h4{ font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:10px; }
+  footer p{ font-size:12.5px; color:var(--text-secondary); margin-bottom:8px; }
+  footer .src{ font-family:var(--font-mono); font-size:11.5px; }
+  ::selection{ background: color-mix(in srgb, var(--accent) 30%, transparent); }
+</style>
+
+<title>SBE T-Care Funnel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --page-bg:#f9f9f7;
+    --surface-1:#fcfcfb;
+    --surface-2:#f2f1ec;
+    --text-primary:#0b0b0b;
+    --text-secondary:#52514e;
+    --text-muted:#898781;
+    --gridline:#e1e0d9;
+    --baseline:#c3c2b7;
+    --border: rgba(11,11,11,0.10);
+
+    --accent:#2a78d6;
+    --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100;
+    --series-5:#e87ba4; --series-6:#008300; --series-7:#4a3aa7; --series-8:#e34948;
+
+    --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
+
+    --pyr-1:#c76a2e; --pyr-2:#c14742; --pyr-3:#9c7355; --pyr-4:#706b5e;
+    --badge-bg:#ffc94d; --badge-border:#a8391f; --badge-text:#5a2600;
+
+    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#d03b3b;
+    --success-text:#006300;
+
+    --font-display:'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body:'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --page-bg:#0d0d0d;
+      --surface-1:#1a1a19;
+      --surface-2:#232322;
+      --text-primary:#ffffff;
+      --text-secondary:#c3c2b7;
+      --text-muted:#8f8d86;
+      --gridline:#2c2c2a;
+      --baseline:#383835;
+      --border: rgba(255,255,255,0.10);
+      --accent:#3987e5;
+      --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
+      --series-5:#d55181; --series-6:#1fae1f; --series-7:#9085e9; --series-8:#e66767;
+      --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
+      --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
+      --success-text:#3fca3f;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --page-bg:#0d0d0d;
+    --surface-1:#1a1a19;
+    --surface-2:#232322;
+    --text-primary:#ffffff;
+    --text-secondary:#c3c2b7;
+    --text-muted:#8f8d86;
+    --gridline:#2c2c2a;
+    --baseline:#383835;
+    --border: rgba(255,255,255,0.10);
+    --accent:#3987e5;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
+    --series-5:#d55181; --series-6:#1fae1f; --series-7:#9085e9; --series-8:#e66767;
+    --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
+    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
+    --success-text:#3fca3f;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--page-bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; margin:0; text-wrap:balance; }
+  p{ margin:0; }
+  a{ color:var(--accent); }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px 80px; }
+
+  /* ---------- header ---------- */
+  header.top{
+    border-bottom:1px solid var(--border);
+    background:var(--surface-1);
+  }
+  .top-inner{
+    max-width:1180px; margin:0 auto; padding:22px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:14px; }
+  .brand-mark{
+    width:40px; height:40px; border-radius:10px;
+    background: linear-gradient(155deg, var(--ord-1), var(--ord-4));
+    display:flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+  .brand-mark svg{ width:22px; height:22px; display:block; }
+  .brand-text h1{ font-size:19px; letter-spacing:-0.01em; }
+  .brand-text .sub{ font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .meta-pills{ display:flex; gap:8px; flex-wrap:wrap; }
+  .pill{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:500;
+    color:var(--text-secondary); background:var(--surface-2);
+    border:1px solid var(--border); border-radius:100px; padding:5px 12px;
+    white-space:nowrap;
+  }
+  .pill b{ color:var(--text-primary); font-weight:600; }
+
+  nav.jump{
+    display:flex; gap:22px; padding:12px 28px; max-width:1180px; margin:0 auto;
+    font-size:13px; overflow-x:auto;
+  }
+  nav.jump a{ color:var(--text-secondary); text-decoration:none; white-space:nowrap; padding:4px 0; border-bottom:2px solid transparent; }
+  nav.jump a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* ---------- sections ---------- */
+  section{ padding-top:52px; }
+  .section-head{ margin-bottom:22px; display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .section-head h2{ font-size:22px; letter-spacing:-0.01em; }
+  .section-head .status-chip{ font-size:12px; font-weight:600; padding:4px 11px; border-radius:100px; }
+  .status-chip.done{ background:color-mix(in srgb, var(--status-good) 14%, transparent); color:var(--success-text); }
+  .status-chip.progress{ background:color-mix(in srgb, var(--series-4) 16%, transparent); color:var(--series-4); }
+  .eyebrow{ font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+  .lede{ color:var(--text-secondary); font-size:14.5px; max-width:64ch; margin-top:8px; }
+
+  .card{
+    background:var(--surface-1); border:1px solid var(--border); border-radius:14px;
+  }
+
+  /* ---------- hero / exec summary ---------- */
+  .hero-grid{ display:grid; grid-template-columns: 1.15fr 1fr; gap:18px; }
+  @media (max-width: 860px){ .hero-grid{ grid-template-columns:1fr; } }
+  .hero-figure-card{ padding:28px 30px; display:flex; flex-direction:column; justify-content:center; gap:10px; }
+  .hero-figure-card .eyebrow{ color:var(--text-muted); }
+  .hero-figure{ font-family:var(--font-display); font-weight:700; font-size:56px; line-height:1; letter-spacing:-0.02em; color:var(--text-primary); }
+  .hero-figure .unit{ font-size:26px; font-weight:600; color:var(--text-secondary); margin-left:6px; }
+  .hero-figure-card .desc{ font-size:14px; color:var(--text-secondary); max-width:46ch; }
+  .hero-side{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .mini-stat{ padding:18px 20px; }
+  .mini-stat .label{ font-size:12px; color:var(--text-muted); font-weight:500; }
+  .mini-stat .val{ font-family:var(--font-display); font-size:26px; font-weight:600; margin-top:6px; letter-spacing:-0.01em; }
+  .mini-stat .cap{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
+
+  .insight-strip{
+    margin-top:16px; padding:14px 18px; border-radius:12px;
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-1));
+    border:1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+    font-size:13.5px; color:var(--text-secondary); display:flex; gap:10px; align-items:flex-start;
+  }
+  .insight-strip svg{ flex:none; width:17px; height:17px; margin-top:2px; color:var(--accent); }
+  .insight-strip b{ color:var(--text-primary); }
+
+  /* ---------- KPI tiles ---------- */
+  .kpi-row{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:20px; }
+  @media (max-width:980px){ .kpi-row{ grid-template-columns:repeat(2,1fr); } }
+  .kpi-tile{ padding:17px 18px; }
+  .kpi-tile .label{ font-size:12.5px; color:var(--text-muted); font-weight:500; }
+  .kpi-tile .value{ font-family:var(--font-display); font-size:25px; font-weight:600; margin-top:8px; letter-spacing:-0.01em; }
+  .kpi-tile .sub{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
+  .kpi-tile.pending{ background:var(--surface-2); border-style:dashed; }
+  .kpi-tile.pending .value{ color:var(--text-muted); font-size:16px; font-weight:500; }
+  .kpi-tile.good .value{ color:var(--success-text); }
+
+  /* ---------- funnel (inverted pyramid) ---------- */
+  .funnel-card{ padding:26px 28px 22px; margin-top:20px; }
+  .funnel-title{ font-size:14px; font-weight:600; color:var(--text-secondary); margin-bottom:20px; }
+
+  .pyramid{ display:flex; flex-direction:column; width:fit-content; }
+  .pyr-row{ display:flex; align-items:stretch; height:108px; }
+  @media (max-width:620px){ .pyr-row{ height:auto; min-height:118px; } .pyramid{ width:100%; } }
+
+  .pyr-seg{
+    width:264px; flex:none; position:relative;
+    clip-path: polygon(var(--tl) 0%, var(--tr) 0%, var(--br) 100%, var(--bl) 100%);
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    padding:6px 8px;
+  }
+  @media (max-width:620px){ .pyr-seg{ width:180px; padding:6px 10px; } }
+  .pyr-row:not(:first-child) .pyr-seg{ box-shadow: inset 0 2px 0 var(--surface-1); }
+  .pyr-seg.is-pending{
+    background-image: repeating-linear-gradient(135deg, var(--gridline), var(--gridline) 7px, var(--surface-2) 7px, var(--surface-2) 14px);
+  }
+  .pyr-seg-inner{ display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .pyr-seg-label{ display:block; color:#fff; font-weight:700; font-size:12px; line-height:1.22; letter-spacing:.005em; text-shadow:0 1px 3px rgba(0,0,0,.18); margin:0 auto; }
+  .pyr-seg-pct{
+    display:inline-block; font-family:var(--font-display); font-weight:800; font-size:13.5px;
+    color:#fff; background:rgba(0,0,0,.20); padding:2px 9px; border-radius:100px; letter-spacing:.01em;
+  }
+  .pyr-seg.is-pending .pyr-seg-label{ color:var(--text-secondary); text-shadow:none; font-weight:600; }
+  .pyr-seg.is-pending .pyr-seg-pct{ background:var(--surface-1); color:var(--text-muted); border:1px dashed var(--baseline); }
+
+  .pyr-callout{ flex:0 0 300px; width:300px; padding:8px 0 8px 26px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+  .pyr-callout-value{ font-family:var(--font-display); font-size:26px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
+  .pyr-callout-value.is-pending{ font-size:16px; font-weight:600; color:var(--text-muted); }
+  .pyr-callout-cap{ font-size:11.5px; color:var(--text-muted); margin-top:3px; }
+
+  .outcome-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px; }
+  @media (max-width:760px){ .outcome-row{ grid-template-columns:1fr; } }
+  .outcome-tile{ padding:18px 20px; border-left:3px solid var(--status-good); }
+  .outcome-tile .label{ font-size:12.5px; color:var(--text-muted); font-weight:500; }
+  .outcome-tile .value{ font-family:var(--font-display); font-size:24px; font-weight:600; margin-top:7px; color:var(--success-text); }
+  .outcome-tile .sub{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
+
+  /* ---------- call status card (donut + stat trio) ---------- */
+  .callstatus-card{ padding:24px 26px; margin-top:14px; display:flex; gap:32px; flex-wrap:wrap; align-items:center; }
+  .callstatus-donut-block{ display:flex; align-items:center; gap:20px; flex:1 1 300px; min-width:260px; }
+  .callstatus-donut-block svg{ flex:none; }
+  .donut-legend{ display:flex; flex-direction:column; gap:7px; }
+  .donut-legend .ditem{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-secondary); }
+  .donut-legend .ditem .swatch{ width:10px; height:10px; border-radius:3px; flex:none; }
+  .donut-legend b{ color:var(--text-primary); font-weight:600; }
+  .donut-note{ font-size:11px; color:var(--text-muted); margin-top:2px; max-width:28ch; line-height:1.4; }
+  .callstatus-stats{ display:flex; gap:14px; flex:2 1 380px; flex-wrap:wrap; }
+  .callstatus-stat{ flex:1 1 150px; padding:14px 16px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border); }
+  .callstatus-stat .label{ font-size:11.5px; color:var(--text-muted); font-weight:500; }
+  .callstatus-stat .value{ font-family:var(--font-display); font-size:22px; font-weight:600; margin-top:6px; letter-spacing:-0.01em; }
+  .callstatus-stat .sub{ font-size:11px; color:var(--text-secondary); margin-top:5px; line-height:1.4; }
+  @media (max-width:760px){ .callstatus-card{ flex-direction:column; align-items:stretch; } }
+
+  /* ---------- panel grid for breakdowns ---------- */
+  .panel-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+  @media (max-width:860px){ .panel-grid{ grid-template-columns:1fr; } }
+  .panel{ padding:20px 22px; }
+  .panel h3{ font-size:13.5px; font-weight:600; }
+  .panel .n-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted); font-weight:500; }
+  .panel .panel-desc{ font-size:12px; color:var(--text-secondary); margin-top:3px; margin-bottom:16px; }
+
+  /* segmented (share-of-whole) bar */
+  .segbar{ display:flex; gap:2px; height:22px; border-radius:5px; overflow:hidden; }
+  .segbar .seg{ height:100%; }
+  .seg-legend .swatch{ width:9px; height:9px; border-radius:2.5px; flex:none; }
+  .seg-legend b{ color:var(--text-primary); font-weight:600; }
+
+  /* ranked single-hue bar list */
+  .rank-list{ display:flex; flex-direction:column; gap:3px; }
+  .rank-row{
+    display:grid; grid-template-columns:168px 1fr 90px 16px; align-items:center; column-gap:12px;
+    padding:5px 6px; margin:0 -6px; border-radius:8px;
+  }
+  .rank-row .rlabel{ font-size:12.5px; color:var(--text-secondary); line-height:1.3; }
+  .rank-track{ height:11px; background:var(--gridline); border-radius:4px; }
+  .rank-fill{ height:100%; background:var(--series-1); border-radius:4px; }
+  .rank-val{ font-size:12px; color:var(--text-primary); font-weight:600; text-align:right; }
+  .rank-val span{ color:var(--text-muted); font-weight:500; }
+  .rank-chev{ width:16px; height:16px; color:var(--text-muted); flex:none; transition:transform .15s ease; }
+
+  .rank-row.is-clickable{ cursor:pointer; }
+  .rank-row.is-clickable:hover{ background:var(--surface-2); }
+  .rank-row.is-clickable:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .rank-row:not(.is-clickable) .rank-chev{ visibility:hidden; }
+  .rank-row.is-active{ background:color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
+  .rank-row.is-active .rlabel, .rank-row.is-active .rank-val{ color:var(--text-primary); }
+  .rank-row.is-active .rank-chev{ transform:rotate(180deg); color:var(--accent); }
+
+  /* segmented-bar legend as clickable rows */
+  .seg-legend{ display:flex; flex-direction:column; gap:2px; margin-top:14px; }
+  .seg-legend .item{
+    font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;
+    padding:6px 8px; margin:0 -8px; border-radius:8px; width:100%;
+  }
+  .seg-legend .item .sl-text{ flex:1; min-width:0; }
+  .seg-legend .item.is-clickable{ cursor:pointer; }
+  .seg-legend .item.is-clickable:hover{ background:var(--surface-2); }
+  .seg-legend .item.is-clickable:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
+  .seg-legend .item:not(.is-clickable) .rank-chev{ visibility:hidden; }
+  .seg-legend .item.is-active{ background:color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
+  .seg-legend .item.is-active .rank-chev{ transform:rotate(180deg); color:var(--accent); }
+
+  /* breakdown drawer */
+  .bd-drawer{
+    margin-top:10px; padding:13px 16px; border-radius:10px;
+    background:var(--surface-2); border:1px solid var(--border);
+    animation: bd-in .15s ease;
+  }
+  @keyframes bd-in{ from{ opacity:0; transform:translateY(-3px); } to{ opacity:1; transform:translateY(0); } }
+  .bd-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
+  .bd-head span{ font-size:12px; font-weight:700; color:var(--text-primary); }
+  .bd-head span em{ font-style:normal; color:var(--text-muted); font-weight:500; }
+  .bd-close{
+    background:none; border:none; color:var(--text-muted); font-size:17px; line-height:1; cursor:pointer;
+    padding:2px 5px; border-radius:5px;
+  }
+  .bd-close:hover{ background:var(--border); color:var(--text-primary); }
+  .bd-rows{ display:flex; flex-direction:column; gap:5px; }
+  .bd-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; font-size:12px; }
+  .bd-lbl{ color:var(--text-secondary); }
+  .bd-val{ color:var(--text-primary); font-weight:600; flex:none; }
+  .bd-extra{ color:var(--text-muted); font-weight:500; }
+  .bd-note{ font-size:11.5px; color:var(--text-muted); margin-top:9px; padding-top:9px; border-top:1px solid var(--border); }
+
+  footer{
+    margin-top:64px; border-top:1px solid var(--border); padding:26px 28px 40px;
+    max-width:1180px; margin-left:auto; margin-right:auto;
+  }
+  footer .foot-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:28px; }
+  @media (max-width:760px){ footer .foot-grid{ grid-template-columns:1fr; } }
+  footer h4{ font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); margin-bottom:10px; }
+  footer p{ font-size:12.5px; color:var(--text-secondary); margin-bottom:8px; }
+  footer .src{ font-family:var(--font-mono); font-size:11.5px; }
+
+  ::selection{ background: color-mix(in srgb, var(--accent) 30%, transparent); }
+</style>
+
+<style>
+  .tab-page[hidden]{ display:none !important; }
+  nav.jump a.active{ color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 4h18l-6.5 8.2V19l-5 2v-8.8L3 4z" fill="#ffffff" fill-opacity="0.95"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Dashboard T-Care Perintis Perkasa</h1>
+        <div class="sub">Retensi servis berkala per DELIVERY DATE &amp; Funnel reminder T-Care usia 4&ndash;6 tahun (lewat masa servis gratis)</div>
+      </div>
+    </div>
+    <div class="meta-pills">
+      <span class="pill">Retensi &middot; <b>10 Sep 2026</b></span>
+      <span class="pill">Funnel SBE &middot; <b>10 Sep 2026</b></span>
+    </div>
+  </div>
+  <nav class="jump">
+    <a href="#ret-ringkasan" data-page="ret-ringkasan">Retensi &middot; Ringkasan</a>
+    <a href="#ret-daftar" data-page="ret-daftar">Retensi &middot; Daftar</a>
+    <a href="#sbe-ringkasan" data-page="sbe-ringkasan">Funnel SBE &middot; Ringkasan</a>
+    <a href="#sbe-agustus" data-page="sbe-agustus">Funnel SBE &middot; Bulan Selesai</a>
+    <a href="#sbe-september" data-page="sbe-september">Funnel SBE &middot; Bulan Berjalan</a>
+    <a href="#metodologi" data-page="metodologi">Metodologi</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="tab-page" id="page-ret-ringkasan">
+<section id="ret-ringkasan">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Ringkasan &middot; September 2026</div>
+        <h2>Retensi servis berkala 6 bulan &middot; DELIVERY DATE Maret 2026</h2>
+      </div>
+    </div>
+    <p class="lede">DELIVERY DATE Maret 2026 &mdash; yaitu pelanggan yang mobilnya diserahkan (delivery) di bulan itu &mdash; seharusnya kembali untuk servis berkala (kelipatan 10.000 KM) di bulan September 2026 ini, karena jadwal servis berkala jatuh 6 bulan setelah delivery. Daftar di bawah menyaring yang <b>belum</b> terdeteksi melakukan servis berkala tersebut, baik di Data WO bulan berjalan maupun di TCare Customer Database (histori servis seluruh cabang/outlet).</p>
+
+    <div class="kpi-row">
+      <div class="card kpi-tile"><div class="label">Total pelanggan &middot; DELIVERY DATE Maret 2026</div><div class="value">126</div><div class="sub">unit tercatat di PDFU</div></div>
+      <div class="card kpi-tile good"><div class="label">Sudah servis berkala</div><div class="value">53</div><div class="sub">42,1% dari total pelanggan &middot; 23 via Data WO, 30 via TCare DB</div></div>
+      <div class="card kpi-tile warn"><div class="label">Belum servis berkala</div><div class="value">73</div><div class="sub">57,9% dari total pelanggan &middot; perlu follow-up</div></div>
+      <div class="card kpi-tile"><div class="label">Sumber silang</div><div class="value">3 sheet</div><div class="sub">PDFU & SBI New + Data WO + TCare Customer DB</div></div>
+    </div>
+
+    <div class="insight-strip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <div><b>73 dari 126 kendaraan</b> (57,9%) di DELIVERY DATE Maret 2026 belum terdeteksi servis berkala di bulan September 2026 &mdash; ini daftar prioritas untuk tim reminder menghubungi pelanggan.</div>
+    </div>
+  </section>
+  </div>
+  <div class="tab-page" id="page-ret-daftar" hidden>
+<section id="ret-daftar">
+    <div class="card panel">
+      <h3>Daftar Retensi &middot; Belum Servis Berkala</h3>
+      <div class="panel-desc n-note">n=73 unit &middot; disaring dari DELIVERY DATE Maret 2026, dicocokkan No. Rangka (VIN) terhadap Data WO September 2026 dan TCare Customer Database</div>
+      <div class="tbl-scroll">
+        <table class="retention">
+          <thead>
+            <tr>
+              <th>No</th><th>Nama Customer</th><th>No HP</th><th>Model</th><th>VIN</th><th>Kota</th>
+              <th>Tgl Delivery</th><th>Tgl Booking (Servis Berikutnya)</th><th>Keterangan (Follow-up)</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr data-row-vin="MHFJB8EM5T1185660">
+          <td class="num">1</td>
+          <td>Aditia Pratama Putra Siregar</td>
+          <td>6282161893949</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM5T1185660</td>
+          <td>DELI SERDANG</td>
+          <td>02 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM5T1185660" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM5T1185660" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM5T1185660"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK117547">
+          <td class="num">2</td>
+          <td>Esminatin</td>
+          <td>6281292529568</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK117547</td>
+          <td>DELI SERDANG</td>
+          <td>02 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK117547" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK117547" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK117547"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAA1BA0TJ184437">
+          <td class="num">3</td>
+          <td>Ningrat Darlim Sh</td>
+          <td>62811608223</td>
+          <td class="model">Raize 1.0T Gr Sport Cvt One Tone</td>
+          <td class="vin">MHKAA1BA0TJ184437</td>
+          <td>MEDAN</td>
+          <td>02 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAA1BA0TJ184437" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAA1BA0TJ184437" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAA1BA0TJ184437"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKA6GJ6JTJ221007">
+          <td class="num">4</td>
+          <td>Ayu Antika</td>
+          <td>62895334534596</td>
+          <td class="model">Calya 1.2 G M/T</td>
+          <td class="vin">MHKA6GJ6JTJ221007</td>
+          <td>DELI SERDANG</td>
+          <td>04 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKA6GJ6JTJ221007" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKA6GJ6JTJ221007" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKA6GJ6JTJ221007"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAB1BY1TJ014887">
+          <td class="num">5</td>
+          <td>Irfan Machruzal</td>
+          <td>6285261301629</td>
+          <td class="model">Avanza 1.5 G M/T</td>
+          <td class="vin">MHKAB1BY1TJ014887</td>
+          <td>ACEH TAMIANG</td>
+          <td>05 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAB1BY1TJ014887" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAB1BY1TJ014887" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAB1BY1TJ014887"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAA1BAXTJ184378">
+          <td class="num">6</td>
+          <td>Ratih Yolanda Situngkir</td>
+          <td>6282276938910</td>
+          <td class="model">Raize 1.0T Gr Sport Cvt One Tone</td>
+          <td class="vin">MHKAA1BAXTJ184378</td>
+          <td>SERDANG BEDAGAI</td>
+          <td>05 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAA1BAXTJ184378" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAA1BAXTJ184378" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAA1BAXTJ184378"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK141202">
+          <td class="num">7</td>
+          <td>Grace H Panggabean</td>
+          <td>6282179396736</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK141202</td>
+          <td>DAIRI</td>
+          <td>06 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK141202" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK141202" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK141202"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM4T1185536">
+          <td class="num">8</td>
+          <td>Henny</td>
+          <td>6282316681136</td>
+          <td class="model">Kijang Innova 2.4 G A/T</td>
+          <td class="vin">MHFJB8EM4T1185536</td>
+          <td>MEDAN</td>
+          <td>06 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM4T1185536" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM4T1185536" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM4T1185536"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABAAA1T0049941">
+          <td class="num">9</td>
+          <td>Iwan Hartawan Hasibuan</td>
+          <td>6285271366199</td>
+          <td class="model">Kijang Innova Zenix 2.0 V Hv Cvt Modelista</td>
+          <td class="vin">MHFABAAA1T0049941</td>
+          <td>PEKANBARU</td>
+          <td>06 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABAAA1T0049941" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABAAA1T0049941" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABAAA1T0049941"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABAAA2T0048703">
+          <td class="num">10</td>
+          <td>Siti Salmiah Drg Sp Kga</td>
+          <td>6281376182242</td>
+          <td class="model">Kijang Innova Zenix 2.0 V Hv Cvt Modelista</td>
+          <td class="vin">MHFABAAA2T0048703</td>
+          <td>MEDAN</td>
+          <td>06 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABAAA2T0048703" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABAAA2T0048703" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABAAA2T0048703"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MR0ACAEA0T0241906">
+          <td class="num">11</td>
+          <td>Vendy</td>
+          <td>6281263175551</td>
+          <td class="model">Hilux Rangga Pick Up 2.4 Dsl Standard M/T 3Way</td>
+          <td class="vin">MR0ACAEA0T0241906</td>
+          <td>DELI SERDANG</td>
+          <td>06 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MR0ACAEA0T0241906" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MR0ACAEA0T0241906" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MR0ACAEA0T0241906"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM7T1188088">
+          <td class="num">12</td>
+          <td>Sugianto Tantono</td>
+          <td>6282187103732</td>
+          <td class="model">Kijang Innova 2.4 G A/T</td>
+          <td class="vin">MHFJB8EM7T1188088</td>
+          <td>MEDAN</td>
+          <td>09 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM7T1188088" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM7T1188088" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM7T1188088"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFAA8GS6T0935572">
+          <td class="num">13</td>
+          <td>Novita Windasari</td>
+          <td>6281283942722</td>
+          <td class="model">Fortuner 2.8 Vrz Tss 4X2 A/T</td>
+          <td class="vin">MHFAA8GS6T0935572</td>
+          <td>DELI SERDANG</td>
+          <td>11 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFAA8GS6T0935572" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFAA8GS6T0935572" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFAA8GS6T0935572"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BYXT0001321">
+          <td class="num">14</td>
+          <td>Pt.Toyota Astra Financial Services</td>
+          <td>2150821500</td>
+          <td class="model">Veloz 1.5 Q Hybrid Cvt Tss Modellista</td>
+          <td class="vin">MHFA71BYXT0001321</td>
+          <td>JAKARTA SELATAN</td>
+          <td>11 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BYXT0001321" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BYXT0001321" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BYXT0001321"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAB1BC6TJ079870">
+          <td class="num">15</td>
+          <td>Tulus Parlindungan Sipahutar</td>
+          <td>6281370403388</td>
+          <td class="model">Agya Stylix 1.2 G Cvt</td>
+          <td class="vin">MHKAB1BC6TJ079870</td>
+          <td>HUMBANG HASUNDUTAN</td>
+          <td>11 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAB1BC6TJ079870" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAB1BC6TJ079870" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAB1BC6TJ079870"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BY4T0001590">
+          <td class="num">16</td>
+          <td>Ardy Sandjaja Tiomualana</td>
+          <td>62811657733</td>
+          <td class="model">Veloz 1.5 V Hybrid Cvt</td>
+          <td class="vin">MHFA71BY4T0001590</td>
+          <td>MEDAN</td>
+          <td>12 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BY4T0001590" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BY4T0001590" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BY4T0001590"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM3T1188119">
+          <td class="num">17</td>
+          <td>Chandra</td>
+          <td>6281361788688</td>
+          <td class="model">Kijang Innova 2.4 G A/T</td>
+          <td class="vin">MHFJB8EM3T1188119</td>
+          <td>MEDAN</td>
+          <td>12 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM3T1188119" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM3T1188119" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM3T1188119"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK141986">
+          <td class="num">18</td>
+          <td>Riyanto</td>
+          <td>6281321232720</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK141986</td>
+          <td>MEDAN</td>
+          <td>12 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK141986" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK141986" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK141986"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAA1BY8TJ010905">
+          <td class="num">19</td>
+          <td>Muhammad Indra Bayu</td>
+          <td>6282268888875</td>
+          <td class="model">Avanza 1.3 E Cvt</td>
+          <td class="vin">MHKAA1BY8TJ010905</td>
+          <td>MEDAN</td>
+          <td>13 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAA1BY8TJ010905" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAA1BY8TJ010905" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAA1BY8TJ010905"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM3T1185625">
+          <td class="num">20</td>
+          <td>Rudy Raja Gukguk</td>
+          <td>6282210164988</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM3T1185625</td>
+          <td>PEMATANGSIANTAR</td>
+          <td>13 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM3T1185625" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM3T1185625" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM3T1185625"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK142133">
+          <td class="num">21</td>
+          <td>Andi Firmansyah</td>
+          <td>6285709678891</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK142133</td>
+          <td>DELI SERDANG</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK142133" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK142133" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK142133"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK118657">
+          <td class="num">22</td>
+          <td>Donny Sulistio Tarigan</td>
+          <td>6281212294817</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK118657</td>
+          <td>DELI SERDANG</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK118657" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK118657" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK118657"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM0T1185422">
+          <td class="num">23</td>
+          <td>Khairurizal</td>
+          <td>628126219899</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM0T1185422</td>
+          <td>MEDAN</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM0T1185422" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM0T1185422" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM0T1185422"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK117559">
+          <td class="num">24</td>
+          <td>Nurul Ramadhania Ardi</td>
+          <td>6282388023829</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK117559</td>
+          <td>MEDAN</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK117559" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK117559" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK117559"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BYXT0002047">
+          <td class="num">25</td>
+          <td>Pt.Anugrah Elektrik</td>
+          <td>6285276316677</td>
+          <td class="model">Veloz 1.5 V Hybrid Cvt</td>
+          <td class="vin">MHFA71BYXT0002047</td>
+          <td>DELI SERDANG</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BYXT0002047" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BYXT0002047" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BYXT0002047"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM9T1188271">
+          <td class="num">26</td>
+          <td>Sariman</td>
+          <td>6281370004498</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM9T1188271</td>
+          <td>LABUHANBATU SELATAN</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM9T1188271" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM9T1188271" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM9T1188271"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM5T1188137">
+          <td class="num">27</td>
+          <td>Teh Ui Kok</td>
+          <td>6285213991984</td>
+          <td class="model">Kijang Innova 2.4 G A/T</td>
+          <td class="vin">MHFJB8EM5T1188137</td>
+          <td>MEDAN</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM5T1188137" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM5T1188137" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM5T1188137"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BY8T0001642">
+          <td class="num">28</td>
+          <td>Widya Sartika Hasibuan</td>
+          <td>6282277248040</td>
+          <td class="model">Veloz 1.5 V Hybrid Cvt</td>
+          <td class="vin">MHFA71BY8T0001642</td>
+          <td>MEDAN</td>
+          <td>16 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BY8T0001642" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BY8T0001642" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BY8T0001642"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAA1BA9TJ186803">
+          <td class="num">29</td>
+          <td>Alvian Onggo</td>
+          <td>6285371317893</td>
+          <td class="model">Raize 1.0T Gr Sport Cvt Two Tone</td>
+          <td class="vin">MHKAA1BA9TJ186803</td>
+          <td>MEDAN</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAA1BA9TJ186803" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAA1BA9TJ186803" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAA1BA9TJ186803"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAA1BA1TJ186794">
+          <td class="num">30</td>
+          <td>Asrul Efendi Harahap</td>
+          <td>6282161617428</td>
+          <td class="model">Raize 1.0T Gr Sport Cvt Two Tone</td>
+          <td class="vin">MHKAA1BA1TJ186794</td>
+          <td>MEDAN</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAA1BA1TJ186794" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAA1BA1TJ186794" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAA1BA1TJ186794"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKA6GJ6JTJ221299">
+          <td class="num">31</td>
+          <td>Betaria Mora</td>
+          <td>6281264856488</td>
+          <td class="model">Calya 1.2 G M/T</td>
+          <td class="vin">MHKA6GJ6JTJ221299</td>
+          <td>MEDAN</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKA6GJ6JTJ221299" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKA6GJ6JTJ221299" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKA6GJ6JTJ221299"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK142090">
+          <td class="num">32</td>
+          <td>Ermita Susanti</td>
+          <td>6285266432363</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK142090</td>
+          <td>ACEH SINGKIL</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK142090" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK142090" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK142090"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK118541">
+          <td class="num">33</td>
+          <td>Frans Robert Simamora</td>
+          <td>6285297385534</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK118541</td>
+          <td>SERDANG BEDAGAI</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK118541" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK118541" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK118541"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM0T1188241">
+          <td class="num">34</td>
+          <td>Jainuddin Saragih</td>
+          <td>6281362775854</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM0T1188241</td>
+          <td>SERDANG BEDAGAI</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM0T1188241" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM0T1188241" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM0T1188241"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM2T1188287">
+          <td class="num">35</td>
+          <td>Melina</td>
+          <td>6282168055069</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM2T1188287</td>
+          <td>TAPANULI UTARA</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM2T1188287" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM2T1188287" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM2T1188287"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABBAA2T0467768">
+          <td class="num">36</td>
+          <td>Muhammad Irsyad Sugandhi</td>
+          <td>6281361383705</td>
+          <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
+          <td class="vin">MHFABBAA2T0467768</td>
+          <td>DELI SERDANG</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABBAA2T0467768" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABBAA2T0467768" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABBAA2T0467768"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFAA8GS7T0935600">
+          <td class="num">37</td>
+          <td>R Aritonang</td>
+          <td>6285296313246</td>
+          <td class="model">Fortuner 2.8 Vrz Tss 4X2 A/T</td>
+          <td class="vin">MHFAA8GS7T0935600</td>
+          <td>ROKAN HULU</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFAA8GS7T0935600" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFAA8GS7T0935600" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFAA8GS7T0935600"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFAA8GS7T0935595">
+          <td class="num">38</td>
+          <td>Rizky Jhon Arito Aritonang</td>
+          <td>6282164137560</td>
+          <td class="model">Fortuner 2.8 Vrz Tss 4X2 A/T</td>
+          <td class="vin">MHFAA8GS7T0935595</td>
+          <td>MEDAN</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFAA8GS7T0935595" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFAA8GS7T0935595" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFAA8GS7T0935595"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM7T1188317">
+          <td class="num">39</td>
+          <td>Rubiani</td>
+          <td>6282268298906</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM7T1188317</td>
+          <td>LABUHANBATU</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM7T1188317" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM7T1188317" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM7T1188317"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM8T1188147">
+          <td class="num">40</td>
+          <td>Saifuddin</td>
+          <td>6285260033487</td>
+          <td class="model">Kijang Innova 2.4 G A/T</td>
+          <td class="vin">MHFJB8EM8T1188147</td>
+          <td>ACEH UTARA</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM8T1188147" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM8T1188147" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM8T1188147"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK118620">
+          <td class="num">41</td>
+          <td>Teguh Hermawan Lingga S Kom</td>
+          <td>6285296554477</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK118620</td>
+          <td>MEDAN</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK118620" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK118620" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK118620"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFAA8GS7T0935645">
+          <td class="num">42</td>
+          <td>Timur Sahbana Dalimunte</td>
+          <td>6285762041578</td>
+          <td class="model">Fortuner 2.8 Vrz Tss 4X2 A/T</td>
+          <td class="vin">MHFAA8GS7T0935645</td>
+          <td>PADANG LAWAS UTARA</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFAA8GS7T0935645" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFAA8GS7T0935645" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFAA8GS7T0935645"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK117530">
+          <td class="num">43</td>
+          <td>Wihar Effendy</td>
+          <td>628139692135</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK117530</td>
+          <td>MEDAN</td>
+          <td>17 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK117530" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK117530" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK117530"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="JTFST22P9T0054589">
+          <td class="num">44</td>
+          <td>Dicky Ricardo Gultom</td>
+          <td>6282275211691</td>
+          <td class="model">Hi Ace Commuter M/T</td>
+          <td class="vin">JTFST22P9T0054589</td>
+          <td>SAMOSIR</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="JTFST22P9T0054589" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="JTFST22P9T0054589" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="JTFST22P9T0054589"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK141995">
+          <td class="num">45</td>
+          <td>Firman Sitohang</td>
+          <td>6281227470759</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK141995</td>
+          <td>LABUHAN BATU UTARA</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK141995" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK141995" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK141995"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABBAA4T0467450">
+          <td class="num">46</td>
+          <td>Indra Ramli Se</td>
+          <td>62811615268</td>
+          <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
+          <td class="vin">MHFABBAA4T0467450</td>
+          <td>MEDAN</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABBAA4T0467450" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABBAA4T0467450" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABBAA4T0467450"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABBAA2T0467334">
+          <td class="num">47</td>
+          <td>Lisna Candra</td>
+          <td>6282369696565</td>
+          <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
+          <td class="vin">MHFABBAA2T0467334</td>
+          <td>TEBING TINGGI</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABBAA2T0467334" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABBAA2T0467334" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABBAA2T0467334"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM4T1188260">
+          <td class="num">48</td>
+          <td>Nabilla Anggraini Syahana Lubis</td>
+          <td>6285277688949</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM4T1188260</td>
+          <td>MEDAN</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM4T1188260" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM4T1188260" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM4T1188260"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAB1BC9TJ080897">
+          <td class="num">49</td>
+          <td>Pagit Juni Sartika Br Tarigan</td>
+          <td>6281396574165</td>
+          <td class="model">Agya 1.2 G Cvt</td>
+          <td class="vin">MHKAB1BC9TJ080897</td>
+          <td>MEDAN</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAB1BC9TJ080897" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAB1BC9TJ080897" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAB1BC9TJ080897"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK142109">
+          <td class="num">50</td>
+          <td>Pandu Wiranata</td>
+          <td>6282369048800</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK142109</td>
+          <td>MEDAN</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK142109" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK142109" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK142109"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK118692">
+          <td class="num">51</td>
+          <td>Pt.Jiur Asahan Makmur</td>
+          <td>6281282238132</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK118692</td>
+          <td>ASAHAN</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK118692" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK118692" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK118692"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FB3JTK118640">
+          <td class="num">52</td>
+          <td>Rizky Mulia Harahap A Md</td>
+          <td>6281262607473</td>
+          <td class="model">Rush 1.5 S A/T Gr Sport</td>
+          <td class="vin">MHKE8FB3JTK118640</td>
+          <td>MEDAN</td>
+          <td>18 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK118640" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK118640" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FB3JTK118640"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABAAA3T0050220">
+          <td class="num">53</td>
+          <td>Eddy Kusumo</td>
+          <td>628126418432</td>
+          <td class="model">Kijang Innova Zenix 2.0 V Hv Cvt Modelista</td>
+          <td class="vin">MHFABAAA3T0050220</td>
+          <td>MEDAN</td>
+          <td>20 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABAAA3T0050220" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABAAA3T0050220" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABAAA3T0050220"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKA6GK6JTJ088302">
+          <td class="num">54</td>
+          <td>Syahril Suryadi</td>
+          <td>6289505189349</td>
+          <td class="model">Calya 1.2 G A/T</td>
+          <td class="vin">MHKA6GK6JTJ088302</td>
+          <td>LANGKAT</td>
+          <td>20 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKA6GK6JTJ088302" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKA6GK6JTJ088302" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKA6GK6JTJ088302"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAB1BYXTJ017089">
+          <td class="num">55</td>
+          <td>Muhammad Aslam Nasution</td>
+          <td>6281396315202</td>
+          <td class="model">Avanza 1.5 G Cvt</td>
+          <td class="vin">MHKAB1BYXTJ017089</td>
+          <td>DELI SERDANG</td>
+          <td>25 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAB1BYXTJ017089" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAB1BYXTJ017089" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAB1BYXTJ017089"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EMXT1188263">
+          <td class="num">56</td>
+          <td>Dewi Evarida Simanjuntak Spd</td>
+          <td>6285297289764</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EMXT1188263</td>
+          <td>DELI SERDANG</td>
+          <td>26 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EMXT1188263" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EMXT1188263" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EMXT1188263"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM8T1188231">
+          <td class="num">57</td>
+          <td>Elfrida Regar</td>
+          <td>6282387124825</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM8T1188231</td>
+          <td>DELI SERDANG</td>
+          <td>26 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM8T1188231" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM8T1188231" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM8T1188231"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BY6T0001896">
+          <td class="num">58</td>
+          <td>Kurniaty Hasanuddin</td>
+          <td>62811652282</td>
+          <td class="model">Veloz 1.5 V Hybrid Cvt</td>
+          <td class="vin">MHFA71BY6T0001896</td>
+          <td>MEDAN</td>
+          <td>26 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BY6T0001896" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BY6T0001896" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BY6T0001896"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM6T1188132">
+          <td class="num">59</td>
+          <td>Nani</td>
+          <td>6281361111266</td>
+          <td class="model">Kijang Innova 2.4 G A/T</td>
+          <td class="vin">MHFJB8EM6T1188132</td>
+          <td>LANGKAT</td>
+          <td>26 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM6T1188132" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM6T1188132" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM6T1188132"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKE8FA3JTK142142">
+          <td class="num">60</td>
+          <td>Tumpak Silaban</td>
+          <td>6281375252510</td>
+          <td class="model">Rush 1.5 S M/T Gr Sport</td>
+          <td class="vin">MHKE8FA3JTK142142</td>
+          <td>DAIRI</td>
+          <td>26 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FA3JTK142142" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKE8FA3JTK142142" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKE8FA3JTK142142"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MR0KB8CD2T1233877">
+          <td class="num">61</td>
+          <td>Abu Sofian</td>
+          <td>628216107072</td>
+          <td class="model">Hilux Double Cabin 2.4 G (4X4) Dsl M/T</td>
+          <td class="vin">MR0KB8CD2T1233877</td>
+          <td>LABUHANBATU UTARA</td>
+          <td>27 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MR0KB8CD2T1233877" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MR0KB8CD2T1233877" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MR0KB8CD2T1233877"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAB1BY1TJ016994">
+          <td class="num">62</td>
+          <td>Cv.Kreasi Mulia Sejahtera</td>
+          <td>628163154201</td>
+          <td class="model">Avanza 1.5 G Cvt</td>
+          <td class="vin">MHKAB1BY1TJ016994</td>
+          <td>MEDAN</td>
+          <td>27 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAB1BY1TJ016994" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAB1BY1TJ016994" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAB1BY1TJ016994"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BYXT0002128">
+          <td class="num">63</td>
+          <td>Krisnawaty</td>
+          <td>6282277920128</td>
+          <td class="model">Veloz 1.5 V Hybrid Cvt</td>
+          <td class="vin">MHFA71BYXT0002128</td>
+          <td>MEDAN</td>
+          <td>27 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BYXT0002128" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BYXT0002128" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BYXT0002128"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFAA8GS5T0935739">
+          <td class="num">64</td>
+          <td>Pendi Chandra</td>
+          <td>628126027789</td>
+          <td class="model">Fortuner 2.8 Vrz Tss 4X2 A/T</td>
+          <td class="vin">MHFAA8GS5T0935739</td>
+          <td>DELI SERDANG</td>
+          <td>27 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFAA8GS5T0935739" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFAA8GS5T0935739" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFAA8GS5T0935739"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EMXT1188408">
+          <td class="num">65</td>
+          <td>Jhon Keke Manihuruk</td>
+          <td>628211044514</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EMXT1188408</td>
+          <td>ACEH TENGGARA</td>
+          <td>28 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EMXT1188408" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EMXT1188408" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EMXT1188408"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFA71BY3T0001564">
+          <td class="num">66</td>
+          <td>Nicolaus Sihaloho</td>
+          <td>628116150825</td>
+          <td class="model">Veloz 1.5 V Hybrid Cvt</td>
+          <td class="vin">MHFA71BY3T0001564</td>
+          <td>DELI SERDANG</td>
+          <td>30 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFA71BY3T0001564" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFA71BY3T0001564" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFA71BY3T0001564"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKA6GK6JTJ088289">
+          <td class="num">67</td>
+          <td>Rodiah</td>
+          <td>6285275753678</td>
+          <td class="model">Calya 1.2 G A/T</td>
+          <td class="vin">MHKA6GK6JTJ088289</td>
+          <td>MEDAN</td>
+          <td>30 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKA6GK6JTJ088289" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKA6GK6JTJ088289" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKA6GK6JTJ088289"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKA6GK6JTJ088280">
+          <td class="num">68</td>
+          <td>Desi Hariani</td>
+          <td>6285765490067</td>
+          <td class="model">Calya 1.2 G A/T</td>
+          <td class="vin">MHKA6GK6JTJ088280</td>
+          <td>DELI SERDANG</td>
+          <td>31 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKA6GK6JTJ088280" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKA6GK6JTJ088280" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKA6GK6JTJ088280"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MR0AWAAA1T0843646">
+          <td class="num">69</td>
+          <td>Ferdy Armanda Jesan</td>
+          <td>6282362820099</td>
+          <td class="model">Hilux Rangga Pick Up 2.0 Standard M/T</td>
+          <td class="vin">MR0AWAAA1T0843646</td>
+          <td>ACEH TAMIANG</td>
+          <td>31 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MR0AWAAA1T0843646" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MR0AWAAA1T0843646" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MR0AWAAA1T0843646"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFJB8EM5T1188364">
+          <td class="num">70</td>
+          <td>Junaidi</td>
+          <td>6285370306069</td>
+          <td class="model">Kijang Innova 2.4 G M/T</td>
+          <td class="vin">MHFJB8EM5T1188364</td>
+          <td>ACEH TAMIANG</td>
+          <td>31 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFJB8EM5T1188364" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFJB8EM5T1188364" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFJB8EM5T1188364"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHFABBAAXT0467341">
+          <td class="num">71</td>
+          <td>Laini Saudah</td>
+          <td>628126488187</td>
+          <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
+          <td class="vin">MHFABBAAXT0467341</td>
+          <td>MEDAN</td>
+          <td>31 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHFABBAAXT0467341" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHFABBAAXT0467341" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHFABBAAXT0467341"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKA6GJ6JTJ222414">
+          <td class="num">72</td>
+          <td>Maytha Ardansyah</td>
+          <td>6285261972456</td>
+          <td class="model">Calya 1.2 G M/T</td>
+          <td class="vin">MHKA6GJ6JTJ222414</td>
+          <td>DELI SERDANG</td>
+          <td>31 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKA6GJ6JTJ222414" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKA6GJ6JTJ222414" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKA6GJ6JTJ222414"></span>
+          </td>
+        </tr>
+        <tr data-row-vin="MHKAB1BC9TJ077532">
+          <td class="num">73</td>
+          <td>Rusdin Khair Aljufri</td>
+          <td>6285206933837</td>
+          <td class="model">Agya 1.2 G Cvt</td>
+          <td class="vin">MHKAB1BC9TJ077532</td>
+          <td>SIBOLGA</td>
+          <td>31 Mar 2026</td>
+          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKAB1BC9TJ077532" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
+          <td class="note">
+            <textarea class="edit-field edit-note" data-vin="MHKAB1BC9TJ077532" rows="1" placeholder="catatan follow-up..."></textarea>
+            <span class="save-status" data-status-vin="MHKAB1BC9TJ077532"></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  </div>
+  <div class="tab-page" id="page-sbe-ringkasan" hidden>
+<section id="sbe-ringkasan">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Ringkasan Eksekutif</div>
+        <h2>Corong konversi reminder service, dua periode terakhir</h2>
+      </div>
+    </div>
+
+    <div class="hero-grid">
+      <div class="card hero-figure-card">
+        <div class="eyebrow">Pencapaian utama &middot; Agustus 2026 (bulan selesai)</div>
+        <div class="hero-figure">599 <span class="unit">unit realisasi service order</span></div>
+        <div class="desc">Setara <b style="color:var(--text-primary)">15,6%</b> dari 3.835 kendaraan di database berhasil dikonversi menjadi kunjungan servis nyata &mdash; hasil dari 616 booking (BOC) yang terealisasi ditambah kontribusi walk-in di luar jalur booking.</div>
+      </div>
+      <div class="hero-side">
+        <div class="card mini-stat">
+          <div class="label">Database aktif &middot; September 2026</div>
+          <div class="val">996</div>
+          <div class="cap">unit, baru 10 hari diproses</div>
+        </div>
+        <div class="card mini-stat">
+          <div class="label">Tingkat kontak September 2026</div>
+          <div class="val">23,0%</div>
+          <div class="cap">229 dari 996 database</div>
+        </div>
+        <div class="card mini-stat">
+          <div class="label">Tingkat kontak Agustus</div>
+          <div class="val">53,2%</div>
+          <div class="cap">2.041 dari 3.835 database</div>
+        </div>
+        <div class="card mini-stat">
+          <div class="label">Booking &rarr; show rate</div>
+          <div class="val">93,8%</div>
+          <div class="cap">578 dari 616 booking hadir</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insight-strip">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      <div><b>September baru berjalan 10 dari 30 hari (&sim;33% dari bulan)</b>, namun tim sudah mengontak 23% database &mdash; sinyal awal yang sehat. Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>
+    </div>
+  </section>
+  </div>
+  <div class="tab-page" id="page-sbe-agustus" hidden>
+<section id="sbe-agustus">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Laporan Periode</div>
+        <h2>Agustus 2026</h2>
+      </div>
+      <span class="status-chip done">Bulan selesai &middot; 100% database diproses</span>
+    </div>
+    <p class="lede">Corong lengkap dari total database hingga booking terealisasi (show), berdasarkan rekap tim reminder MRA.</p>
+
+    <div class="card funnel-card">
+      <div class="funnel-title">Corong Konversi &middot; Agustus 2026</div>
+      <div class="pyramid">
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:3%; --tr:97%; --br:80.51%; --bl:19.49%; background:var(--pyr-1);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:138px;">Total Database</span>
+              <span class="pyr-seg-pct">100,0%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">3.835</div>
+            <div class="pyr-callout-cap">kendaraan usia 4&ndash;6 th tercatat</div>
+          </div>
+        </div>
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:19.49%; --tr:80.51%; --br:67.41%; --bl:32.59%; background:var(--pyr-2);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:79px;">Berhasil Dikontak</span>
+              <span class="pyr-seg-pct">53,2%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">2.041</div>
+            <div class="pyr-callout-cap">dari 3.835 database</div>
+          </div>
+        </div>
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:32.59%; --tr:67.41%; --br:67.06%; --bl:32.94%; background:var(--pyr-3);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:77px;">Booking (BOC)</span>
+              <span class="pyr-seg-pct">30,2%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">616</div>
+            <div class="pyr-callout-cap">dari 2.041 kontak</div>
+          </div>
+        </div>
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:32.94%; --tr:67.06%; --br:67.06%; --bl:32.94%; background:var(--pyr-4);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:77px;">Booking Hadir</span>
+              <span class="pyr-seg-pct">93,8%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">578</div>
+            <div class="pyr-callout-cap">hadir sesuai jadwal (show) &middot; dari 616 BOC</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome-row">
+      <div class="card outcome-tile">
+        <div class="label">+ Walk-in di luar booking</div>
+        <div class="value">72 unit</div>
+        <div class="sub">Datang langsung setelah reminder, tanpa booking formal</div>
+      </div>
+      <div class="card outcome-tile">
+        <div class="label">Total tiba di bengkel (CAI)</div>
+        <div class="value">650 unit</div>
+        <div class="sub">578 dari booking + 72 walk-in &middot; 16,9% dari database</div>
+      </div>
+      <div class="card outcome-tile">
+        <div class="label">Realisasi Service Order</div>
+        <div class="value">599 unit</div>
+        <div class="sub">92,2% dari yang tiba &middot; 15,6% dari total database</div>
+      </div>
+    </div>
+
+    <div class="card callstatus-card">
+      <div class="callstatus-donut-block">
+        <svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Grafik donut"><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--series-1)" stroke-width="20" stroke-dasharray="248.049 78.676" stroke-dashoffset="-0.000" transform="rotate(-90 62.0 62.0)"><title>Connected &middot; 1.362</title></circle><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--text-muted)" stroke-width="20" stroke-dasharray="78.676 248.049" stroke-dashoffset="-248.049" transform="rotate(-90 62.0 62.0)"><title>Un-connected &middot; 432</title></circle><text x="62.0" y="60.0" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">1.794</text><text x="62.0" y="77.0" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">panggilan</text></svg>
+        <div class="donut-legend">
+          <div class="panel-desc" style="margin:0 0 2px;">Status Panggilan &middot; Agustus 2026</div>
+          <div class="ditem"><span class="swatch" style="background:var(--series-1)"></span><span>Connected &middot; <b>1.362</b> (75,9%)</span></div><div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span><span>Un-connected &middot; <b>432</b> (24,1%)</span></div>
+          <div class="donut-note">Terhubung = telepon tersambung; tidak selalu sama dengan angka Contacted di samping (pencatatan manual, lihat Metodologi).</div>
+        </div>
+      </div>
+      <div class="callstatus-stats">
+        <div class="callstatus-stat">
+          <div class="label">Contacted (berhasil dikontak)</div>
+          <div class="value">2.041</div>
+          <div class="sub">Sudah bicara &amp; dijelaskan program reminder</div>
+        </div>
+        <div class="callstatus-stat">
+          <div class="label">Late Call</div>
+          <div class="value">340</div>
+          <div class="sub">Sudah masuk servis di Perintis duluan sebelum sempat ditelpon reminder</div>
+        </div>
+        <div class="callstatus-stat">
+          <div class="label">Non BOC yang masuk</div>
+          <div class="value">13</div>
+          <div class="sub">sampel n=49 baris &middot; unit yang masuk bengkel tanpa booking formal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="card panel">
+        <h3>Komposisi Sumber Data</h3>
+        <div class="panel-desc">Dari 3.835 database, sebagian besar berasal dari jalur Data Funnel MRA; sisanya belum sempat diklasifikasi tim.</div>
+        <div class="segbar"><div class="seg" style="width:79.09%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:20.91%; background:var(--text-muted); border-radius:0 5px 5px 0;"></div></div>
+        <div class="seg-legend">
+<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-sumber','datafunnel')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Data Funnel MRA &middot; <b>3.033</b> (79,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item"><span class="swatch" style="background:var(--text-muted)"></span><span class="sl-text">Belum dikategorikan &middot; <b>802</b> (20,9%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-ag-sumber" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <h3>Alasan / Hasil Panggilan</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
+        <div class="rank-list">
+<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-alasan','tidak_diangkat')"><div class="rlabel">Tidak diangkat/dihubungi</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">14 <span>29%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-alasan','sudah_booking')"><div class="rlabel">Sudah booking</div><div class="rank-track"><div class="rank-fill" style="width:64%"></div></div><div class="rank-val">9 <span>18%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-alasan','sudah_masuk')"><div class="rlabel">Sudah masuk/servis</div><div class="rank-track"><div class="rank-fill" style="width:64%"></div></div><div class="rank-val">9 <span>18%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-alasan','lainnya')"><div class="rlabel">Lainnya</div><div class="rank-track"><div class="rank-fill" style="width:57%"></div></div><div class="rank-val">8 <span>16%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-alasan','atur_jadwal')"><div class="rlabel">Atur jadwal dulu</div><div class="rank-track"><div class="rank-fill" style="width:36%"></div></div><div class="rank-val">5 <span>10%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-alasan','tempat_lain')"><div class="rlabel">Servis di tempat lain</div><div class="rank-track"><div class="rank-fill" style="width:29%"></div></div><div class="rank-val">4 <span>8%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-ag-alasan" hidden></div>
+      </div>
+
+      <div class="card panel" style="grid-column:1 / -1;">
+        <h3>Model Kendaraan Terlibat</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail (kategori Data Funnel MRA)</div>
+        <div class="rank-list">
+<div class="rank-row"><div class="rlabel">Avanza</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">13 <span>26,5%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row"><div class="rlabel">Innova</div><div class="rank-track"><div class="rank-fill" style="width:85%"></div></div><div class="rank-val">11 <span>22,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row"><div class="rlabel">Rush</div><div class="rank-track"><div class="rank-fill" style="width:69%"></div></div><div class="rank-val">9 <span>18,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row"><div class="rlabel">Calya</div><div class="rank-track"><div class="rank-fill" style="width:46%"></div></div><div class="rank-val">6 <span>12,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row"><div class="rlabel">Agya</div><div class="rank-track"><div class="rank-fill" style="width:31%"></div></div><div class="rank-val">4 <span>8,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'ag-model','lainnya')"><div class="rlabel">Lainnya (Fortuner, Voxy, Altis, dll.)</div><div class="rank-track"><div class="rank-fill" style="width:46%"></div></div><div class="rank-val">6 <span>12,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-ag-model" hidden></div>
+      </div>
+    </div>
+  </section>
+  </div>
+  <div class="tab-page" id="page-sbe-september" hidden>
+<section id="sbe-september">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Laporan Periode</div>
+        <h2>September 2026</h2>
+      </div>
+      <span class="status-chip progress">Bulan berjalan &middot; hari ke-10 dari 30</span>
+    </div>
+    <p class="lede">Corong sejauh ini untuk kohor <em>On Time T-Care M/M+1</em>. Tahap kunjungan bengkel &amp; realisasi masih menunggu proses lanjutan.</p>
+
+    <div class="kpi-row">
+      <div class="card kpi-tile"><div class="label">Total database</div><div class="value">996</div><div class="sub">unit kendaraan</div></div>
+      <div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">229</div><div class="sub">23,0% dari database</div></div>
+      <div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">49</div><div class="sub">21,4% dari yang dikontak</div></div>
+      <div class="card kpi-tile pending"><div class="label">Booking hadir (show)</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>
+      <div class="card kpi-tile pending"><div class="label">Realisasi service order</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>
+    </div>
+
+    <div class="card funnel-card">
+      <div class="funnel-title">Corong Konversi &middot; September 2026 (berjalan)</div>
+      <div class="pyramid">
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:3%; --tr:97%; --br:69.85%; --bl:30.15%; background:var(--pyr-1);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:90px;">Total Database</span>
+              <span class="pyr-seg-pct">100,0%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">996</div>
+            <div class="pyr-callout-cap">kohor On Time T-Care M/M+1</div>
+          </div>
+        </div>
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:30.15%; --tr:69.85%; --br:63.48%; --bl:36.52%; background:var(--pyr-2);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:61px;">Berhasil Dikontak</span>
+              <span class="pyr-seg-pct">23,0%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">229</div>
+            <div class="pyr-callout-cap">dari 996 database</div>
+          </div>
+        </div>
+        <div class="pyr-row">
+          <div class="pyr-seg" style="--tl:36.52%; --tr:63.48%; --br:63.48%; --bl:36.52%; background:var(--pyr-3);">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:61px;">Booking (BOC)</span>
+              <span class="pyr-seg-pct">21,4%</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value">49</div>
+            <div class="pyr-callout-cap">dari 229 kontak</div>
+          </div>
+        </div>
+        <div class="pyr-row">
+          <div class="pyr-seg is-pending" style="--tl:36.52%; --tr:63.48%; --br:63.48%; --bl:36.52%;">
+            <div class="pyr-seg-inner">
+              <span class="pyr-seg-label" style="max-width:61px;">Booking Hadir</span>
+              <span class="pyr-seg-pct">&mdash;</span>
+            </div>
+          </div>
+          <div class="pyr-callout">
+            <div class="pyr-callout-value is-pending">Menunggu proses</div>
+            <div class="pyr-callout-cap">bulan masih berjalan &middot; hari ke-10 dari 30</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card callstatus-card">
+      <div class="callstatus-donut-block">
+        <svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Grafik donut"><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--series-1)" stroke-width="20" stroke-dasharray="229.249 97.476" stroke-dashoffset="-0.000" transform="rotate(-90 62.0 62.0)"><title>Connected &middot; 127</title></circle><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--text-muted)" stroke-width="20" stroke-dasharray="97.476 229.249" stroke-dashoffset="-229.249" transform="rotate(-90 62.0 62.0)"><title>Un-connected &middot; 54</title></circle><text x="62.0" y="60.0" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">181</text><text x="62.0" y="77.0" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">panggilan</text></svg>
+        <div class="donut-legend">
+          <div class="panel-desc" style="margin:0 0 2px;">Status Panggilan &middot; September 2026</div>
+          <div class="ditem"><span class="swatch" style="background:var(--series-1)"></span><span>Connected &middot; <b>127</b> (70,2%)</span></div><div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span><span>Un-connected &middot; <b>54</b> (29,8%)</span></div>
+          <div class="donut-note">Terhubung = telepon tersambung; tidak selalu sama dengan angka Contacted di samping (pencatatan manual, lihat Metodologi).</div>
+        </div>
+      </div>
+      <div class="callstatus-stats">
+        <div class="callstatus-stat">
+          <div class="label">Contacted (berhasil dikontak)</div>
+          <div class="value">229</div>
+          <div class="sub">Sudah bicara &amp; dijelaskan program reminder</div>
+        </div>
+        <div class="callstatus-stat">
+          <div class="label">Late Call</div>
+          <div class="value">0</div>
+          <div class="sub">Sudah masuk servis di Perintis duluan sebelum sempat ditelpon reminder</div>
+        </div>
+        <div class="callstatus-stat">
+          <div class="label">Non BOC yang masuk</div>
+          <div class="value">0</div>
+          <div class="sub">sampel n=49 baris &middot; unit yang masuk bengkel tanpa booking formal</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="card panel">
+        <h3>Program T-Care</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
+        <div class="segbar"><div class="seg" style="width:77.55%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:10.20%; background:var(--series-2); "></div><div class="seg" style="width:8.16%; background:var(--series-3); "></div><div class="seg" style="width:4.08%; background:var(--series-4); border-radius:0 5px 5px 0;"></div></div>
+        <div class="seg-legend">
+<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','tcare')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">T-CARE &middot; <b>38</b> (77,6%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','gbsb')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">GBSB &middot; <b>5</b> (10,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','lite')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">T-CARE LITE &middot; <b>4</b> (8,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','liteplus')"><span class="swatch" style="background:var(--series-4)"></span><span class="sl-text">T-CARE LITE+ &middot; <b>2</b> (4,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-program" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <h3>Segmen Fleet / Retail</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
+        <div class="segbar"><div class="seg" style="width:87.76%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:10.20%; background:var(--series-2); "></div><div class="seg" style="width:2.04%; background:var(--series-3); border-radius:0 5px 5px 0;"></div></div>
+        <div class="seg-legend">
+<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-fleet','retail')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Retail &middot; <b>43</b> (87,8%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-fleet','fleet')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">Fleet &middot; <b>5</b> (10,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-fleet','primefleet')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">Prime Fleet &middot; <b>1</b> (2,0%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-fleet" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <h3>Ketepatan Servis Terakhir</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
+        <div class="segbar"><div class="seg" style="width:55.10%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:42.86%; background:var(--series-2); "></div><div class="seg" style="width:2.04%; background:var(--series-3); border-radius:0 5px 5px 0;"></div></div>
+        <div class="seg-legend">
+<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-punctual','early')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Early &middot; <b>27</b> (55,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-punctual','late')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">Late &middot; <b>21</b> (42,9%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-punctual','ontime')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">On Time &middot; <b>1</b> (2,0%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-punctual" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <h3>Perilaku Pelanggan</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
+        <div class="segbar"><div class="seg" style="width:55.10%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:36.73%; background:var(--series-2); "></div><div class="seg" style="width:8.16%; background:var(--series-3); border-radius:0 5px 5px 0;"></div></div>
+        <div class="seg-legend">
+<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-behavior','active')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Active &middot; <b>27</b> (55,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-behavior','sleeping')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">Sleeping &middot; <b>18</b> (36,7%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-behavior','passive')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">Passive &middot; <b>4</b> (8,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-behavior" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <h3>Model Kendaraan Terlibat</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
+        <div class="rank-list">
+<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','innova')"><div class="rlabel">Innova</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">12 <span>24,5%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','rush')"><div class="rlabel">Rush</div><div class="rank-track"><div class="rank-fill" style="width:83%"></div></div><div class="rank-val">10 <span>20,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','raize')"><div class="rlabel">Raize</div><div class="rank-track"><div class="rank-fill" style="width:50%"></div></div><div class="rank-val">6 <span>12,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','avanza')"><div class="rlabel">Avanza</div><div class="rank-track"><div class="rank-fill" style="width:50%"></div></div><div class="rank-val">6 <span>12,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','calya')"><div class="rlabel">Calya</div><div class="rank-track"><div class="rank-fill" style="width:42%"></div></div><div class="rank-val">5 <span>10,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','lainnya')"><div class="rlabel">Lainnya (Fortuner, Hiace, dll.)</div><div class="rank-track"><div class="rank-fill" style="width:83%"></div></div><div class="rank-val">10 <span>20,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-model" hidden></div>
+      </div>
+
+      <div class="card panel">
+        <h3>Performa Outlet</h3>
+        <div class="panel-desc n-note">sampel tercatat n=49 baris detail &middot; wilayah Sumatera</div>
+        <div class="rank-list">
+<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','binjai')"><div class="rlabel">Auto2000 Binjai</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">18 <span>36,7%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','amplas')"><div class="rlabel">Auto2000 Amplas</div><div class="rank-track"><div class="rank-fill" style="width:61%"></div></div><div class="rank-val">11 <span>22,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','gatotsubroto')"><div class="rlabel">Auto2000 Gatot Subroto</div><div class="rank-track"><div class="rank-fill" style="width:39%"></div></div><div class="rank-val">7 <span>14,3%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','lainnya')"><div class="rlabel">Lainnya (10 outlet lain)</div><div class="rank-track"><div class="rank-fill" style="width:72%"></div></div><div class="rank-val">13 <span>26,5%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-outlet" hidden></div>
+      </div>
+    </div>
+  </section>
+  </div>
+  <div class="tab-page" id="page-metodologi" hidden>
+<footer>
+    <h4>Metodologi & Catatan Data</h4>
+    <p>"DELIVERY DATE due bulan ini" adalah kelompok pelanggan dengan Tanggal Delivery persis 6 bulan kalender sebelum bulan berjalan (mis. servis September 2026 &larr; delivery Maret 2026), mengikuti siklus reminder T-Care setiap 6 bulan. Sumber: sheet <span class="src">2026. PDFU & SBI New</span>.</p>
+    <p>Status "sudah/belum servis berkala" dicocokkan lewat No. Rangka (VIN) terhadap dua sumber: sheet <span class="src">Data WO</span> bulan berjalan (hanya pekerjaan berlabel &ldquo;SERVICE BERKALA [kelipatan 10.000] KM&rdquo; yang menandai selesai) dan <span class="src">TCare Customer Database</span> (sheet "master") yang mencakup histori servis di seluruh cabang Perintis maupun outlet/dealer lain di luar Data WO bulan berjalan (job "2nd / 10K" ke atas dianggap sudah servis berkala; job "1st / 1K" adalah servis gratis pertama dan tidak dihitung). Kendaraan yang cocok di salah satu dari kedua sumber ini otomatis dikeluarkan dari daftar. Aktivitas bengkel lain di Data WO (ganti oli, klaim garansi, dll.) tidak menggugurkan kendaraan dari daftar, dan ditandai di kolom Keterangan.</p>
+    <p>Kolom <b style="color:var(--text-primary)">Tgl Booking (Servis Berikutnya)</b> dan <b style="color:var(--text-primary)">Keterangan (Follow-up)</b> sengaja dikosongkan &mdash; keduanya untuk diisi manual oleh tim reminder selama proses follow-up siklus ini berjalan. Kolom Tgl Booking/Keterangan bawaan di sheet PDFU adalah data dari follow-up awal pasca-delivery (&plusmn;1 bulan setelah delivery), bukan untuk siklus servis berkala kali ini, sehingga tidak dipakai di sini.</p>
+    <p>Ditarik otomatis pada 10 Sep 2026.</p>
+    <div class="db-banner" id="dbBanner">Tidak bisa tersambung ke server penyimpanan follow-up saat ini, jadi isian Tgl Booking/Keterangan hanya bertahan selama halaman ini terbuka dan tidak tersinkron ke pelihat lain. Coba muat ulang halaman.</div>
+  </footer>
+<footer id="sumber">
+    <div class="foot-grid">
+      <div>
+        <h4>Metodologi & Catatan Data</h4>
+        <p>Angka corong utama (Database, Kontak, BOC, CAI, Realisasi SO) diambil dari ringkasan rekap tim pada sheet <span class="src">ANALISA SBE 4-5-6 TH</span>. Rincian &ldquo;Terhubung/Tidak terhubung&rdquo; pada sumber terkadang tidak menjumlah persis ke angka &ldquo;Kontak&rdquo; akibat pencatatan manual &mdash; ditampilkan apa adanya tanpa disesuaikan.</p>
+        <p>Kartu <b style="color:var(--text-primary)">Status Panggilan</b> di tiap periode menampilkan angka populasi penuh dari sheet: <b style="color:var(--text-primary)">Connected/Un-connected</b> (telepon tersambung atau tidak) dan <b style="color:var(--text-primary)">Late Call</b> (unit yang sudah masuk servis di Perintis duluan, sebelum sempat ditelpon reminder). <b style="color:var(--text-primary)">Non BOC yang masuk</b> berbeda &mdash; sheet tidak menyimpan total berjalan untuk kolom ini, jadi angkanya dihitung dari sampel 49 baris detail yang sama seperti grafik profil di bawah, bukan populasi penuh.</p>
+        <p>Seluruh grafik profil (Program, Model, Fleet/Retail, Ketepatan Servis, Perilaku, Outlet, Alasan Panggilan, Non BOC yang masuk) dihitung dari baris data detail yang tersedia di sheet &mdash; masing-masing <b style="color:var(--text-primary)">sampel 49 baris</b> per periode, bukan keseluruhan populasi database. Gunakan sebagai indikasi komposisi, bukan angka final.</p>
+      </div>
+      <div>
+        <h4>Sumber & Snapshot</h4>
+        <p>Google Sheets &middot; <span class="src">ANALISA SBE 4-5-6 TH</span></p>
+        <p>Ditarik otomatis pada 10 September 2026. Dashboard ini disinkronkan berkala dari sheet sumber.</p>
+      </div>
+    </div>
+  </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.tab-page'));
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.jump a[data-page]'));
+  function showPage(id){
+    var found = false;
+    pages.forEach(function(p){
+      var match = (p.id === 'page-' + id);
+      p.hidden = !match;
+      if(match) found = true;
+    });
+    if(!found){ id = 'ret-ringkasan'; showPage(id); return; }
+    navLinks.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-page') === id);
+    });
+    if(window.history && history.replaceState) history.replaceState(null, '', '#' + id);
+  }
+  navLinks.forEach(function(a){
+    a.addEventListener('click', function(evt){
+      evt.preventDefault();
+      showPage(a.getAttribute('data-page'));
+      window.scrollTo(0, 0);
+    });
+  });
+  var initial = (location.hash || '').replace('#', '') || 'ret-ringkasan';
+  showPage(initial);
+})();
+</script>
+<script>
+(function(){
+  // Two possible storage backends for the Tgl Booking/Keterangan follow-up
+  // columns, tried in order - whichever one actually works in THIS hosting
+  // context wins, so the same generated HTML behaves correctly whether it's
+  // published as a Claude Artifact or deployed standalone (e.g. Vercel):
+  //
+  //   1. The Artifact's own `db` capability (window.claude.use('db')) -
+  //      works when this page is running as a published Claude Artifact,
+  //      gives live cross-viewer sync via onSnapshot(). NOT available at all
+  //      outside an Artifact context.
+  //   2. The Apps Script follow-up backend at FOLLOWUP_API_URL (see
+  //      followup-backend-Code.gs) - a plain fetch()-based JSON API backed
+  //      by a Google Sheet, reachable from anywhere with no login required.
+  //      This is the one that matters once this HTML is deployed elsewhere
+  //      (Vercel, etc.): a published Artifact's CSP blocks fetch/XHR to any
+  //      external host (even to fetch this exact URL), so backend #1 is
+  //      tried FIRST and #2 only used as a fallback - trying it the other
+  //      way around would make it look like it works on Vercel, then
+  //      silently stop persisting the moment the same file is viewed as a
+  //      Claude Artifact instead.
+  var COHORT_KEY = "retention_2026_03";
+  var FOLLOWUP_API_URL = "https://script.google.com/macros/s/AKfycbya3B1-u51Sxc-r8QHqSGxmbmg154wgYX8GX-Kna1TTywCjqiqsVGaNAjUdAmE5fQo/exec";
+  var POLL_INTERVAL_MS = 30000;
+
+  function setStatus(vin, cls, text){
+    var el = document.querySelector('.save-status[data-status-vin="' + CSS.escape(vin) + '"]');
+    if(el){ el.className = 'save-status' + (cls ? ' ' + cls : ''); el.textContent = text || ''; }
+  }
+
+  function rowInputs(vin){
+    var esc = CSS.escape(vin);
+    return {
+      booking: document.querySelector('.edit-booking[data-vin="' + esc + '"]'),
+      note: document.querySelector('.edit-note[data-vin="' + esc + '"]'),
+    };
+  }
+
+  function showBanner(){
+    var banner = document.getElementById('dbBanner');
+    if(banner) banner.classList.add('show');
+  }
+
+  function applyRemote(vin, data, isPending){
+    var els = rowInputs(vin);
+    if(!els.booking || !els.note) return;
+    if(document.activeElement !== els.booking && typeof data.booking === 'string'){
+      els.booking.value = data.booking;
+    }
+    if(document.activeElement !== els.note && typeof data.keterangan === 'string'){
+      els.note.value = data.keterangan;
+    }
+    if(data.updated_at){
+      var t = new Date(data.updated_at);
+      if(!isNaN(t.getTime())){
+        var hh = String(t.getHours()).padStart(2,'0'), mm = String(t.getMinutes()).padStart(2,'0');
+        setStatus(vin, 'saved', (isPending ? 'Menyimpan...' : 'Tersimpan ' + hh + ':' + mm));
+      }
+    }
+  }
+
+  function wireInputs(onEdit){
+    document.querySelectorAll('.edit-field').forEach(function(el){
+      el.addEventListener('change', function(){ onEdit(el.getAttribute('data-vin')); });
+      el.addEventListener('blur', function(){ onEdit(el.getAttribute('data-vin')); });
+    });
+  }
+
+  // ---------------- backend #1: Claude Artifact `db` capability ----------------
+
+  async function tryArtifactDb(){
+    var db = null;
+    try {
+      db = (window.claude && typeof window.claude.use === 'function') ? await window.claude.use('db') : null;
+    } catch(e) {
+      db = null;
+    }
+    if(!db) return false;
+
+    function saveRow(vin){
+      var els = rowInputs(vin);
+      if(!els.booking || !els.note) return;
+      setStatus(vin, 'saving', 'Menyimpan...');
+      db.collection(COHORT_KEY).doc(vin).set({
+        booking: els.booking.value,
+        keterangan: els.note.value,
+        updated_at: new Date().toISOString(),
+      }).then(function(){
+        setStatus(vin, 'saved', 'Tersimpan');
+      }).catch(function(err){
+        setStatus(vin, 'error', 'Gagal menyimpan - coba lagi');
+        console.error('artifact db save failed', vin, err);
+      });
+    }
+
+    wireInputs(saveRow);
+    try {
+      var col = db.collection(COHORT_KEY);
+      var snap = await col.get();
+      snap.docs.forEach(function(doc){
+        var data = doc.data();
+        if(data) applyRemote(doc.id, data, false);
+      });
+      col.onSnapshot(function(qsnap){
+        qsnap.docChanges().forEach(function(ch){
+          if(ch.type === 'removed') return;
+          var data = ch.doc.data();
+          if(data) applyRemote(ch.doc.id, data, ch.doc.metadata && ch.doc.metadata.hasPendingWrites);
+        });
+      }, function(err){
+        console.error('artifact db subscribe failed', err);
+      });
+    } catch(e) {
+      console.error('artifact db init failed', e);
+    }
+    return true;
+  }
+
+  // ---------------- backend #2: Apps Script follow-up API ----------------
+
+  function tryFollowupApi(){
+    if(!FOLLOWUP_API_URL){
+      showBanner();
+      document.querySelectorAll('.edit-field').forEach(function(el){ el.title = 'Penyimpanan otomatis tidak tersedia di tampilan ini'; });
+      return;
+    }
+
+    function saveRow(vin){
+      var els = rowInputs(vin);
+      if(!els.booking || !els.note) return;
+      setStatus(vin, 'saving', 'Menyimpan...');
+      fetch(FOLLOWUP_API_URL, {
+        method: 'POST',
+        // text/plain (not application/json) deliberately - keeps this a CORS
+        // "simple request" so the browser skips the OPTIONS preflight, which
+        // Apps Script web apps cannot answer. The body is still JSON text;
+        // parsed manually with JSON.parse() on the Apps Script side.
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ vin: vin, booking: els.booking.value, keterangan: els.note.value }),
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if(data && data.ok){
+            setStatus(vin, 'saved', 'Tersimpan');
+          } else {
+            setStatus(vin, 'error', 'Gagal menyimpan - coba lagi');
+          }
+        })
+        .catch(function(err){
+          setStatus(vin, 'error', 'Gagal menyimpan - coba lagi');
+          console.error('followup api save failed', vin, err);
+        });
+    }
+
+    function refreshList(){
+      return fetch(FOLLOWUP_API_URL + '?action=list')
+        .then(function(r){ return r.json(); })
+        .then(function(map){
+          Object.keys(map || {}).forEach(function(vin){ applyRemote(vin, map[vin], false); });
+        });
+    }
+
+    wireInputs(saveRow);
+    refreshList().catch(function(err){
+      console.error('followup api list failed', err);
+      showBanner();
+    });
+    setInterval(function(){
+      refreshList().catch(function(err){ console.error('followup api poll failed', err); });
+    }, POLL_INTERVAL_MS);
+  }
+
+  async function initFollowups(){
+    var usedArtifactDb = await tryArtifactDb();
+    if(!usedArtifactDb) tryFollowupApi();
+  }
+
+  initFollowups();
+})();
+</script><script>
+  var DATA = {
+  "ag-sumber": {
+    "datafunnel": {
+      "label": "Data Funnel MRA &middot; 3.033 unit (model, sampel 49 baris)",
+      "rows": [
+        [
+          "Avanza",
+          13
+        ],
+        [
+          "Innova",
+          11
+        ],
+        [
+          "Rush",
+          9
+        ],
+        [
+          "Calya",
+          6
+        ],
+        [
+          "Agya",
+          4
+        ],
+        [
+          "Fortuner",
+          2
+        ],
+        [
+          "Voxy",
+          1
+        ],
+        [
+          "Altis",
+          1
+        ],
+        [
+          "Yaris",
+          1
+        ],
+        [
+          "Corolla Cross",
+          1
+        ]
+      ],
+      "note": "Persentase & rincian dihitung dari 49 baris data detail yang tersedia untuk kategori ini, bukan seluruh 3.033 unit."
+    }
+  },
+  "ag-alasan": {
+    "tidak_diangkat": {
+      "label": "Tidak diangkat/dihubungi &middot; 14 unit",
+      "rows": [
+        [
+          "Telepon Tidak Diangkat (WA)",
+          13
+        ],
+        [
+          "Tidak Aktif",
+          1
+        ]
+      ]
+    },
+    "sudah_booking": {
+      "label": "Sudah booking &middot; 9 unit",
+      "rows": [
+        [
+          "Booking 31 Agu 2026, 11:00",
+          1
+        ],
+        [
+          "Booking 29 Agu 2026, 08:45",
+          1
+        ],
+        [
+          "Booking 26 Agu 2026, 09:00",
+          1
+        ],
+        [
+          "Booking 23 Agu 2026, 08:30",
+          1
+        ],
+        [
+          "Booking 22 Agu 2026, 08:00",
+          1
+        ],
+        [
+          "Booking 15 Agu 2026, 08:00",
+          1
+        ],
+        [
+          "Booking 08 Agu 2026, 13:00",
+          1
+        ],
+        [
+          "Booking 08 Agu 2026, 08:00",
+          1
+        ],
+        [
+          "Booking 06 Agu 2026",
+          1
+        ]
+      ]
+    },
+    "sudah_masuk": {
+      "label": "Sudah masuk/servis &middot; 9 unit",
+      "rows": [
+        [
+          "Masuk 26 Mei 2026",
+          1
+        ],
+        [
+          "Masuk 25 Jul 2026",
+          1
+        ],
+        [
+          "Masuk 23 Mei 2026",
+          1
+        ],
+        [
+          "Masuk 18 Jul 2026",
+          1
+        ],
+        [
+          "Masuk 13 Jun 2026",
+          1
+        ],
+        [
+          "Masuk 11 Jul 2026",
+          1
+        ],
+        [
+          "Masuk 10 Jul 2026",
+          1
+        ],
+        [
+          "Masuk 03 Mei 2026",
+          1
+        ],
+        [
+          "Masuk 02 Jul 2026",
+          1
+        ]
+      ]
+    },
+    "lainnya": {
+      "label": "Lainnya &middot; 8 unit",
+      "rows": [
+        [
+          "Telepon Direject (WA)",
+          3
+        ],
+        [
+          "Sedang Di Luar Kota (akan Info Jbooking Jika Sudah Di Medan)",
+          1
+        ],
+        [
+          "Belum Mau Service Karena Mobil Jarang Pakai Dan Km Masih Sedikit",
+          1
+        ],
+        [
+          "Tidak Dapat Dihubungi (WA)",
+          1
+        ],
+        [
+          "Mobil Sudah Dijual",
+          1
+        ],
+        [
+          "Nomor Tertera Sudah Tidak Handle Mobilnya Lagi",
+          1
+        ]
+      ]
+    },
+    "atur_jadwal": {
+      "label": "Atur jadwal dulu &middot; 5 unit",
+      "rows": [
+        [
+          "Atur Jadwal Dulu (akan Info Jika Booking)",
+          4
+        ],
+        [
+          "Atur Jadwal Dulu (akan Cek Km Dulu)",
+          1
+        ]
+      ]
+    },
+    "tempat_lain": {
+      "label": "Servis di tempat lain &middot; 4 unit",
+      "rows": [
+        [
+          "Sudah Service Di Perintis Flamboyan",
+          3
+        ],
+        [
+          "Sudah Service Di Auto2000 Marelan",
+          1
+        ]
+      ]
+    }
+  },
+  "ag-model": {
+    "lainnya": {
+      "label": "Lainnya &middot; 6 unit",
+      "rows": [
+        [
+          "Fortuner",
+          2
+        ],
+        [
+          "Voxy",
+          1
+        ],
+        [
+          "Altis",
+          1
+        ],
+        [
+          "Yaris",
+          1
+        ],
+        [
+          "Corolla Cross",
+          1
+        ]
+      ]
+    }
+  },
+  "se-program": {
+    "tcare": {
+      "label": "T-CARE &middot; 38 unit, per fleet/retail",
+      "rows": [
+        [
+          "Retail",
+          32
+        ],
+        [
+          "Fleet",
+          5
+        ],
+        [
+          "Prime Fleet",
+          1
+        ]
+      ]
+    },
+    "gbsb": {
+      "label": "GBSB &middot; 5 unit, per fleet/retail",
+      "rows": [
+        [
+          "Retail",
+          5
+        ]
+      ]
+    },
+    "lite": {
+      "label": "T-CARE LITE &middot; 4 unit, per fleet/retail",
+      "rows": [
+        [
+          "Retail",
+          4
+        ]
+      ]
+    },
+    "liteplus": {
+      "label": "T-CARE LITE+ &middot; 2 unit, per fleet/retail",
+      "rows": [
+        [
+          "Retail",
+          2
+        ]
+      ]
+    }
+  },
+  "se-fleet": {
+    "retail": {
+      "label": "Retail &middot; 43 unit, per program",
+      "rows": [
+        [
+          "T-CARE",
+          32
+        ],
+        [
+          "GBSB",
+          5
+        ],
+        [
+          "T-CARE LITE",
+          4
+        ],
+        [
+          "T-CARE LITE+",
+          2
+        ]
+      ]
+    },
+    "fleet": {
+      "label": "Fleet &middot; 5 unit, per program",
+      "rows": [
+        [
+          "T-CARE",
+          5
+        ]
+      ]
+    },
+    "primefleet": {
+      "label": "Prime Fleet &middot; 1 unit, per program",
+      "rows": [
+        [
+          "T-CARE",
+          1
+        ]
+      ]
+    }
+  },
+  "se-punctual": {
+    "early": {
+      "label": "Early &middot; 27 unit, per perilaku",
+      "rows": [
+        [
+          "Active",
+          14
+        ],
+        [
+          "Sleeping",
+          12
+        ],
+        [
+          "Passive",
+          1
+        ]
+      ]
+    },
+    "late": {
+      "label": "Late &middot; 21 unit, per perilaku",
+      "rows": [
+        [
+          "Active",
+          13
+        ],
+        [
+          "Sleeping",
+          6
+        ],
+        [
+          "Passive",
+          2
+        ]
+      ]
+    },
+    "ontime": {
+      "label": "On Time &middot; 1 unit, per perilaku",
+      "rows": [
+        [
+          "Passive",
+          1
+        ]
+      ]
+    }
+  },
+  "se-behavior": {
+    "active": {
+      "label": "Active &middot; 27 unit, per ketepatan",
+      "rows": [
+        [
+          "Early",
+          14
+        ],
+        [
+          "Late",
+          13
+        ]
+      ]
+    },
+    "sleeping": {
+      "label": "Sleeping &middot; 18 unit, per ketepatan",
+      "rows": [
+        [
+          "Early",
+          12
+        ],
+        [
+          "Late",
+          6
+        ]
+      ]
+    },
+    "passive": {
+      "label": "Passive &middot; 4 unit, per ketepatan",
+      "rows": [
+        [
+          "Late",
+          2
+        ],
+        [
+          "On Time",
+          1
+        ],
+        [
+          "Early",
+          1
+        ]
+      ]
+    }
+  },
+  "se-model": {
+    "innova": {
+      "label": "Innova &middot; 12 unit",
+      "rows": [
+        [
+          "Program &middot; T-CARE",
+          11
+        ],
+        [
+          "Program &middot; GBSB",
+          1
+        ],
+        [
+          "Fleet/Retail &middot; Retail",
+          9
+        ],
+        [
+          "Fleet/Retail &middot; Fleet",
+          3
+        ]
+      ]
+    },
+    "rush": {
+      "label": "Rush &middot; 10 unit",
+      "rows": [
+        [
+          "Program &middot; T-CARE",
+          9
+        ],
+        [
+          "Program &middot; GBSB",
+          1
+        ],
+        [
+          "Fleet/Retail &middot; Retail",
+          10
+        ]
+      ]
+    },
+    "raize": {
+      "label": "Raize &middot; 6 unit",
+      "rows": [
+        [
+          "Program &middot; T-CARE",
+          5
+        ],
+        [
+          "Program &middot; GBSB",
+          1
+        ],
+        [
+          "Fleet/Retail &middot; Retail",
+          5
+        ],
+        [
+          "Fleet/Retail &middot; Fleet",
+          1
+        ]
+      ]
+    },
+    "avanza": {
+      "label": "Avanza &middot; 6 unit",
+      "rows": [
+        [
+          "Program &middot; T-CARE",
+          6
+        ],
+        [
+          "Fleet/Retail &middot; Retail",
+          5
+        ],
+        [
+          "Fleet/Retail &middot; Prime Fleet",
+          1
+        ]
+      ]
+    },
+    "calya": {
+      "label": "Calya &middot; 5 unit",
+      "rows": [
+        [
+          "Program &middot; T-CARE LITE",
+          4
+        ],
+        [
+          "Program &middot; T-CARE LITE+",
+          1
+        ],
+        [
+          "Fleet/Retail &middot; Retail",
+          5
+        ]
+      ]
+    },
+    "lainnya": {
+      "label": "Lainnya &middot; 10 unit",
+      "rows": [
+        [
+          "Fortuner",
+          4
+        ],
+        [
+          "Hiace",
+          2
+        ],
+        [
+          "Agya",
+          1
+        ],
+        [
+          "Hilux",
+          1
+        ],
+        [
+          "Yaris",
+          1
+        ],
+        [
+          "Landcruiser",
+          1
+        ]
+      ]
+    }
+  },
+  "se-outlet": {
+    "binjai": {
+      "label": "Auto2000 Binjai &middot; 18 unit, per model",
+      "rows": [
+        [
+          "Rush",
+          6
+        ],
+        [
+          "Avanza",
+          4
+        ],
+        [
+          "Innova",
+          3
+        ],
+        [
+          "Raize",
+          3
+        ],
+        [
+          "Calya",
+          1
+        ],
+        [
+          "Hiace",
+          1
+        ]
+      ]
+    },
+    "amplas": {
+      "label": "Auto2000 Amplas &middot; 11 unit, per model",
+      "rows": [
+        [
+          "Innova",
+          4
+        ],
+        [
+          "Calya",
+          2
+        ],
+        [
+          "Raize",
+          2
+        ],
+        [
+          "Rush",
+          1
+        ],
+        [
+          "Fortuner",
+          1
+        ],
+        [
+          "Yaris",
+          1
+        ]
+      ]
+    },
+    "gatotsubroto": {
+      "label": "Auto2000 Gatot Subroto &middot; 7 unit, per model",
+      "rows": [
+        [
+          "Innova",
+          3
+        ],
+        [
+          "Landcruiser",
+          1
+        ],
+        [
+          "Avanza",
+          1
+        ],
+        [
+          "Rush",
+          1
+        ],
+        [
+          "Fortuner",
+          1
+        ]
+      ]
+    },
+    "lainnya": {
+      "label": "Lainnya &middot; 13 unit, 10 outlet",
+      "rows": [
+        [
+          "Agung Toyota Batam Center",
+          2
+        ],
+        [
+          "Agung Toyota Dumai",
+          2
+        ],
+        [
+          "Agung Toyota Jambi Ii (Pal-10)",
+          2
+        ],
+        [
+          "Agung Toyota Bagan Batu",
+          1
+        ],
+        [
+          "Agung Toyota Pekanbaru I (Sutomo)",
+          1
+        ],
+        [
+          "Agung Toyota Pekanbaru Iii (S.M. Amin)",
+          1
+        ],
+        [
+          "Agung Toyota Pekanbaru Iv (Harapan Raya)",
+          1
+        ],
+        [
+          "Agung Toyota Ujung Batu",
+          1
+        ],
+        [
+          "Auto2000 By Pass Padang",
+          1
+        ],
+        [
+          "Auto2000 Cikarang",
+          1
+        ]
+      ]
+    }
+  }
+};
+
+
+  function toggleBreak(evt, chartId, key){
+    evt.stopPropagation();
+    var drawer = document.getElementById('drawer-' + chartId);
+    if(!drawer) return;
+    var container = drawer.previousElementSibling;
+    var row = evt.currentTarget;
+    var already = drawer.dataset.key === key && !drawer.hidden;
+    if(container){
+      var actives = container.querySelectorAll('.is-active');
+      for(var i=0;i<actives.length;i++){ actives[i].classList.remove('is-active'); }
+    }
+    if(already){
+      drawer.hidden = true;
+      drawer.dataset.key = '';
+      return;
+    }
+    var chart = DATA[chartId] || {};
+    var item = chart[key];
+    if(!item) return;
+    var rowsHtml = item.rows.map(function(r){
+      var extra = r[2] ? ' <span class="bd-extra">' + r[2] + '</span>' : '';
+      return '<div class="bd-row"><span class="bd-lbl">' + r[0] + '</span><span class="bd-val">' + r[1] + extra + '</span></div>';
+    }).join('');
+    var noteHtml = item.note ? '<div class="bd-note">' + item.note + '</div>' : '';
+    drawer.innerHTML =
+      '<div class="bd-head"><span>Rincian &middot; ' + item.label + '</span>' +
+      '<button class="bd-close" type="button" onclick="closeBreak(\'' + chartId + '\')" aria-label="Tutup rincian">&times;</button></div>' +
+      '<div class="bd-rows">' + rowsHtml + '</div>' + noteHtml;
+    drawer.hidden = false;
+    drawer.dataset.key = key;
+    row.classList.add('is-active');
+  }
+
+  function closeBreak(chartId){
+    var drawer = document.getElementById('drawer-' + chartId);
+    if(!drawer) return;
+    drawer.hidden = true;
+    drawer.dataset.key = '';
+    var container = drawer.previousElementSibling;
+    if(container){
+      var actives = container.querySelectorAll('.is-active');
+      for(var i=0;i<actives.length;i++){ actives[i].classList.remove('is-active'); }
+    }
+  }
+
+  document.addEventListener('keydown', function(evt){
+    if(evt.key !== 'Enter' && evt.key !== ' ') return;
+    var el = evt.target;
+    if(el && el.classList && el.classList.contains('is-clickable')){
+      evt.preventDefault();
+      el.click();
+    }
+  });
+
+</script>
