@@ -2510,7 +2510,7 @@
 <script>
 (function(){
   var WA_COLLECTION = 'wa_blast_activity';
-  var WA_BLAST_API_URL = "https://script.google.com/macros/s/AKfycbxdQMwjVYaOtYfabZ_DW5mECvBxyw_3CDWrfT8coMOzfYTlS_HvxF8eZg3VXMjCjU2SXg/exec";
+  var WA_BLAST_API_URL = "https://script.google.com/macros/s/AKfycbwgs8r_IfZcGcWDPz-9EtfUYgWSPBZAZatQ_D6cj8dovqsv6BQP25UApbAIqUe-o_Kt/exec";
   var POLL_INTERVAL_MS = 30000;
 
   var db = null;              // set once tryArtifactDb() confirms availability
@@ -2665,7 +2665,24 @@
     var vins = [];
     if(!rows || !rows.length) return vins;
     var startIdx = 0, colIdx = 0;
-    var headerRow = (rows[0] || []).map(function(c){ return (c == null ? '' : String(c)).toUpperCase().trim(); });
+    // NOTE: built with a plain for-loop reading rows[0][hi] directly, NOT
+    // rows[0].map(...) - SheetJS's sheet_to_json({header:1}) can return a
+    // SPARSE array for a row that has empty/skipped cells (a real "hole" at
+    // that index, not just an empty string). Array.prototype.map SKIPS holes
+    // entirely rather than calling the callback with undefined, so a mapped
+    // array built that way stays sparse too - headerRow[i] would then be
+    // undefined at those same positions, and calling .indexOf() on undefined
+    // throws "Cannot read properties of undefined (reading 'indexOf')" (a
+    // real bug hit in practice 2026-09-12 with an uploaded file that had a
+    // blank leading cell in its header row). Indexing rows[0][hi] directly in
+    // a for-loop returns undefined for a hole too, but we immediately coerce
+    // it to '' below, so the built array is always dense.
+    var headerRowRaw = rows[0] || [];
+    var headerRow = [];
+    for(var hi = 0; hi < headerRowRaw.length; hi++){
+      var hc = headerRowRaw[hi];
+      headerRow.push((hc == null ? '' : String(hc)).toUpperCase().trim());
+    }
     var headerMatchIdx = -1;
     for(var i = 0; i < headerRow.length; i++){
       if(headerRow[i].indexOf('VIN') !== -1 || headerRow[i].indexOf('RANGKA') !== -1){ headerMatchIdx = i; break; }
@@ -2840,7 +2857,7 @@
 <script>
 (function(){
   var SERIES_COLORS = ['--series-1','--series-2','--series-3','--series-4','--series-5','--series-6','--series-7','--series-8'];
-  var WA_BLAST_API_URL = "https://script.google.com/macros/s/AKfycbxdQMwjVYaOtYfabZ_DW5mECvBxyw_3CDWrfT8coMOzfYTlS_HvxF8eZg3VXMjCjU2SXg/exec";
+  var WA_BLAST_API_URL = "https://script.google.com/macros/s/AKfycbwgs8r_IfZcGcWDPz-9EtfUYgWSPBZAZatQ_D6cj8dovqsv6BQP25UApbAIqUe-o_Kt/exec";
   var POLL_INTERVAL_MS_SUMMARY = 600000;
 
   function escapeHtml(s){
