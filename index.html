@@ -429,6 +429,63 @@
   nav.jump a.active{ color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
 </style>
 
+<style>
+  .wa-blast-table{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:820px; }
+  .wa-blast-table thead th{ text-align:left; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); background:var(--surface-2); padding:9px 12px; white-space:nowrap; }
+  .wa-blast-table tbody td{ padding:9px 12px; border-top:1px solid var(--border); vertical-align:top; }
+  .wa-blast-table td.num{ color:var(--text-muted); font-family:var(--font-mono); font-size:11.5px; }
+  .wa-blast-table input.edit-field{ min-width:120px; }
+  .wa-vin-cell{ min-width:230px; }
+  .wa-vin-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .wa-vin-count{ font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--accent); background:none; border:1px dashed var(--baseline); border-radius:6px; padding:4px 8px; cursor:pointer; }
+  .wa-vin-count[data-has="0"]{ color:var(--text-muted); }
+  .wa-upload-btn{ font-size:11.5px; color:var(--text-secondary); background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:4px 10px; cursor:pointer; white-space:nowrap; }
+  .wa-upload-btn:hover{ background:var(--surface-1); }
+  .wa-vin-drawer{ margin-top:8px; padding:10px 12px; border-radius:8px; background:var(--surface-2); border:1px solid var(--border); max-width:380px; }
+  .wa-vin-list{ display:flex; flex-wrap:wrap; gap:5px; max-height:150px; overflow-y:auto; }
+  .wa-vin-chip{ font-family:var(--font-mono); font-size:10.5px; background:var(--surface-1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; }
+  .wa-vin-clear{ margin-top:8px; font-size:11px; color:var(--status-critical); background:none; border:none; cursor:pointer; padding:0; }
+  .wa-vin-empty{ font-size:11.5px; color:var(--text-muted); }
+  .wa-delete-row{ background:none; border:none; color:var(--text-muted); font-size:16px; cursor:pointer; padding:2px 6px; border-radius:5px; line-height:1; }
+  .wa-delete-row:hover{ background:var(--border); color:var(--status-critical); }
+  .wa-btn-add{ font-size:12.5px; font-weight:600; color:#fff; background:var(--accent); border:none; border-radius:8px; padding:8px 14px; cursor:pointer; }
+  .wa-btn-add:hover{ opacity:.9; }
+  .wa-btn-add:disabled{ opacity:.5; cursor:not-allowed; }
+  .wa-btn-group{ display:flex; gap:8px; flex-wrap:wrap; }
+  .wa-btn-sync{ font-size:12.5px; font-weight:600; color:var(--text-primary); background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 14px; cursor:pointer; }
+  .wa-btn-sync:hover{ background:var(--surface-1); }
+  .wa-btn-sync:disabled{ opacity:.5; cursor:not-allowed; }
+  .wa-sync-status{ display:block; font-size:11.5px; color:var(--text-muted); margin-top:8px; line-height:1.4; }
+  .wa-sync-status a{ color:var(--accent); font-weight:600; }
+  .wa-empty-state{ padding:24px; text-align:center; color:var(--text-muted); font-size:13px; }
+  .wa-unavailable{ padding:16px; text-align:center; color:var(--text-muted); font-size:12.5px; }
+</style>
+
+<style>
+  .wa-charts-row{ display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap; margin-top:6px; }
+  .wa-chart-block{ display:flex; flex-direction:column; gap:12px; }
+  .wa-chart-title{ font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+
+  .wa-stack-bar{ display:flex; flex-direction:column; width:132px; height:420px; border-radius:14px; overflow:hidden; border:1px solid var(--border); flex:none; }
+  .wa-stack-seg{ display:flex; align-items:center; justify-content:center; min-height:22px; position:relative; }
+  .wa-stack-seg:not(:last-child){ box-shadow: inset 0 -2px 0 var(--surface-1); }
+  .wa-stack-val{ color:#fff; font-family:var(--font-display); font-weight:800; font-size:15px; letter-spacing:.01em; text-shadow:0 1px 3px rgba(0,0,0,.28); }
+
+  .wa-bars-row{ display:flex; align-items:flex-end; gap:16px; height:420px; }
+  .wa-bar-col{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end; width:58px; height:100%; flex:none; }
+  .wa-bar-count{ font-family:var(--font-display); font-weight:800; font-size:14px; color:var(--text-primary); margin-bottom:6px; }
+  .wa-bar-track{ width:100%; flex:1 1 auto; display:flex; align-items:flex-end; }
+  .wa-bar-fill{ width:100%; border-radius:8px 8px 3px 3px; min-height:6px; display:flex; align-items:flex-start; justify-content:center; padding-top:6px; }
+  .wa-bar-pct{ color:#fff; font-weight:800; font-size:11.5px; text-shadow:0 1px 2px rgba(0,0,0,.3); }
+
+  .wa-stack-legend{ display:flex; flex-direction:column; gap:9px; padding-top:2px; min-width:220px; flex:1 1 240px; }
+  .wa-legend-item{ display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--text-secondary); line-height:1.4; }
+  .wa-legend-item .swatch{ width:13px; height:13px; border-radius:3px; flex:none; margin-top:4px; }
+  .wa-legend-item b{ color:var(--text-primary); font-weight:600; }
+  .wa-legend-item .cap{ color:var(--text-secondary); font-size:14.5px; }
+  .wa-legend-item .cap-num{ font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary); }
+</style>
+
 <header class="top">
   <div class="top-inner">
     <div class="brand">
@@ -443,8 +500,8 @@
       </div>
     </div>
     <div class="meta-pills">
-      <span class="pill">Retensi &middot; <b>10 Sep 2026</b></span>
-      <span class="pill">Funnel SBE &middot; <b>10 Sep 2026</b></span>
+      <span class="pill">Retensi &middot; <b>12 Sep 2026</b></span>
+      <span class="pill">Funnel SBE &middot; <b>12 Sep 2026</b></span>
     </div>
   </div>
   <nav class="jump">
@@ -453,6 +510,8 @@
     <a href="#sbe-ringkasan" data-page="sbe-ringkasan">Funnel SBE &middot; Ringkasan</a>
     <a href="#sbe-agustus" data-page="sbe-agustus">Funnel SBE &middot; Bulan Selesai</a>
     <a href="#sbe-september" data-page="sbe-september">Funnel SBE &middot; Bulan Berjalan</a>
+    <a href="#wa-blast" data-page="wa-blast">WA Blast Activity</a>
+    <a href="#wa-summary" data-page="wa-summary">Ringkasan Blast yang Booking</a>
     <a href="#metodologi" data-page="metodologi">Metodologi</a>
   </nav>
 </header>
@@ -470,14 +529,14 @@
 
     <div class="kpi-row">
       <div class="card kpi-tile"><div class="label">Total pelanggan &middot; DELIVERY DATE Maret 2026</div><div class="value">126</div><div class="sub">unit tercatat di PDFU</div></div>
-      <div class="card kpi-tile good"><div class="label">Sudah servis berkala</div><div class="value">53</div><div class="sub">42,1% dari total pelanggan &middot; 23 via Data WO, 30 via TCare DB</div></div>
-      <div class="card kpi-tile warn"><div class="label">Belum servis berkala</div><div class="value">73</div><div class="sub">57,9% dari total pelanggan &middot; perlu follow-up</div></div>
+      <div class="card kpi-tile good"><div class="label">Sudah servis berkala</div><div class="value">54</div><div class="sub">42,9% dari total pelanggan &middot; 24 via Data WO, 30 via TCare DB</div></div>
+      <div class="card kpi-tile warn"><div class="label">Belum servis berkala</div><div class="value">72</div><div class="sub">57,1% dari total pelanggan &middot; perlu follow-up</div></div>
       <div class="card kpi-tile"><div class="label">Sumber silang</div><div class="value">3 sheet</div><div class="sub">PDFU & SBI New + Data WO + TCare Customer DB</div></div>
     </div>
 
     <div class="insight-strip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-      <div><b>73 dari 126 kendaraan</b> (57,9%) di DELIVERY DATE Maret 2026 belum terdeteksi servis berkala di bulan September 2026 &mdash; ini daftar prioritas untuk tim reminder menghubungi pelanggan.</div>
+      <div><b>72 dari 126 kendaraan</b> (57,1%) di DELIVERY DATE Maret 2026 belum terdeteksi servis berkala di bulan September 2026 &mdash; ini daftar prioritas untuk tim reminder menghubungi pelanggan.</div>
     </div>
   </section>
   </div>
@@ -485,7 +544,7 @@
 <section id="ret-daftar">
     <div class="card panel">
       <h3>Daftar Retensi &middot; Belum Servis Berkala</h3>
-      <div class="panel-desc n-note">n=73 unit &middot; disaring dari DELIVERY DATE Maret 2026, dicocokkan No. Rangka (VIN) terhadap Data WO September 2026 dan TCare Customer Database</div>
+      <div class="panel-desc n-note">n=72 unit &middot; disaring dari DELIVERY DATE Maret 2026, dicocokkan No. Rangka (VIN) terhadap Data WO September 2026 dan TCare Customer Database</div>
       <div class="tbl-scroll">
         <table class="retention">
           <thead>
@@ -1083,22 +1142,8 @@
             <span class="save-status" data-status-vin="MHFAA8GS7T0935645"></span>
           </td>
         </tr>
-        <tr data-row-vin="MHKE8FB3JTK117530">
-          <td class="num">43</td>
-          <td>Wihar Effendy</td>
-          <td>628139692135</td>
-          <td class="model">Rush 1.5 S A/T Gr Sport</td>
-          <td class="vin">MHKE8FB3JTK117530</td>
-          <td>MEDAN</td>
-          <td>17 Mar 2026</td>
-          <td class="booking"><input type="text" class="edit-field edit-booking" data-vin="MHKE8FB3JTK117530" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>
-          <td class="note">
-            <textarea class="edit-field edit-note" data-vin="MHKE8FB3JTK117530" rows="1" placeholder="catatan follow-up..."></textarea>
-            <span class="save-status" data-status-vin="MHKE8FB3JTK117530"></span>
-          </td>
-        </tr>
         <tr data-row-vin="JTFST22P9T0054589">
-          <td class="num">44</td>
+          <td class="num">43</td>
           <td>Dicky Ricardo Gultom</td>
           <td>6282275211691</td>
           <td class="model">Hi Ace Commuter M/T</td>
@@ -1112,7 +1157,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKE8FA3JTK141995">
-          <td class="num">45</td>
+          <td class="num">44</td>
           <td>Firman Sitohang</td>
           <td>6281227470759</td>
           <td class="model">Rush 1.5 S M/T Gr Sport</td>
@@ -1126,7 +1171,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFABBAA4T0467450">
-          <td class="num">46</td>
+          <td class="num">45</td>
           <td>Indra Ramli Se</td>
           <td>62811615268</td>
           <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
@@ -1140,7 +1185,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFABBAA2T0467334">
-          <td class="num">47</td>
+          <td class="num">46</td>
           <td>Lisna Candra</td>
           <td>6282369696565</td>
           <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
@@ -1154,7 +1199,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFJB8EM4T1188260">
-          <td class="num">48</td>
+          <td class="num">47</td>
           <td>Nabilla Anggraini Syahana Lubis</td>
           <td>6285277688949</td>
           <td class="model">Kijang Innova 2.4 G M/T</td>
@@ -1168,7 +1213,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKAB1BC9TJ080897">
-          <td class="num">49</td>
+          <td class="num">48</td>
           <td>Pagit Juni Sartika Br Tarigan</td>
           <td>6281396574165</td>
           <td class="model">Agya 1.2 G Cvt</td>
@@ -1182,7 +1227,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKE8FA3JTK142109">
-          <td class="num">50</td>
+          <td class="num">49</td>
           <td>Pandu Wiranata</td>
           <td>6282369048800</td>
           <td class="model">Rush 1.5 S M/T Gr Sport</td>
@@ -1196,7 +1241,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKE8FB3JTK118692">
-          <td class="num">51</td>
+          <td class="num">50</td>
           <td>Pt.Jiur Asahan Makmur</td>
           <td>6281282238132</td>
           <td class="model">Rush 1.5 S A/T Gr Sport</td>
@@ -1210,7 +1255,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKE8FB3JTK118640">
-          <td class="num">52</td>
+          <td class="num">51</td>
           <td>Rizky Mulia Harahap A Md</td>
           <td>6281262607473</td>
           <td class="model">Rush 1.5 S A/T Gr Sport</td>
@@ -1224,7 +1269,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFABAAA3T0050220">
-          <td class="num">53</td>
+          <td class="num">52</td>
           <td>Eddy Kusumo</td>
           <td>628126418432</td>
           <td class="model">Kijang Innova Zenix 2.0 V Hv Cvt Modelista</td>
@@ -1238,7 +1283,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKA6GK6JTJ088302">
-          <td class="num">54</td>
+          <td class="num">53</td>
           <td>Syahril Suryadi</td>
           <td>6289505189349</td>
           <td class="model">Calya 1.2 G A/T</td>
@@ -1252,7 +1297,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKAB1BYXTJ017089">
-          <td class="num">55</td>
+          <td class="num">54</td>
           <td>Muhammad Aslam Nasution</td>
           <td>6281396315202</td>
           <td class="model">Avanza 1.5 G Cvt</td>
@@ -1266,7 +1311,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFJB8EMXT1188263">
-          <td class="num">56</td>
+          <td class="num">55</td>
           <td>Dewi Evarida Simanjuntak Spd</td>
           <td>6285297289764</td>
           <td class="model">Kijang Innova 2.4 G M/T</td>
@@ -1280,7 +1325,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFJB8EM8T1188231">
-          <td class="num">57</td>
+          <td class="num">56</td>
           <td>Elfrida Regar</td>
           <td>6282387124825</td>
           <td class="model">Kijang Innova 2.4 G M/T</td>
@@ -1294,7 +1339,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFA71BY6T0001896">
-          <td class="num">58</td>
+          <td class="num">57</td>
           <td>Kurniaty Hasanuddin</td>
           <td>62811652282</td>
           <td class="model">Veloz 1.5 V Hybrid Cvt</td>
@@ -1308,7 +1353,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFJB8EM6T1188132">
-          <td class="num">59</td>
+          <td class="num">58</td>
           <td>Nani</td>
           <td>6281361111266</td>
           <td class="model">Kijang Innova 2.4 G A/T</td>
@@ -1322,7 +1367,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKE8FA3JTK142142">
-          <td class="num">60</td>
+          <td class="num">59</td>
           <td>Tumpak Silaban</td>
           <td>6281375252510</td>
           <td class="model">Rush 1.5 S M/T Gr Sport</td>
@@ -1336,7 +1381,7 @@
           </td>
         </tr>
         <tr data-row-vin="MR0KB8CD2T1233877">
-          <td class="num">61</td>
+          <td class="num">60</td>
           <td>Abu Sofian</td>
           <td>628216107072</td>
           <td class="model">Hilux Double Cabin 2.4 G (4X4) Dsl M/T</td>
@@ -1350,7 +1395,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKAB1BY1TJ016994">
-          <td class="num">62</td>
+          <td class="num">61</td>
           <td>Cv.Kreasi Mulia Sejahtera</td>
           <td>628163154201</td>
           <td class="model">Avanza 1.5 G Cvt</td>
@@ -1364,7 +1409,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFA71BYXT0002128">
-          <td class="num">63</td>
+          <td class="num">62</td>
           <td>Krisnawaty</td>
           <td>6282277920128</td>
           <td class="model">Veloz 1.5 V Hybrid Cvt</td>
@@ -1378,7 +1423,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFAA8GS5T0935739">
-          <td class="num">64</td>
+          <td class="num">63</td>
           <td>Pendi Chandra</td>
           <td>628126027789</td>
           <td class="model">Fortuner 2.8 Vrz Tss 4X2 A/T</td>
@@ -1392,7 +1437,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFJB8EMXT1188408">
-          <td class="num">65</td>
+          <td class="num">64</td>
           <td>Jhon Keke Manihuruk</td>
           <td>628211044514</td>
           <td class="model">Kijang Innova 2.4 G M/T</td>
@@ -1406,7 +1451,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFA71BY3T0001564">
-          <td class="num">66</td>
+          <td class="num">65</td>
           <td>Nicolaus Sihaloho</td>
           <td>628116150825</td>
           <td class="model">Veloz 1.5 V Hybrid Cvt</td>
@@ -1420,7 +1465,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKA6GK6JTJ088289">
-          <td class="num">67</td>
+          <td class="num">66</td>
           <td>Rodiah</td>
           <td>6285275753678</td>
           <td class="model">Calya 1.2 G A/T</td>
@@ -1434,7 +1479,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKA6GK6JTJ088280">
-          <td class="num">68</td>
+          <td class="num">67</td>
           <td>Desi Hariani</td>
           <td>6285765490067</td>
           <td class="model">Calya 1.2 G A/T</td>
@@ -1448,7 +1493,7 @@
           </td>
         </tr>
         <tr data-row-vin="MR0AWAAA1T0843646">
-          <td class="num">69</td>
+          <td class="num">68</td>
           <td>Ferdy Armanda Jesan</td>
           <td>6282362820099</td>
           <td class="model">Hilux Rangga Pick Up 2.0 Standard M/T</td>
@@ -1462,7 +1507,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFJB8EM5T1188364">
-          <td class="num">70</td>
+          <td class="num">69</td>
           <td>Junaidi</td>
           <td>6285370306069</td>
           <td class="model">Kijang Innova 2.4 G M/T</td>
@@ -1476,7 +1521,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHFABBAAXT0467341">
-          <td class="num">71</td>
+          <td class="num">70</td>
           <td>Laini Saudah</td>
           <td>628126488187</td>
           <td class="model">Kijang Innova Zenix 2.0 Q Hv Cvt Tss Modelista</td>
@@ -1490,7 +1535,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKA6GJ6JTJ222414">
-          <td class="num">72</td>
+          <td class="num">71</td>
           <td>Maytha Ardansyah</td>
           <td>6285261972456</td>
           <td class="model">Calya 1.2 G M/T</td>
@@ -1504,7 +1549,7 @@
           </td>
         </tr>
         <tr data-row-vin="MHKAB1BC9TJ077532">
-          <td class="num">73</td>
+          <td class="num">72</td>
           <td>Rusdin Khair Aljufri</td>
           <td>6285206933837</td>
           <td class="model">Agya 1.2 G Cvt</td>
@@ -1541,13 +1586,13 @@
       <div class="hero-side">
         <div class="card mini-stat">
           <div class="label">Database aktif &middot; September 2026</div>
-          <div class="val">996</div>
-          <div class="cap">unit, baru 10 hari diproses</div>
+          <div class="val">0</div>
+          <div class="cap">unit, baru 12 hari diproses</div>
         </div>
         <div class="card mini-stat">
           <div class="label">Tingkat kontak September 2026</div>
-          <div class="val">23,0%</div>
-          <div class="cap">229 dari 996 database</div>
+          <div class="val">0,0%</div>
+          <div class="cap">0 dari 0 database</div>
         </div>
         <div class="card mini-stat">
           <div class="label">Tingkat kontak Agustus</div>
@@ -1564,7 +1609,7 @@
 
     <div class="insight-strip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-      <div><b>September baru berjalan 10 dari 30 hari (&sim;33% dari bulan)</b>, namun tim sudah mengontak 23% database &mdash; sinyal awal yang sehat. Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>
+      <div><b>September baru berjalan 12 dari 30 hari (&sim;40% dari bulan)</b>, namun tim sudah mengontak 0% database &mdash; sinyal awal yang sehat. Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>
     </div>
   </section>
   </div>
@@ -1717,14 +1762,14 @@
         <div class="eyebrow">Laporan Periode</div>
         <h2>September 2026</h2>
       </div>
-      <span class="status-chip progress">Bulan berjalan &middot; hari ke-10 dari 30</span>
+      <span class="status-chip progress">Bulan berjalan &middot; hari ke-12 dari 30 &middot; belum ada data</span>
     </div>
-    <p class="lede">Corong sejauh ini untuk kohor <em>On Time T-Care M/M+1</em>. Tahap kunjungan bengkel &amp; realisasi masih menunggu proses lanjutan.</p>
+    <p class="lede">Tim reminder belum mulai merekap data untuk bulan ini di sheet sumber &mdash; seluruh angka di bawah masih 0 dan akan otomatis terisi begitu data mulai diinput.</p>
 
     <div class="kpi-row">
-      <div class="card kpi-tile"><div class="label">Total database</div><div class="value">996</div><div class="sub">unit kendaraan</div></div>
-      <div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">229</div><div class="sub">23,0% dari database</div></div>
-      <div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">49</div><div class="sub">21,4% dari yang dikontak</div></div>
+      <div class="card kpi-tile"><div class="label">Total database</div><div class="value">0</div><div class="sub">unit kendaraan</div></div>
+      <div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">0</div><div class="sub">0,0% dari database</div></div>
+      <div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">0</div><div class="sub">0,0% dari yang dikontak</div></div>
       <div class="card kpi-tile pending"><div class="label">Booking hadir (show)</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>
       <div class="card kpi-tile pending"><div class="label">Realisasi service order</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>
     </div>
@@ -1733,51 +1778,51 @@
       <div class="funnel-title">Corong Konversi &middot; September 2026 (berjalan)</div>
       <div class="pyramid">
         <div class="pyr-row">
-          <div class="pyr-seg" style="--tl:3%; --tr:97%; --br:69.85%; --bl:30.15%; background:var(--pyr-1);">
+          <div class="pyr-seg" style="--tl:38.25%; --tr:61.75%; --br:61.75%; --bl:38.25%; background:var(--pyr-1);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:90px;">Total Database</span>
+              <span class="pyr-seg-label" style="max-width:53px;">Total Database</span>
               <span class="pyr-seg-pct">100,0%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value">996</div>
+            <div class="pyr-callout-value">0</div>
             <div class="pyr-callout-cap">kohor On Time T-Care M/M+1</div>
           </div>
         </div>
         <div class="pyr-row">
-          <div class="pyr-seg" style="--tl:30.15%; --tr:69.85%; --br:63.48%; --bl:36.52%; background:var(--pyr-2);">
+          <div class="pyr-seg" style="--tl:38.25%; --tr:61.75%; --br:61.75%; --bl:38.25%; background:var(--pyr-2);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:61px;">Berhasil Dikontak</span>
-              <span class="pyr-seg-pct">23,0%</span>
+              <span class="pyr-seg-label" style="max-width:53px;">Berhasil Dikontak</span>
+              <span class="pyr-seg-pct">0,0%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value">229</div>
-            <div class="pyr-callout-cap">dari 996 database</div>
+            <div class="pyr-callout-value">0</div>
+            <div class="pyr-callout-cap">dari 0 database</div>
           </div>
         </div>
         <div class="pyr-row">
-          <div class="pyr-seg" style="--tl:36.52%; --tr:63.48%; --br:63.48%; --bl:36.52%; background:var(--pyr-3);">
+          <div class="pyr-seg" style="--tl:38.25%; --tr:61.75%; --br:61.75%; --bl:38.25%; background:var(--pyr-3);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:61px;">Booking (BOC)</span>
-              <span class="pyr-seg-pct">21,4%</span>
+              <span class="pyr-seg-label" style="max-width:53px;">Booking (BOC)</span>
+              <span class="pyr-seg-pct">0,0%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value">49</div>
-            <div class="pyr-callout-cap">dari 229 kontak</div>
+            <div class="pyr-callout-value">0</div>
+            <div class="pyr-callout-cap">dari 0 kontak</div>
           </div>
         </div>
         <div class="pyr-row">
-          <div class="pyr-seg is-pending" style="--tl:36.52%; --tr:63.48%; --br:63.48%; --bl:36.52%;">
+          <div class="pyr-seg is-pending" style="--tl:38.25%; --tr:61.75%; --br:61.75%; --bl:38.25%;">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:61px;">Booking Hadir</span>
+              <span class="pyr-seg-label" style="max-width:53px;">Booking Hadir</span>
               <span class="pyr-seg-pct">&mdash;</span>
             </div>
           </div>
           <div class="pyr-callout">
             <div class="pyr-callout-value is-pending">Menunggu proses</div>
-            <div class="pyr-callout-cap">bulan masih berjalan &middot; hari ke-10 dari 30</div>
+            <div class="pyr-callout-cap">bulan masih berjalan &middot; hari ke-12 dari 30</div>
           </div>
         </div>
       </div>
@@ -1785,17 +1830,17 @@
 
     <div class="card callstatus-card">
       <div class="callstatus-donut-block">
-        <svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Grafik donut"><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--series-1)" stroke-width="20" stroke-dasharray="229.249 97.476" stroke-dashoffset="-0.000" transform="rotate(-90 62.0 62.0)"><title>Connected &middot; 127</title></circle><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--text-muted)" stroke-width="20" stroke-dasharray="97.476 229.249" stroke-dashoffset="-229.249" transform="rotate(-90 62.0 62.0)"><title>Un-connected &middot; 54</title></circle><text x="62.0" y="60.0" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">181</text><text x="62.0" y="77.0" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">panggilan</text></svg>
+        <svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Grafik donut"><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--gridline)" stroke-width="20" stroke-dasharray="326.726 0.000" stroke-dashoffset="-0.000" transform="rotate(-90 62.0 62.0)"><title>Belum ada data</title></circle><text x="62.0" y="60.0" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">&mdash;</text><text x="62.0" y="77.0" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">belum ada data</text></svg>
         <div class="donut-legend">
           <div class="panel-desc" style="margin:0 0 2px;">Status Panggilan &middot; September 2026</div>
-          <div class="ditem"><span class="swatch" style="background:var(--series-1)"></span><span>Connected &middot; <b>127</b> (70,2%)</span></div><div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span><span>Un-connected &middot; <b>54</b> (29,8%)</span></div>
+          <div class="ditem"><span class="swatch" style="background:var(--series-1)"></span><span>Connected &middot; <b>0</b> (0,0%)</span></div><div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span><span>Un-connected &middot; <b>0</b> (0,0%)</span></div>
           <div class="donut-note">Terhubung = telepon tersambung; tidak selalu sama dengan angka Contacted di samping (pencatatan manual, lihat Metodologi).</div>
         </div>
       </div>
       <div class="callstatus-stats">
         <div class="callstatus-stat">
           <div class="label">Contacted (berhasil dikontak)</div>
-          <div class="value">229</div>
+          <div class="value">0</div>
           <div class="sub">Sudah bicara &amp; dijelaskan program reminder</div>
         </div>
         <div class="callstatus-stat">
@@ -1806,7 +1851,7 @@
         <div class="callstatus-stat">
           <div class="label">Non BOC yang masuk</div>
           <div class="value">0</div>
-          <div class="sub">sampel n=49 baris &middot; unit yang masuk bengkel tanpa booking formal</div>
+          <div class="sub">sampel n=0 baris &middot; unit yang masuk bengkel tanpa booking formal</div>
         </div>
       </div>
     </div>
@@ -1814,63 +1859,125 @@
     <div class="panel-grid">
       <div class="card panel">
         <h3>Program T-Care</h3>
-        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
-        <div class="segbar"><div class="seg" style="width:77.55%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:10.20%; background:var(--series-2); "></div><div class="seg" style="width:8.16%; background:var(--series-3); "></div><div class="seg" style="width:4.08%; background:var(--series-4); border-radius:0 5px 5px 0;"></div></div>
+        <div class="panel-desc n-note">sampel tercatat n=0 baris detail</div>
+        <div class="segbar"></div>
         <div class="seg-legend">
-<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','tcare')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">T-CARE &middot; <b>38</b> (77,6%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','gbsb')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">GBSB &middot; <b>5</b> (10,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','lite')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">T-CARE LITE &middot; <b>4</b> (8,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-program','liteplus')"><span class="swatch" style="background:var(--series-4)"></span><span class="sl-text">T-CARE LITE+ &middot; <b>2</b> (4,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
         </div>
         <div class="bd-drawer" id="drawer-se-program" hidden></div>
       </div>
 
       <div class="card panel">
         <h3>Segmen Fleet / Retail</h3>
-        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
-        <div class="segbar"><div class="seg" style="width:87.76%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:10.20%; background:var(--series-2); "></div><div class="seg" style="width:2.04%; background:var(--series-3); border-radius:0 5px 5px 0;"></div></div>
+        <div class="panel-desc n-note">sampel tercatat n=0 baris detail</div>
+        <div class="segbar"></div>
         <div class="seg-legend">
-<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-fleet','retail')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Retail &middot; <b>43</b> (87,8%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-fleet','fleet')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">Fleet &middot; <b>5</b> (10,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-fleet','primefleet')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">Prime Fleet &middot; <b>1</b> (2,0%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
         </div>
         <div class="bd-drawer" id="drawer-se-fleet" hidden></div>
       </div>
 
       <div class="card panel">
         <h3>Ketepatan Servis Terakhir</h3>
-        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
-        <div class="segbar"><div class="seg" style="width:55.10%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:42.86%; background:var(--series-2); "></div><div class="seg" style="width:2.04%; background:var(--series-3); border-radius:0 5px 5px 0;"></div></div>
+        <div class="panel-desc n-note">sampel tercatat n=0 baris detail</div>
+        <div class="segbar"></div>
         <div class="seg-legend">
-<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-punctual','early')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Early &middot; <b>27</b> (55,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-punctual','late')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">Late &middot; <b>21</b> (42,9%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-punctual','ontime')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">On Time &middot; <b>1</b> (2,0%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
         </div>
         <div class="bd-drawer" id="drawer-se-punctual" hidden></div>
       </div>
 
       <div class="card panel">
         <h3>Perilaku Pelanggan</h3>
-        <div class="panel-desc n-note">sampel tercatat n=49 baris detail</div>
-        <div class="segbar"><div class="seg" style="width:55.10%; background:var(--series-1); border-radius:5px 0 0 5px;"></div><div class="seg" style="width:36.73%; background:var(--series-2); "></div><div class="seg" style="width:8.16%; background:var(--series-3); border-radius:0 5px 5px 0;"></div></div>
+        <div class="panel-desc n-note">sampel tercatat n=0 baris detail</div>
+        <div class="segbar"></div>
         <div class="seg-legend">
-<div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-behavior','active')"><span class="swatch" style="background:var(--series-1)"></span><span class="sl-text">Active &middot; <b>27</b> (55,1%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-behavior','sleeping')"><span class="swatch" style="background:var(--series-2)"></span><span class="sl-text">Sleeping &middot; <b>18</b> (36,7%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="item is-clickable" tabindex="0" onclick="toggleBreak(event,'se-behavior','passive')"><span class="swatch" style="background:var(--series-3)"></span><span class="sl-text">Passive &middot; <b>4</b> (8,2%)</span><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
         </div>
         <div class="bd-drawer" id="drawer-se-behavior" hidden></div>
       </div>
 
       <div class="card panel">
         <h3>Model Kendaraan Terlibat</h3>
-        <div class="panel-desc n-note">populasi penuh &middot; 229 unit yang berhasil dihubungi (Contacted)</div>
+        <div class="panel-desc n-note">belum ada data direkap untuk bulan ini</div>
         <div class="rank-list">
-<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','innova')"><div class="rlabel">Innova</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">68 <span>29,7%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','rush')"><div class="rlabel">Rush</div><div class="rank-track"><div class="rank-fill" style="width:65%"></div></div><div class="rank-val">44 <span>19,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','avanza')"><div class="rlabel">Avanza</div><div class="rank-track"><div class="rank-fill" style="width:62%"></div></div><div class="rank-val">42 <span>18,3%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','raize')"><div class="rlabel">Raize</div><div class="rank-track"><div class="rank-fill" style="width:26%"></div></div><div class="rank-val">18 <span>7,9%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','fortuner')"><div class="rlabel">Fortuner</div><div class="rank-track"><div class="rank-fill" style="width:22%"></div></div><div class="rank-val">15 <span>6,6%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','lainnya')"><div class="rlabel">Lainnya (Calya, Agya, dll.)</div><div class="rank-track"><div class="rank-fill" style="width:62%"></div></div><div class="rank-val">42 <span>18,3%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
         </div>
         <div class="bd-drawer" id="drawer-se-model" hidden></div>
       </div>
 
       <div class="card panel">
         <h3>Outlet Servis Selain Perintis Perkasa Adam Malik</h3>
-        <div class="panel-desc n-note">sampel tercatat n=49 baris detail &middot; outlet lain tempat pelanggan tercatat servis terakhir</div>
+        <div class="panel-desc n-note">sampel tercatat n=0 baris detail &middot; outlet lain tempat pelanggan tercatat servis terakhir</div>
         <div class="rank-list">
-<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','binjai')"><div class="rlabel">Auto2000 Binjai</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">18 <span>36,7%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','amplas')"><div class="rlabel">Auto2000 Amplas</div><div class="rank-track"><div class="rank-fill" style="width:61%"></div></div><div class="rank-val">11 <span>22,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','gatotsubroto')"><div class="rlabel">Auto2000 Gatot Subroto</div><div class="rank-track"><div class="rank-fill" style="width:39%"></div></div><div class="rank-val">7 <span>14,3%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-outlet','lainnya')"><div class="rlabel">Lainnya (10 outlet lain)</div><div class="rank-track"><div class="rank-fill" style="width:72%"></div></div><div class="rank-val">13 <span>26,5%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+
         </div>
         <div class="bd-drawer" id="drawer-se-outlet" hidden></div>
       </div>
     </div>
   </section>
+  </div>
+  <div class="tab-page" id="page-wa-blast" hidden>
+
+<section id="wa-blast">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">WA Blast Activity</div>
+        <h2>Aktivitas WA Blast &middot; Log Manual</h2>
+      </div>
+      <div class="wa-btn-group">
+        <button type="button" class="wa-btn-add" id="waAddRowBtn">+ Tambah Baris</button>
+        <button type="button" class="wa-btn-sync" id="waSyncBtn" title="Kirim data terbaru ke Google Sheet supaya bisa dicocokkan dengan data booking">Sinkronkan ke Google Sheet</button>
+      </div>
+    </div>
+    <p class="lede">Catatan manual aktivitas WA Blast per bulan &amp; kategori database. Semua isian di sini diedit langsung di halaman ini dan tersimpan otomatis &mdash; tidak diregenerasi oleh refresh terjadwal. Kolom VIN/Nomor Rangka bisa diisi dengan mengunggah file Excel atau CSV (kolom berjudul &ldquo;VIN&rdquo; atau &ldquo;Rangka&rdquo; akan otomatis terdeteksi). Setelah menambah/mengubah data, klik &ldquo;Sinkronkan ke Google Sheet&rdquo; supaya tab &ldquo;Ringkasan Blast yang Booking&rdquo; ikut terbarui.</p>
+    <div class="wa-sync-status" id="waSyncStatus"></div>
+
+    <div class="card panel">
+      <div class="tbl-scroll">
+        <table class="wa-blast-table">
+          <thead>
+            <tr>
+              <th>No</th><th>Bulan</th><th>Kategori Databes</th><th>Total Databes</th><th>VIN/Nomor Rangka</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="waBlastBody"></tbody>
+        </table>
+      </div>
+      <div class="wa-empty-state" id="waEmptyState" hidden>Belum ada data. Klik &ldquo;+ Tambah Baris&rdquo; untuk mulai mencatat.</div>
+    </div>
+  </section>
+
+  </div>
+  <div class="tab-page" id="page-wa-summary" hidden>
+
+<section id="wa-summary">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">Ringkasan Blast yang Booking</div>
+        <h2>VIN WA Blast yang Sudah Booking &middot; per Kategori</h2>
+      </div>
+    </div>
+    <p class="lede">Grafik kiri menunjukkan total unit yang di-blast per Kategori Databes (di tab WA Blast Activity); grafik kanan menunjukkan berapa dari unit tersebut yang sudah booking &mdash; warna tiap kategori disamakan di kedua grafik supaya mudah dibandingkan. Dihitung otomatis secara berkala di latar belakang.</p>
+
+    <div class="card panel">
+      <h3>Blast vs. Booking per Kategori</h3>
+      <div class="panel-desc n-note" id="waSummaryUpdated">Menunggu data...</div>
+      <div class="wa-charts-row" id="waSummaryWrap">
+        <div class="wa-chart-block">
+          <div class="wa-chart-title">Total Unit Di-Blast</div>
+          <div class="wa-stack-bar" id="waTotalBar"></div>
+        </div>
+        <div class="wa-chart-block">
+          <div class="wa-chart-title">Sudah Booking</div>
+          <div class="wa-bars-row" id="waBookingBars"></div>
+        </div>
+        <div class="wa-stack-legend" id="waSummaryLegend"></div>
+      </div>
+      <div class="wa-empty-state" id="waSummaryEmpty" hidden>Belum ada data ringkasan. Ini akan otomatis terisi setelah kategori &amp; VIN diisi di tab WA Blast Activity dan proses sinkronisasi berjalan (setiap &plusmn;1 jam).</div>
+    </div>
+  </section>
+
   </div>
   <div class="tab-page" id="page-metodologi" hidden>
 <footer>
@@ -1878,7 +1985,7 @@
     <p>"DELIVERY DATE due bulan ini" adalah kelompok pelanggan dengan Tanggal Delivery persis 6 bulan kalender sebelum bulan berjalan (mis. servis September 2026 &larr; delivery Maret 2026), mengikuti siklus reminder T-Care setiap 6 bulan. Sumber: sheet <span class="src">2026. PDFU & SBI New</span>.</p>
     <p>Status "sudah/belum servis berkala" dicocokkan lewat No. Rangka (VIN) terhadap dua sumber: sheet <span class="src">Data WO</span> bulan berjalan (hanya pekerjaan berlabel &ldquo;SERVICE BERKALA [kelipatan 10.000] KM&rdquo; yang menandai selesai) dan <span class="src">TCare Customer Database</span> (sheet "master") yang mencakup histori servis di seluruh cabang Perintis maupun outlet/dealer lain di luar Data WO bulan berjalan (job "2nd / 10K" ke atas dianggap sudah servis berkala; job "1st / 1K" adalah servis gratis pertama dan tidak dihitung). Kendaraan yang cocok di salah satu dari kedua sumber ini otomatis dikeluarkan dari daftar. Aktivitas bengkel lain di Data WO (ganti oli, klaim garansi, dll.) tidak menggugurkan kendaraan dari daftar, dan ditandai di kolom Keterangan.</p>
     <p>Kolom <b style="color:var(--text-primary)">Tgl Booking (Servis Berikutnya)</b> dan <b style="color:var(--text-primary)">Keterangan (Follow-up)</b> sengaja dikosongkan &mdash; keduanya untuk diisi manual oleh tim reminder selama proses follow-up siklus ini berjalan. Kolom Tgl Booking/Keterangan bawaan di sheet PDFU adalah data dari follow-up awal pasca-delivery (&plusmn;1 bulan setelah delivery), bukan untuk siklus servis berkala kali ini, sehingga tidak dipakai di sini.</p>
-    <p>Ditarik otomatis pada 10 Sep 2026.</p>
+    <p>Ditarik otomatis pada 12 Sep 2026.</p>
     <div class="db-banner" id="dbBanner">Tidak bisa tersambung ke server penyimpanan follow-up saat ini, jadi isian Tgl Booking/Keterangan hanya bertahan selama halaman ini terbuka dan tidak tersinkron ke pelihat lain. Coba muat ulang halaman.</div>
   </footer>
 <footer id="sumber">
@@ -1888,11 +1995,11 @@
         <p>Angka corong utama (Database, Kontak, BOC, CAI, Realisasi SO) diambil dari ringkasan rekap tim pada sheet <span class="src">ANALISA SBE 4-5-6 TH</span>. Rincian &ldquo;Terhubung/Tidak terhubung&rdquo; pada sumber terkadang tidak menjumlah persis ke angka &ldquo;Kontak&rdquo; akibat pencatatan manual &mdash; ditampilkan apa adanya tanpa disesuaikan.</p>
         <p>Kartu <b style="color:var(--text-primary)">Status Panggilan</b> di tiap periode menampilkan angka populasi penuh dari sheet: <b style="color:var(--text-primary)">Connected/Un-connected</b> (telepon tersambung atau tidak) dan <b style="color:var(--text-primary)">Late Call</b> (unit yang sudah masuk servis di Perintis duluan, sebelum sempat ditelpon reminder). <b style="color:var(--text-primary)">Non BOC yang masuk</b> berbeda &mdash; sheet tidak menyimpan total berjalan untuk kolom ini, jadi angkanya dihitung dari sampel 49 baris detail yang sama seperti grafik profil di bawah, bukan populasi penuh.</p>
         <p>Seluruh grafik profil (Program, Model, Fleet/Retail, Ketepatan Servis, Perilaku, Outlet, Alasan Panggilan, Non BOC yang masuk) dihitung dari baris data detail yang tersedia di sheet &mdash; masing-masing <b style="color:var(--text-primary)">sampel 49 baris</b> per periode, bukan keseluruhan populasi database, kecuali disebutkan lain di bawah. Gunakan sebagai indikasi komposisi, bukan angka final.</p>
-<p>Pengecualian: panel <b style="color:var(--text-primary)">Model Kendaraan Terlibat</b> untuk bulan berjalan (September 2026) sudah dihitung dari <b style="color:var(--text-primary)">seluruh populasi</b> unit yang berhasil dihubungi &mdash; bukan sampel 49 baris seperti panel profil lainnya.</p>      </div>
+      </div>
       <div>
         <h4>Sumber & Snapshot</h4>
         <p>Google Sheets &middot; <span class="src">ANALISA SBE 4-5-6 TH</span></p>
-        <p>Ditarik otomatis pada 10 September 2026. Dashboard ini disinkronkan berkala dari sheet sumber.</p>
+        <p>Ditarik otomatis pada 12 September 2026. Dashboard ini disinkronkan berkala dari sheet sumber.</p>
       </div>
     </div>
   </footer>
@@ -1949,7 +2056,7 @@
   //      silently stop persisting the moment the same file is viewed as a
   //      Claude Artifact instead.
   var COHORT_KEY = "retention_2026_03";
-  var FOLLOWUP_API_URL = "";
+  var FOLLOWUP_API_URL = "https://script.google.com/macros/s/AKfycbya3B1-u51Sxc-r8QHqSGxmbmg154wgYX8GX-Kna1TTywCjqiqsVGaNAjUdAmE5fQo/exec";
   var POLL_INTERVAL_MS = 30000;
 
   function setStatus(vin, cls, text){
@@ -2335,445 +2442,12 @@
       ]
     }
   },
-  "se-program": {
-    "tcare": {
-      "label": "T-CARE &middot; 38 unit, per fleet/retail",
-      "rows": [
-        [
-          "Retail",
-          32
-        ],
-        [
-          "Fleet",
-          5
-        ],
-        [
-          "Prime Fleet",
-          1
-        ]
-      ]
-    },
-    "gbsb": {
-      "label": "GBSB &middot; 5 unit, per fleet/retail",
-      "rows": [
-        [
-          "Retail",
-          5
-        ]
-      ]
-    },
-    "lite": {
-      "label": "T-CARE LITE &middot; 4 unit, per fleet/retail",
-      "rows": [
-        [
-          "Retail",
-          4
-        ]
-      ]
-    },
-    "liteplus": {
-      "label": "T-CARE LITE+ &middot; 2 unit, per fleet/retail",
-      "rows": [
-        [
-          "Retail",
-          2
-        ]
-      ]
-    }
-  },
-  "se-fleet": {
-    "retail": {
-      "label": "Retail &middot; 43 unit, per program",
-      "rows": [
-        [
-          "T-CARE",
-          32
-        ],
-        [
-          "GBSB",
-          5
-        ],
-        [
-          "T-CARE LITE",
-          4
-        ],
-        [
-          "T-CARE LITE+",
-          2
-        ]
-      ]
-    },
-    "fleet": {
-      "label": "Fleet &middot; 5 unit, per program",
-      "rows": [
-        [
-          "T-CARE",
-          5
-        ]
-      ]
-    },
-    "primefleet": {
-      "label": "Prime Fleet &middot; 1 unit, per program",
-      "rows": [
-        [
-          "T-CARE",
-          1
-        ]
-      ]
-    }
-  },
-  "se-punctual": {
-    "early": {
-      "label": "Early &middot; 27 unit, per perilaku",
-      "rows": [
-        [
-          "Active",
-          14
-        ],
-        [
-          "Sleeping",
-          12
-        ],
-        [
-          "Passive",
-          1
-        ]
-      ]
-    },
-    "late": {
-      "label": "Late &middot; 21 unit, per perilaku",
-      "rows": [
-        [
-          "Active",
-          13
-        ],
-        [
-          "Sleeping",
-          6
-        ],
-        [
-          "Passive",
-          2
-        ]
-      ]
-    },
-    "ontime": {
-      "label": "On Time &middot; 1 unit, per perilaku",
-      "rows": [
-        [
-          "Passive",
-          1
-        ]
-      ]
-    }
-  },
-  "se-behavior": {
-    "active": {
-      "label": "Active &middot; 27 unit, per ketepatan",
-      "rows": [
-        [
-          "Early",
-          14
-        ],
-        [
-          "Late",
-          13
-        ]
-      ]
-    },
-    "sleeping": {
-      "label": "Sleeping &middot; 18 unit, per ketepatan",
-      "rows": [
-        [
-          "Early",
-          12
-        ],
-        [
-          "Late",
-          6
-        ]
-      ]
-    },
-    "passive": {
-      "label": "Passive &middot; 4 unit, per ketepatan",
-      "rows": [
-        [
-          "Late",
-          2
-        ],
-        [
-          "On Time",
-          1
-        ],
-        [
-          "Early",
-          1
-        ]
-      ]
-    }
-  },
-  "se-model": {
-    "innova": {
-      "label": "Innova &middot; 68 unit",
-      "rows": [
-        [
-          "Program &middot; T-CARE",
-          68
-        ],
-        [
-          "Fleet/Retail &middot; Retail",
-          51
-        ],
-        [
-          "Fleet/Retail &middot; Fleet",
-          14
-        ],
-        [
-          "Fleet/Retail &middot; Prime Fleet",
-          3
-        ]
-      ]
-    },
-    "rush": {
-      "label": "Rush &middot; 44 unit",
-      "rows": [
-        [
-          "Program &middot; T-CARE",
-          44
-        ],
-        [
-          "Fleet/Retail &middot; Retail",
-          34
-        ],
-        [
-          "Fleet/Retail &middot; Fleet",
-          6
-        ],
-        [
-          "Fleet/Retail &middot; Prime Fleet",
-          4
-        ]
-      ]
-    },
-    "avanza": {
-      "label": "Avanza &middot; 42 unit",
-      "rows": [
-        [
-          "Program &middot; T-CARE",
-          42
-        ],
-        [
-          "Fleet/Retail &middot; Retail",
-          18
-        ],
-        [
-          "Fleet/Retail &middot; Fleet",
-          13
-        ],
-        [
-          "Fleet/Retail &middot; Prime Fleet",
-          11
-        ]
-      ]
-    },
-    "raize": {
-      "label": "Raize &middot; 18 unit",
-      "rows": [
-        [
-          "Program &middot; T-CARE",
-          18
-        ],
-        [
-          "Fleet/Retail &middot; Retail",
-          17
-        ],
-        [
-          "Fleet/Retail &middot; Fleet",
-          1
-        ]
-      ]
-    },
-    "fortuner": {
-      "label": "Fortuner &middot; 15 unit",
-      "rows": [
-        [
-          "Program &middot; T-CARE",
-          15
-        ],
-        [
-          "Fleet/Retail &middot; Retail",
-          14
-        ],
-        [
-          "Fleet/Retail &middot; Fleet",
-          1
-        ]
-      ]
-    },
-    "lainnya": {
-      "label": "Lainnya &middot; 42 unit",
-      "rows": [
-        [
-          "Calya",
-          15
-        ],
-        [
-          "Agya",
-          11
-        ],
-        [
-          "Hiace",
-          7
-        ],
-        [
-          "Hilux",
-          5
-        ],
-        [
-          "Yaris",
-          2
-        ],
-        [
-          "Alphard",
-          1
-        ],
-        [
-          "Landcruiser",
-          1
-        ]
-      ]
-    }
-  },
-  "se-outlet": {
-    "binjai": {
-      "label": "Auto2000 Binjai &middot; 18 unit, per model",
-      "rows": [
-        [
-          "Rush",
-          6
-        ],
-        [
-          "Avanza",
-          4
-        ],
-        [
-          "Innova",
-          3
-        ],
-        [
-          "Raize",
-          3
-        ],
-        [
-          "Calya",
-          1
-        ],
-        [
-          "Hiace",
-          1
-        ]
-      ]
-    },
-    "amplas": {
-      "label": "Auto2000 Amplas &middot; 11 unit, per model",
-      "rows": [
-        [
-          "Innova",
-          4
-        ],
-        [
-          "Calya",
-          2
-        ],
-        [
-          "Raize",
-          2
-        ],
-        [
-          "Rush",
-          1
-        ],
-        [
-          "Fortuner",
-          1
-        ],
-        [
-          "Yaris",
-          1
-        ]
-      ]
-    },
-    "gatotsubroto": {
-      "label": "Auto2000 Gatot Subroto &middot; 7 unit, per model",
-      "rows": [
-        [
-          "Innova",
-          3
-        ],
-        [
-          "Landcruiser",
-          1
-        ],
-        [
-          "Avanza",
-          1
-        ],
-        [
-          "Rush",
-          1
-        ],
-        [
-          "Fortuner",
-          1
-        ]
-      ]
-    },
-    "lainnya": {
-      "label": "Lainnya &middot; 13 unit, 10 outlet",
-      "rows": [
-        [
-          "Agung Toyota Batam Center",
-          2
-        ],
-        [
-          "Agung Toyota Dumai",
-          2
-        ],
-        [
-          "Agung Toyota Jambi Ii (Pal-10)",
-          2
-        ],
-        [
-          "Agung Toyota Bagan Batu",
-          1
-        ],
-        [
-          "Agung Toyota Pekanbaru I (Sutomo)",
-          1
-        ],
-        [
-          "Agung Toyota Pekanbaru Iii (S.M. Amin)",
-          1
-        ],
-        [
-          "Agung Toyota Pekanbaru Iv (Harapan Raya)",
-          1
-        ],
-        [
-          "Agung Toyota Ujung Batu",
-          1
-        ],
-        [
-          "Auto2000 By Pass Padang",
-          1
-        ],
-        [
-          "Auto2000 Cikarang",
-          1
-        ]
-      ]
-    }
-  }
+  "se-program": {},
+  "se-fleet": {},
+  "se-punctual": {},
+  "se-behavior": {},
+  "se-model": {},
+  "se-outlet": {}
 };
 
 
@@ -2831,4 +2505,481 @@
     }
   });
 
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+  var WA_COLLECTION = 'wa_blast_activity';
+  var WA_BLAST_API_URL = "https://script.google.com/macros/s/AKfycbxdQMwjVYaOtYfabZ_DW5mECvBxyw_3CDWrfT8coMOzfYTlS_HvxF8eZg3VXMjCjU2SXg/exec";
+  var POLL_INTERVAL_MS = 30000;
+
+  var db = null;              // set once tryArtifactDb() confirms availability
+  var backendIsApi = false;   // true once falling back to the Apps Script API
+  var tbody = document.getElementById('waBlastBody');
+  var emptyState = document.getElementById('waEmptyState');
+  var addBtn = document.getElementById('waAddRowBtn');
+  var syncBtn = document.getElementById('waSyncBtn');
+  var syncStatus = document.getElementById('waSyncStatus');
+  var lastRows = []; // most recent rows passed to render() - used by the sync button below
+
+  function escapeHtml(s){
+    return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ---- rendering: works from a plain array of {id, bulan, kategori,
+  // total_databes, vins, vin_filename} objects regardless of which backend
+  // supplied them (a `db` QuerySnapshot is mapped to this shape first). ----
+
+  function rowHtml(row, idx){
+    var vins = Array.isArray(row.vins) ? row.vins : [];
+    var vinLabel = vins.length ? (vins.length + ' VIN') : 'Belum ada data';
+    return (
+      '<tr data-id="' + row.id + '">' +
+        '<td class="num">' + (idx + 1) + '</td>' +
+        '<td><input type="text" class="edit-field wa-bulan" value="' + escapeHtml(row.bulan) + '" placeholder="mis. September 2026"></td>' +
+        '<td><input type="text" class="edit-field wa-kategori" value="' + escapeHtml(row.kategori) + '" placeholder="mis. Data Funnel MRA"></td>' +
+        '<td><input type="number" class="edit-field wa-total" value="' + (row.total_databes != null ? row.total_databes : '') + '" placeholder="0"></td>' +
+        '<td class="wa-vin-cell">' +
+          '<div class="wa-vin-row">' +
+            '<button type="button" class="wa-vin-count" data-has="' + (vins.length ? '1' : '0') + '">' + vinLabel + '</button>' +
+            '<label class="wa-upload-btn">Upload Excel<input type="file" class="wa-vin-file" accept=".xlsx,.xls,.csv" hidden></label>' +
+          '</div>' +
+          '<div class="wa-vin-drawer" hidden></div>' +
+        '</td>' +
+        '<td><button type="button" class="wa-delete-row" title="Hapus baris">&times;</button></td>' +
+      '</tr>'
+    );
+  }
+
+  function render(rows){
+    lastRows = rows || [];
+    if(!tbody) return;
+    if(!rows.length){
+      tbody.innerHTML = '';
+      if(emptyState) emptyState.hidden = false;
+      return;
+    }
+    if(emptyState) emptyState.hidden = true;
+    tbody.innerHTML = rows.map(rowHtml).join('');
+    wireRows(rows);
+  }
+
+  // ---- "Sinkronkan ke Google Sheet" button: pushes the CURRENT rows (from
+  // whichever backend is active) into the WA Blast Activity Google Sheet via
+  // a plain browser navigation (window.open / <a> click), NOT a fetch() -
+  // this is the one path that still works from inside a published Artifact,
+  // since the Artifact's CSP blocks fetch/XHR to external hosts but does not
+  // block the browser from navigating to/opening a normal link. Needed
+  // because Claude's own backend tooling cannot reach script.google.com at
+  // all (confirmed 2026-09-11), so this hands the one remaining step a
+  // human still needs to do the smallest possible form: one click. See
+  // wa-blast-backend-Code.gs's doGet(?action=seed) for the receiving end.
+
+  function buildSeedUrl(){
+    if(!WA_BLAST_API_URL) return null;
+    var payloadRows = lastRows.map(function(r){
+      return {
+        id: r.id,
+        bulan: r.bulan || '',
+        kategori: r.kategori || '',
+        total_databes: r.total_databes != null ? r.total_databes : null,
+        vins: Array.isArray(r.vins) ? r.vins : [],
+        vin_filename: r.vin_filename || '',
+      };
+    });
+    var payload = encodeURIComponent(JSON.stringify(payloadRows));
+    return WA_BLAST_API_URL + '?action=seed&payload=' + payload;
+  }
+
+  if(syncBtn) syncBtn.addEventListener('click', function(){
+    if(!syncStatus) return;
+    var url = buildSeedUrl();
+    if(!url){
+      syncStatus.textContent = 'Sinkronisasi butuh dashboard yang di-generate dengan --wa-blast-api-url.';
+      return;
+    }
+    if(!lastRows.length){
+      syncStatus.textContent = 'Belum ada data untuk disinkronkan.';
+      return;
+    }
+    var opened = null;
+    try { opened = window.open(url, '_blank', 'noopener'); } catch(e){ opened = null; }
+    syncStatus.innerHTML = opened
+      ? 'Tab baru dibuka untuk sinkronisasi - cek hasilnya di sana (harusnya muncul <code>{"ok":true,...}</code>). Kalau tidak ada tab yang terbuka, <a href="' + url + '" target="_blank" rel="noopener">klik di sini</a>.'
+      : 'Klik link ini untuk menyelesaikan sinkronisasi: <a href="' + url + '" target="_blank" rel="noopener">buka link sinkronisasi</a>.';
+  });
+
+  function wireRows(rows){
+    var byId = {};
+    rows.forEach(function(r){ byId[r.id] = r; });
+    Array.prototype.slice.call(tbody.querySelectorAll('tr')).forEach(function(tr){
+      var id = tr.getAttribute('data-id');
+      var bulanEl = tr.querySelector('.wa-bulan');
+      var katEl = tr.querySelector('.wa-kategori');
+      var totalEl = tr.querySelector('.wa-total');
+      var fileEl = tr.querySelector('.wa-vin-file');
+      var countBtn = tr.querySelector('.wa-vin-count');
+      var drawer = tr.querySelector('.wa-vin-drawer');
+      var delBtn = tr.querySelector('.wa-delete-row');
+
+      if(bulanEl) bulanEl.addEventListener('change', function(){ saveField(id, 'bulan', bulanEl.value); });
+      if(katEl) katEl.addEventListener('change', function(){ saveField(id, 'kategori', katEl.value); });
+      if(totalEl) totalEl.addEventListener('change', function(){
+        saveField(id, 'total_databes', totalEl.value === '' ? null : Number(totalEl.value));
+      });
+
+      if(fileEl) fileEl.addEventListener('change', function(){
+        var file = fileEl.files && fileEl.files[0];
+        if(file) handleVinFile(id, file, tr);
+        fileEl.value = '';
+      });
+
+      if(countBtn) countBtn.addEventListener('click', function(){
+        if(!drawer) return;
+        if(!drawer.hidden){ drawer.hidden = true; return; }
+        renderVinDrawer(byId[id], drawer, id);
+        drawer.hidden = false;
+      });
+
+      if(delBtn) delBtn.addEventListener('click', function(){
+        if(!window.confirm('Hapus baris ini?')) return;
+        deleteRow(id);
+      });
+    });
+  }
+
+  function renderVinDrawer(row, drawer, id){
+    var vins = (row && Array.isArray(row.vins)) ? row.vins : [];
+    drawer.innerHTML = vins.length
+      ? ('<div class="wa-vin-list">' + vins.map(function(v){ return '<span class="wa-vin-chip">' + escapeHtml(v) + '</span>'; }).join('') + '</div>' +
+         '<button type="button" class="wa-vin-clear">Hapus data VIN</button>')
+      : '<div class="wa-vin-empty">Belum ada VIN diupload.</div>';
+    var clearBtn = drawer.querySelector('.wa-vin-clear');
+    if(clearBtn) clearBtn.addEventListener('click', function(){
+      saveField(id, 'vins', []);
+      saveField(id, 'vin_filename', '');
+    });
+  }
+
+  function parseVinsFromRows(rows){
+    var vins = [];
+    if(!rows || !rows.length) return vins;
+    var startIdx = 0, colIdx = 0;
+    var headerRow = (rows[0] || []).map(function(c){ return (c == null ? '' : String(c)).toUpperCase().trim(); });
+    var headerMatchIdx = -1;
+    for(var i = 0; i < headerRow.length; i++){
+      if(headerRow[i].indexOf('VIN') !== -1 || headerRow[i].indexOf('RANGKA') !== -1){ headerMatchIdx = i; break; }
+    }
+    if(headerMatchIdx !== -1){ colIdx = headerMatchIdx; startIdx = 1; }
+    for(var r = startIdx; r < rows.length; r++){
+      var cell = rows[r] && rows[r][colIdx];
+      var v = (cell == null ? '' : String(cell)).trim().toUpperCase();
+      if(v) vins.push(v);
+    }
+    var seen = {}, out = [];
+    for(var k = 0; k < vins.length; k++){
+      if(!seen[vins[k]]){ seen[vins[k]] = true; out.push(vins[k]); }
+    }
+    return out;
+  }
+
+  function handleVinFile(id, file, tr){
+    var countBtn = tr.querySelector('.wa-vin-count');
+    if(countBtn) countBtn.textContent = 'Memproses...';
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        if(typeof XLSX === 'undefined') throw new Error('XLSX library not loaded');
+        var data = new Uint8Array(e.target.result);
+        var wb = XLSX.read(data, { type: 'array' });
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        var rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false });
+        var vins = parseVinsFromRows(rows);
+        saveField(id, 'vins', vins, function(ok){
+          if(!ok && countBtn) countBtn.textContent = 'Gagal menyimpan';
+        });
+        saveField(id, 'vin_filename', file.name);
+      } catch(err){
+        console.error('wa vin parse failed', err);
+        if(countBtn) countBtn.textContent = 'Gagal membaca file';
+      }
+    };
+    reader.onerror = function(){ if(countBtn) countBtn.textContent = 'Gagal membaca file'; };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // ---- backend-dispatching helpers: addRow / saveField / deleteRow route
+  // to whichever backend initWaBlast() picked. ----
+  //
+  // NOTE: this is a plain either/or fallback (db OR api, never both) -
+  // deliberately NOT a "mirror both" scheme. A published Artifact's CSP
+  // blocks fetch()/XHR to any external host outright (see
+  // followup-backend-Code.gs's docstring, and generate_retention.py's
+  // render_html() - this is why THAT dashboard tab also only falls back to
+  // its Apps Script backend rather than mirroring), so any attempt to also
+  // POST to WA_BLAST_API_URL while `db` is active would silently never
+  // reach Google Sheets anyway when viewed as a Claude Artifact - it would
+  // only add a pointless failed network call. Keeping the Google Sheet
+  // current for the VIN cross-check (see wa-blast-backend-Code.gs) is
+  // therefore handled OUTSIDE the browser entirely, by a scheduled sync
+  // step that reads this Artifact's own `db` collection via the Artifact
+  // tool's read_db action and pushes rows to the same Apps Script endpoint
+  // server-side (no CSP applies there) - see
+  // claude/tcare-dashboard-workflow-notes.md's "VIN cross-check" section.
+
+  function addRow(){
+    if(db){
+      db.collection(WA_COLLECTION).add({ bulan: '', kategori: '', total_databes: null, vins: [], created_at: Date.now() })
+        .catch(function(err){ console.error('wa add row failed', err); });
+      return;
+    }
+    if(backendIsApi){
+      apiUpsert({ bulan: '', kategori: '', total_databes: null, vins: [] }).then(refreshFromApi)
+        .catch(function(err){ console.error('wa add row (api) failed', err); });
+    }
+  }
+
+  function saveField(id, field, value, cb){
+    if(db){
+      var body = {};
+      body[field] = value;
+      db.collection(WA_COLLECTION).doc(id).update(body)
+        .then(function(){ if(cb) cb(true); })
+        .catch(function(err){ console.error('wa save failed', field, err); if(cb) cb(false); });
+      return;
+    }
+    if(backendIsApi){
+      var body2 = { id: id };
+      body2[field] = value;
+      apiUpsert(body2)
+        .then(function(){ if(cb) cb(true); })
+        .catch(function(err){ console.error('wa save (api) failed', field, err); if(cb) cb(false); });
+    }
+  }
+
+  function deleteRow(id){
+    if(db){
+      db.collection(WA_COLLECTION).doc(id).delete().catch(function(err){ console.error('wa delete failed', err); });
+      return;
+    }
+    if(backendIsApi){
+      apiPost({ op: 'delete', id: id }).then(refreshFromApi)
+        .catch(function(err){ console.error('wa delete (api) failed', err); });
+    }
+  }
+
+  // ---- backend #1: Claude Artifact `db` capability ----
+
+  async function tryArtifactDb(){
+    var candidate = null;
+    try {
+      candidate = (window.claude && typeof window.claude.use === 'function') ? await window.claude.use('db') : null;
+    } catch(e) {
+      candidate = null;
+    }
+    if(!candidate) return false;
+    db = candidate;
+    if(addBtn) addBtn.addEventListener('click', addRow);
+    db.collection(WA_COLLECTION).orderBy('created_at', 'asc').onSnapshot(function(snap){
+      render(snap.docs.map(function(doc){ return Object.assign({ id: doc.id }, doc.data() || {}); }));
+    }, function(err){
+      console.error('wa subscribe failed', err);
+    });
+    return true;
+  }
+
+  // ---- backend #2: Apps Script API (see claude/wa-blast-backend-Code.gs) ----
+
+  function apiPost(body){
+    return fetch(WA_BLAST_API_URL, {
+      method: 'POST',
+      // text/plain deliberately - a CORS "simple request", so the browser
+      // skips the OPTIONS preflight Apps Script cannot answer. Body is
+      // still JSON text, parsed manually with JSON.parse() server-side.
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body),
+    }).then(function(r){ return r.json(); });
+  }
+
+  function apiUpsert(fields){
+    var body = Object.assign({ op: 'upsert' }, fields);
+    return apiPost(body).then(function(res){
+      refreshFromApi();
+      return res;
+    });
+  }
+
+  function refreshFromApi(){
+    return fetch(WA_BLAST_API_URL + '?action=list')
+      .then(function(r){ return r.json(); })
+      .then(function(rows){ render(Array.isArray(rows) ? rows : []); })
+      .catch(function(err){ console.error('wa list (api) failed', err); });
+  }
+
+  function tryWaBlastApi(){
+    if(!WA_BLAST_API_URL){
+      if(tbody) tbody.innerHTML = '<tr><td colspan="6" class="wa-unavailable">Penyimpanan tidak tersedia di tampilan ini &mdash; buka sebagai Artifact Claude, atau lengkapi --wa-blast-api-url saat generate untuk memakai Google Sheets.</td></tr>';
+      if(addBtn) addBtn.disabled = true;
+      return;
+    }
+    backendIsApi = true;
+    if(addBtn) addBtn.addEventListener('click', addRow);
+    refreshFromApi();
+    setInterval(refreshFromApi, POLL_INTERVAL_MS);
+  }
+
+  async function initWaBlast(){
+    var usedDb = await tryArtifactDb();
+    if(!usedDb) tryWaBlastApi();
+  }
+
+  initWaBlast();
+})();
+</script>
+
+<script>
+(function(){
+  var SERIES_COLORS = ['--series-1','--series-2','--series-3','--series-4','--series-5','--series-6','--series-7','--series-8'];
+  var WA_BLAST_API_URL = "https://script.google.com/macros/s/AKfycbxdQMwjVYaOtYfabZ_DW5mECvBxyw_3CDWrfT8coMOzfYTlS_HvxF8eZg3VXMjCjU2SXg/exec";
+  var POLL_INTERVAL_MS_SUMMARY = 600000;
+
+  function escapeHtml(s){
+    return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function fmtPct(p){
+    return (Math.round(p * 1000) / 10).toString().replace('.', ',') + '%';
+  }
+
+  function fmtNum(n){
+    n = Number(n || 0);
+    try { return n.toLocaleString('id-ID'); } catch(e) { return String(n); }
+  }
+
+  function totalSegHtml(row, idx){
+    var color = SERIES_COLORS[idx % SERIES_COLORS.length];
+    var grow = Math.max(row.total, 0.0001);
+    return (
+      '<div class="wa-stack-seg" style="flex-grow:' + grow + '; background:var(' + color + ')" title="' + escapeHtml(row.kategori) + '">' +
+        '<div class="wa-stack-val">' + fmtNum(row.total) + '</div>' +
+      '</div>'
+    );
+  }
+
+  function bookingBarHtml(row, idx, maxMatched){
+    var color = SERIES_COLORS[idx % SERIES_COLORS.length];
+    var matched = Number(row.matched || 0);
+    var heightPct = 0;
+    if (maxMatched > 0 && matched > 0) {
+      heightPct = Math.max((matched / maxMatched) * 100, 8);
+    }
+    return (
+      '<div class="wa-bar-col" title="' + escapeHtml(row.kategori) + '">' +
+        '<div class="wa-bar-count">' + fmtNum(matched) + '</div>' +
+        '<div class="wa-bar-track">' +
+          '<div class="wa-bar-fill" style="height:' + heightPct.toFixed(1) + '%; background:var(' + color + ')">' +
+            (heightPct > 0 ? '<div class="wa-bar-pct">' + fmtPct(row.pct) + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function legendItemHtml(row, idx){
+    var color = SERIES_COLORS[idx % SERIES_COLORS.length];
+    return (
+      '<div class="wa-legend-item">' +
+        '<span class="swatch" style="background:var(' + color + ')"></span>' +
+        '<span><b>' + escapeHtml(row.kategori) + '</b><br><span class="cap"><span class="cap-num">' + fmtNum(row.matched) + '/' + fmtNum(row.total) + '</span> unit booking (' + fmtPct(row.pct) + ')</span></span>' +
+      '</div>'
+    );
+  }
+
+  function renderRows(rows, updatedAtIso){
+    var totalBar = document.getElementById('waTotalBar');
+    var bookingBars = document.getElementById('waBookingBars');
+    var legend = document.getElementById('waSummaryLegend');
+    var wrap = document.getElementById('waSummaryWrap');
+    var empty = document.getElementById('waSummaryEmpty');
+    var updated = document.getElementById('waSummaryUpdated');
+    if(!wrap) return;
+    rows = Array.isArray(rows) ? rows : [];
+    if(!rows.length){
+      if(totalBar) totalBar.innerHTML = '';
+      if(bookingBars) bookingBars.innerHTML = '';
+      if(legend) legend.innerHTML = '';
+      wrap.hidden = true;
+      if(empty) empty.hidden = false;
+      if(updated) updated.textContent = 'Belum ada data';
+      return;
+    }
+    wrap.hidden = false;
+    if(empty) empty.hidden = true;
+    var maxMatched = rows.reduce(function(m, r){ return Math.max(m, Number(r.matched || 0)); }, 0);
+    if(totalBar) totalBar.innerHTML = rows.map(totalSegHtml).join('');
+    if(bookingBars) bookingBars.innerHTML = rows.map(function(r, i){ return bookingBarHtml(r, i, maxMatched); }).join('');
+    if(legend) legend.innerHTML = rows.map(legendItemHtml).join('');
+    if(updated){
+      var t = updatedAtIso ? new Date(updatedAtIso) : null;
+      if(t && !isNaN(t.getTime())){
+        var dd = String(t.getDate()).padStart(2,'0');
+        var mm = String(t.getMonth()+1).padStart(2,'0');
+        var hh = String(t.getHours()).padStart(2,'0');
+        var mi = String(t.getMinutes()).padStart(2,'0');
+        updated.textContent = 'Terakhir diperbarui otomatis: ' + dd + '/' + mm + ' ' + hh + ':' + mi;
+      } else {
+        updated.textContent = 'n=' + rows.length + ' kategori';
+      }
+    }
+  }
+
+  function render(doc){
+    var data = doc && doc.data ? doc.data() : null;
+    var rows = (data && Array.isArray(data.rows)) ? data.rows : [];
+    renderRows(rows, data && data.updated_at);
+  }
+
+  // ---- fallback for when `db` is unavailable (e.g. the standalone/Vercel
+  // copy): fetch the Apps Script's ?action=refresh_summary endpoint
+  // directly. This works there specifically because a plain static page,
+  // unlike a published Claude Artifact, has no CSP blocking outbound
+  // fetch() - see build_wa_summary_script()'s docstring. ----
+
+  function fetchAndRenderFromApi(){
+    return fetch(WA_BLAST_API_URL + '?action=refresh_summary')
+      .then(function(r){ return r.json(); })
+      .then(function(rows){
+        if(!Array.isArray(rows)) throw new Error('unexpected response shape (expected an array)');
+        renderRows(rows, new Date().toISOString());
+      })
+      .catch(function(err){ console.error('wa summary api fetch failed', err); });
+  }
+
+  async function initWaSummary(){
+    var db = null;
+    try {
+      db = (window.claude && typeof window.claude.use === 'function') ? await window.claude.use('db') : null;
+    } catch(e) {
+      db = null;
+    }
+    if(db){
+      db.doc('wa_blast_summary/current').onSnapshot(render, function(err){
+        console.error('wa summary subscribe failed', err);
+      });
+      return;
+    }
+    if(!WA_BLAST_API_URL){
+      var wrap = document.getElementById('waSummaryWrap');
+      if(wrap){
+        wrap.hidden = true;
+        wrap.insertAdjacentHTML('afterend', '<div class="wa-unavailable">Penyimpanan tidak tersedia di tampilan ini &mdash; buka sebagai Artifact Claude, atau lengkapi --wa-blast-api-url saat generate untuk memakai Google Sheets.</div>');
+      }
+      return;
+    }
+    fetchAndRenderFromApi();
+    setInterval(fetchAndRenderFromApi, POLL_INTERVAL_MS_SUMMARY);
+  }
+
+  initWaSummary();
+})();
 </script>
