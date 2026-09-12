@@ -1907,8 +1907,17 @@
       </div>
 
       <div class="card panel">
+        <h3>Alasan / Hasil Panggilan</h3>
+        <div class="panel-desc n-note">belum ada data direkap untuk bulan ini</div>
+        <div class="rank-list">
+<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','tidak_diangkat')"><div class="rlabel">Tidak diangkat/dihubungi</div><div class="rank-track"><div class="rank-fill" style="width:0%"></div></div><div class="rank-val">0 <span>0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','sudah_booking')"><div class="rlabel">Sudah booking</div><div class="rank-track"><div class="rank-fill" style="width:0%"></div></div><div class="rank-val">0 <span>0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','sudah_masuk')"><div class="rlabel">Sudah masuk/servis</div><div class="rank-track"><div class="rank-fill" style="width:0%"></div></div><div class="rank-val">0 <span>0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','lainnya')"><div class="rlabel">Lainnya</div><div class="rank-track"><div class="rank-fill" style="width:0%"></div></div><div class="rank-val">0 <span>0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','atur_jadwal')"><div class="rlabel">Atur jadwal dulu</div><div class="rank-track"><div class="rank-fill" style="width:0%"></div></div><div class="rank-val">0 <span>0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','tempat_lain')"><div class="rlabel">Servis di tempat lain</div><div class="rank-track"><div class="rank-fill" style="width:0%"></div></div><div class="rank-val">0 <span>0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+        </div>
+        <div class="bd-drawer" id="drawer-se-alasan" hidden></div>
+      </div>
+
+      <div class="card panel">
         <h3>Outlet Servis Selain Perintis Perkasa Adam Malik</h3>
-        <div class="panel-desc n-note">sampel tercatat n=0 baris detail &middot; outlet lain tempat pelanggan tercatat servis terakhir</div>
+        <div class="panel-desc n-note">belum ada data direkap untuk bulan ini</div>
         <div class="rank-list">
 
         </div>
@@ -1959,6 +1968,36 @@
       </div>
     </div>
     <p class="lede">Grafik kiri menunjukkan total unit yang di-blast per Kategori Databes (di tab WA Blast Activity); grafik kanan menunjukkan berapa dari unit tersebut yang sudah booking &mdash; warna tiap kategori disamakan di kedua grafik supaya mudah dibandingkan. Dihitung otomatis secara berkala di latar belakang.</p>
+
+    <div class="card callstatus-card" id="waOverallCard">
+      <div class="callstatus-donut-block" id="waOverallDonutBlock">
+        <div id="waOverallDonut"></div>
+        <div class="donut-legend">
+          <div class="panel-desc" style="margin:0 0 2px;" id="waOverallUpdated">Menunggu data...</div>
+          <div class="ditem"><span class="swatch" style="background:var(--series-3)"></span><span>Sudah Booking &middot; <b id="waOverallLegendMatched">0</b></span></div>
+          <div class="ditem"><span class="swatch" style="background:var(--gridline)"></span><span>Belum Booking &middot; <b id="waOverallLegendRemaining">0</b></span></div>
+          <div class="donut-note">Dihitung dari seluruh Kategori Databes yang tercatat di tab WA Blast Activity.</div>
+        </div>
+      </div>
+      <div class="callstatus-stats" id="waOverallWrap">
+        <div class="callstatus-stat">
+          <div class="label">Total Unit Di-Blast</div>
+          <div class="value" id="waOverallStatTotal">0</div>
+          <div class="sub">seluruh Kategori Databes</div>
+        </div>
+        <div class="callstatus-stat">
+          <div class="label">Sudah Booking</div>
+          <div class="value" id="waOverallStatMatched">0</div>
+          <div class="sub">unit yang di-blast dan sudah booking ke bengkel</div>
+        </div>
+        <div class="callstatus-stat">
+          <div class="label">Rate Booking</div>
+          <div class="value" id="waOverallStatPct">0%</div>
+          <div class="sub">persentase unit di-blast yang sudah booking</div>
+        </div>
+      </div>
+      <div class="wa-empty-state" id="waOverallEmpty" hidden>Belum ada data ringkasan. Ini akan otomatis terisi setelah kategori &amp; VIN diisi di tab WA Blast Activity dan proses sinkronisasi berjalan.</div>
+    </div>
 
     <div class="card panel">
       <h3>Blast vs. Booking per Kategori</h3>
@@ -2447,7 +2486,33 @@
   "se-punctual": {},
   "se-behavior": {},
   "se-model": {},
-  "se-outlet": {}
+  "se-outlet": {},
+  "se-alasan": {
+    "tidak_diangkat": {
+      "label": "Tidak diangkat/dihubungi &middot; 0 unit",
+      "rows": []
+    },
+    "sudah_booking": {
+      "label": "Sudah booking &middot; 0 unit",
+      "rows": []
+    },
+    "sudah_masuk": {
+      "label": "Sudah masuk/servis &middot; 0 unit",
+      "rows": []
+    },
+    "lainnya": {
+      "label": "Lainnya &middot; 0 unit",
+      "rows": []
+    },
+    "atur_jadwal": {
+      "label": "Atur jadwal dulu &middot; 0 unit",
+      "rows": []
+    },
+    "tempat_lain": {
+      "label": "Servis di tempat lain &middot; 0 unit",
+      "rows": []
+    }
+  }
 };
 
 
@@ -2954,6 +3019,90 @@
     );
   }
 
+  // ---- overall (all-kategori) summary card: donut + stat trio, added
+  // 2026-09-12 at the user's request - reuses the SAME .callstatus-card/
+  // .callstatus-donut-block/.donut-legend/.callstatus-stats classes and
+  // stroke-dasharray donut technique already used elsewhere in this
+  // dashboard for the "Status Panggilan" cards (see generate_dashboard.py's
+  // donut_svg()/build_callstatus_block()), for visual consistency rather
+  // than inventing a new component. ----
+
+  function buildOverallDonutSvg(matched, total, size, stroke){
+    size = size || 124; stroke = stroke || 20;
+    var r = (size - stroke) / 2;
+    var cx = size / 2, cy = size / 2;
+    var circumf = 2 * Math.PI * r;
+    var denom = total > 0 ? total : 1;
+    var remaining = Math.max(total - matched, 0);
+    var matchedLen = (matched / denom) * circumf;
+    var remainingLen = circumf - matchedLen;
+    var centerTop, centerSub;
+    if(total > 0){
+      centerTop = fmtNum(matched);
+      centerSub = 'sudah booking';
+    } else {
+      centerTop = '—';
+      centerSub = 'belum ada data';
+    }
+    var segs = (total > 0)
+      ? (
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(--series-3)" stroke-width="' + stroke + '" stroke-dasharray="' + matchedLen.toFixed(3) + ' ' + remainingLen.toFixed(3) + '" stroke-dashoffset="0" transform="rotate(-90 ' + cx + ' ' + cy + ')"><title>Sudah Booking &middot; ' + fmtNum(matched) + '</title></circle>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(--gridline)" stroke-width="' + stroke + '" stroke-dasharray="' + remainingLen.toFixed(3) + ' ' + matchedLen.toFixed(3) + '" stroke-dashoffset="-' + matchedLen.toFixed(3) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"><title>Belum Booking &middot; ' + fmtNum(remaining) + '</title></circle>'
+      )
+      : '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(--gridline)" stroke-width="' + stroke + '"><title>Belum ada data</title></circle>';
+    var text = '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">' + centerTop + '</text>' +
+      '<text x="' + cx + '" y="' + (cy + 15) + '" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">' + centerSub + '</text>';
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="Grafik donut ringkasan keseluruhan">' + segs + text + '</svg>';
+  }
+
+  function renderOverall(rows, updatedAtIso){
+    var donut = document.getElementById('waOverallDonut');
+    var donutBlock = document.getElementById('waOverallDonutBlock');
+    var wrap = document.getElementById('waOverallWrap');
+    var empty = document.getElementById('waOverallEmpty');
+    var updated = document.getElementById('waOverallUpdated');
+    var legendMatched = document.getElementById('waOverallLegendMatched');
+    var legendRemaining = document.getElementById('waOverallLegendRemaining');
+    var statTotal = document.getElementById('waOverallStatTotal');
+    var statMatched = document.getElementById('waOverallStatMatched');
+    var statPct = document.getElementById('waOverallStatPct');
+    var card = document.getElementById('waOverallCard');
+    if(!card) return;
+    rows = Array.isArray(rows) ? rows : [];
+    if(!rows.length){
+      if(wrap) wrap.hidden = true;
+      if(donutBlock) donutBlock.hidden = true;
+      if(empty) empty.hidden = false;
+      return;
+    }
+    if(wrap) wrap.hidden = false;
+    if(donutBlock) donutBlock.hidden = false;
+    if(empty) empty.hidden = true;
+    var totalAll = 0, matchedAll = 0;
+    rows.forEach(function(r){ totalAll += Number(r.total || 0); matchedAll += Number(r.matched || 0); });
+    var remainingAll = Math.max(totalAll - matchedAll, 0);
+    var pctAll = totalAll > 0 ? (matchedAll / totalAll) : 0;
+
+    if(donut) donut.innerHTML = buildOverallDonutSvg(matchedAll, totalAll);
+    if(legendMatched) legendMatched.textContent = fmtNum(matchedAll);
+    if(legendRemaining) legendRemaining.textContent = fmtNum(remainingAll);
+    if(statTotal) statTotal.textContent = fmtNum(totalAll);
+    if(statMatched) statMatched.textContent = fmtNum(matchedAll);
+    if(statPct) statPct.textContent = fmtPct(pctAll);
+    if(updated){
+      var t = updatedAtIso ? new Date(updatedAtIso) : null;
+      if(t && !isNaN(t.getTime())){
+        var dd2 = String(t.getDate()).padStart(2,'0');
+        var mm2 = String(t.getMonth()+1).padStart(2,'0');
+        var hh2 = String(t.getHours()).padStart(2,'0');
+        var mi2 = String(t.getMinutes()).padStart(2,'0');
+        updated.textContent = 'Terakhir diperbarui otomatis: ' + dd2 + '/' + mm2 + ' ' + hh2 + ':' + mi2;
+      } else {
+        updated.textContent = 'n=' + rows.length + ' kategori';
+      }
+    }
+  }
+
   function renderRows(rows, updatedAtIso){
     var totalBar = document.getElementById('waTotalBar');
     var bookingBars = document.getElementById('waBookingBars');
@@ -2961,6 +3110,7 @@
     var wrap = document.getElementById('waSummaryWrap');
     var empty = document.getElementById('waSummaryEmpty');
     var updated = document.getElementById('waSummaryUpdated');
+    renderOverall(rows, updatedAtIso);
     if(!wrap) return;
     rows = Array.isArray(rows) ? rows : [];
     if(!rows.length){
