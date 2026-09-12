@@ -2575,9 +2575,8 @@
   // human still needs to do the smallest possible form: one click. See
   // wa-blast-backend-Code.gs's doGet(?action=seed) for the receiving end.
 
-  function buildSeedUrl(){
-    if(!WA_BLAST_API_URL) return null;
-    var payloadRows = lastRows.map(function(r){
+  function buildSyncPayloadRows(){
+    return lastRows.map(function(r){
       return {
         id: r.id,
         bulan: r.bulan || '',
@@ -2587,14 +2586,39 @@
         vin_filename: r.vin_filename || '',
       };
     });
+  }
+
+  function buildSeedUrl(payloadRows){
+    if(!WA_BLAST_API_URL) return null;
     var payload = encodeURIComponent(JSON.stringify(payloadRows));
     return WA_BLAST_API_URL + '?action=seed&payload=' + payload;
   }
 
+  // NOTE (fixed 2026-09-12): try a normal POST (op:'replace_all') FIRST -
+  // this has no URL-length limit, unlike the GET-based ?action=seed fallback
+  // below, which stuffs the whole payload (every row's VIN list) into the
+  // URL's query string and can hit Google's own front-end 413 "request too
+  // large" limit once there are enough rows/VINs (confirmed in practice
+  // 2026-09-12). A POST works from ANY normal hosting context (Vercel,
+  // localhost, etc.) since only a published Claude ARTIFACT's CSP blocks
+  // fetch()/XHR to external hosts - there is no such restriction on a plain
+  // static deploy. So: try fetch() POST first; only fall back to the
+  // window.open GET trick (which dodges that Artifact CSP by being a plain
+  // browser navigation, not a fetch) if the POST itself throws/rejects.
+  function syncViaPost(payloadRows){
+    return fetch(WA_BLAST_API_URL, {
+      method: 'POST',
+      // text/plain deliberately - a CORS "simple request", so the browser
+      // skips the OPTIONS preflight Apps Script cannot answer. Body is
+      // still JSON text, parsed manually with JSON.parse() server-side.
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ op: 'replace_all', rows: payloadRows }),
+    }).then(function(r){ return r.json(); });
+  }
+
   if(syncBtn) syncBtn.addEventListener('click', function(){
     if(!syncStatus) return;
-    var url = buildSeedUrl();
-    if(!url){
+    if(!WA_BLAST_API_URL){
       syncStatus.textContent = 'Sinkronisasi butuh dashboard yang di-generate dengan --wa-blast-api-url.';
       return;
     }
@@ -2602,11 +2626,29 @@
       syncStatus.textContent = 'Belum ada data untuk disinkronkan.';
       return;
     }
-    var opened = null;
-    try { opened = window.open(url, '_blank', 'noopener'); } catch(e){ opened = null; }
-    syncStatus.innerHTML = opened
-      ? 'Tab baru dibuka untuk sinkronisasi - cek hasilnya di sana (harusnya muncul <code>{"ok":true,...}</code>). Kalau tidak ada tab yang terbuka, <a href="' + url + '" target="_blank" rel="noopener">klik di sini</a>.'
-      : 'Klik link ini untuk menyelesaikan sinkronisasi: <a href="' + url + '" target="_blank" rel="noopener">buka link sinkronisasi</a>.';
+    var payloadRows = buildSyncPayloadRows();
+    syncStatus.textContent = 'Menyinkronkan...';
+    syncViaPost(payloadRows).then(function(res){
+      syncStatus.textContent = (res && res.ok)
+        ? ('Tersinkron ke Google Sheet - ' + res.count + ' baris.')
+        : ('Sinkronisasi gagal: ' + (res && res.error ? res.error : 'respons tidak dikenali'));
+    }).catch(function(err){
+      // POST itself was blocked (most likely: viewed as a published Claude
+      // Artifact, whose CSP blocks fetch/XHR to external hosts outright) -
+      // fall back to the GET/window.open trick, which a CSP like that does
+      // NOT block (plain navigation, not fetch). This fallback path CAN
+      // still hit a 413 from Google if there's a lot of data - if so, that
+      // means this page is being viewed inside something that blocks fetch
+      // AND has enough rows to overflow a URL; there's no third option, so
+      // the message below says so plainly rather than trying silently again.
+      console.error('wa sync via POST failed, falling back to GET/window.open', err);
+      var url = buildSeedUrl(payloadRows);
+      var opened = null;
+      try { opened = window.open(url, '_blank', 'noopener'); } catch(e){ opened = null; }
+      syncStatus.innerHTML = opened
+        ? 'Tab baru dibuka untuk sinkronisasi - cek hasilnya di sana (harusnya muncul <code>{"ok":true,...}</code>; kalau muncul error "413/request too large", datanya terlalu banyak untuk cara ini - beri tahu Claude). Kalau tidak ada tab yang terbuka, <a href="' + url + '" target="_blank" rel="noopener">klik di sini</a>.'
+        : 'Klik link ini untuk menyelesaikan sinkronisasi: <a href="' + url + '" target="_blank" rel="noopener">buka link sinkronisasi</a>.';
+    });
   });
 
   function wireRows(rows){
