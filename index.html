@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Dashboard T-Care Perintis Perkasa</title>
 <title>Data Retention T-CARE 2026</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
@@ -485,6 +486,13 @@
   .wa-legend-item .cap{ color:var(--text-secondary); font-size:14.5px; }
   .wa-legend-item .cap-num{ font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary); }
 </style>
+<style>
+  /* ---------- live-status badges (added for db-wired data; reuses .pill) ---------- */
+  .live-pill{ display:inline-flex; align-items:center; gap:6px; }
+  .live-pill .live-dot{ width:8px; height:8px; border-radius:50%; background:var(--status-good); flex:none; display:inline-block; }
+  .live-pill.is-error{ color:var(--status-critical); }
+  .live-pill.is-error .live-dot{ background:var(--status-critical); }
+</style>
 
 <header class="top">
   <div class="top-inner">
@@ -500,8 +508,11 @@
       </div>
     </div>
     <div class="meta-pills">
-      <span class="pill">Retensi &middot; <b>03 Okt 2026</b></span>
-      <span class="pill">Funnel SBE &middot; <b>03 Okt 2026</b></span>
+      <span class="pill" id="metaPillRetensi">Retensi &middot; <b>03 Okt 2026</b></span>
+      <span class="pill" id="metaPillSbe">Funnel SBE &middot; <b>03 Okt 2026</b></span>
+      <span class="pill live-pill" id="livePillRetensi" title="Retensi: menunggu data live"><span class="live-dot"></span>Retensi live</span>
+      <span class="pill live-pill" id="livePillSbe" title="Funnel SBE: menunggu data live"><span class="live-dot"></span>Funnel SBE live</span>
+      <span class="pill" id="livePillUpdated">Diperbarui: &mdash;</span>
     </div>
   </div>
   <nav class="jump">
@@ -2552,13 +2563,13 @@
       <div class="hero-side">
         <div class="card mini-stat">
           <div class="label">Database aktif &middot; Oktober 2026</div>
-          <div class="val">3.189</div>
-          <div class="cap">unit, baru 3 hari diproses</div>
+          <div class="val">3.804</div>
+          <div class="cap">unit, baru 10 hari diproses</div>
         </div>
         <div class="card mini-stat">
           <div class="label">Tingkat kontak Oktober 2026</div>
-          <div class="val">46,9%</div>
-          <div class="cap">1.496 dari 3.189 database</div>
+          <div class="val">52,0%</div>
+          <div class="cap">1.977 dari 3.804 database</div>
         </div>
         <div class="card mini-stat">
           <div class="label">Tingkat kontak Agustus</div>
@@ -2575,7 +2586,7 @@
 
     <div class="insight-strip">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-      <div><b>Oktober baru berjalan 3 dari 31 hari (&sim;10% dari bulan)</b>, namun tim sudah mengontak 47% database &mdash; sinyal awal yang sehat. Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>
+      <div><b>Oktober baru berjalan 10 dari 31 hari (&sim;32% dari bulan)</b>, namun tim sudah mengontak 52% database &mdash; sinyal awal yang sehat. Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>
     </div>
   </section>
   </div>
@@ -2728,67 +2739,67 @@
         <div class="eyebrow">Laporan Periode</div>
         <h2>Oktober 2026</h2>
       </div>
-      <span class="status-chip progress">Bulan berjalan &middot; hari ke-3 dari 31</span>
+      <span class="status-chip progress">Bulan berjalan &middot; hari ke-10 dari 31</span>
     </div>
     <p class="lede">Corong sejauh ini untuk kohor <em>On Time T-Care M/M+1</em>. Tahap kunjungan bengkel &amp; realisasi masih menunggu proses lanjutan.</p>
 
     <div class="kpi-row">
-      <div class="card kpi-tile"><div class="label">Total database</div><div class="value">3.189</div><div class="sub">unit kendaraan</div></div>
-      <div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">1.496</div><div class="sub">46,9% dari database</div></div>
-      <div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">392</div><div class="sub">26,2% dari yang dikontak</div></div>
-      <div class="card kpi-tile pending"><div class="label">Booking hadir (show)</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>
-      <div class="card kpi-tile"><div class="label">Realisasi service order</div><div class="value">0</div><div class="sub">0,0% dari total database &middot; sejauh ini bulan berjalan</div></div>
+      <div class="card kpi-tile"><div class="label">Total database</div><div class="value">3.804</div><div class="sub">unit kendaraan</div></div>
+      <div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">1.977</div><div class="sub">52,0% dari database</div></div>
+      <div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">638</div><div class="sub">32,3% dari yang dikontak</div></div>
+      <div class="card kpi-tile"><div class="label">Booking hadir (show)</div><div class="value">602</div><div class="sub">94,4% dari BOC &middot; sejauh ini bulan berjalan</div></div>
+      <div class="card kpi-tile"><div class="label">Realisasi service order</div><div class="value">614</div><div class="sub">16,1% dari total database &middot; sejauh ini bulan berjalan</div></div>
     </div>
 
     <div class="card funnel-card">
       <div class="funnel-title">Corong Konversi &middot; Oktober 2026 (berjalan)</div>
       <div class="pyramid">
         <div class="pyr-row">
-          <div class="pyr-seg" style="--tl:3%; --tr:97%; --br:78.29%; --bl:21.71%; background:var(--pyr-1);">
+          <div class="pyr-seg" style="--tl:3%; --tr:97%; --br:80.07%; --bl:19.93%; background:var(--pyr-1);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:128px;">Total Database</span>
+              <span class="pyr-seg-label" style="max-width:136px;">Total Database</span>
               <span class="pyr-seg-pct">100,0%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value">3.189</div>
+            <div class="pyr-callout-value">3.804</div>
             <div class="pyr-callout-cap">kohor On Time T-Care M/M+1</div>
           </div>
         </div>
         <div class="pyr-row">
-          <div class="pyr-seg" style="--tl:21.71%; --tr:78.29%; --br:66.08%; --bl:33.92%; background:var(--pyr-2);">
+          <div class="pyr-seg" style="--tl:19.93%; --tr:80.07%; --br:67.66%; --bl:32.34%; background:var(--pyr-2);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:73px;">Berhasil Dikontak</span>
-              <span class="pyr-seg-pct">46,9%</span>
+              <span class="pyr-seg-label" style="max-width:80px;">Berhasil Dikontak</span>
+              <span class="pyr-seg-pct">52,0%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value">1.496</div>
-            <div class="pyr-callout-cap">dari 3.189 database</div>
+            <div class="pyr-callout-value">1.977</div>
+            <div class="pyr-callout-cap">dari 3.804 database</div>
           </div>
         </div>
         <div class="pyr-row">
-          <div class="pyr-seg" style="--tl:33.92%; --tr:66.08%; --br:66.08%; --bl:33.92%; background:var(--pyr-3);">
+          <div class="pyr-seg" style="--tl:32.34%; --tr:67.66%; --br:67.33%; --bl:32.67%; background:var(--pyr-3);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:73px;">Booking (BOC)</span>
-              <span class="pyr-seg-pct">26,2%</span>
+              <span class="pyr-seg-label" style="max-width:78px;">Booking (BOC)</span>
+              <span class="pyr-seg-pct">32,3%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value">392</div>
-            <div class="pyr-callout-cap">dari 1.496 kontak</div>
+            <div class="pyr-callout-value">638</div>
+            <div class="pyr-callout-cap">dari 1.977 kontak</div>
           </div>
         </div>
         <div class="pyr-row">
-          <div class="pyr-seg is-pending" style="--tl:33.92%; --tr:66.08%; --br:66.08%; --bl:33.92%;">
+          <div class="pyr-seg" style="--tl:32.67%; --tr:67.33%; --br:67.33%; --bl:32.67%; background:var(--pyr-4);">
             <div class="pyr-seg-inner">
-              <span class="pyr-seg-label" style="max-width:73px;">Booking Hadir</span>
-              <span class="pyr-seg-pct">&mdash;</span>
+              <span class="pyr-seg-label" style="max-width:78px;">Booking Hadir</span>
+              <span class="pyr-seg-pct">94,4%</span>
             </div>
           </div>
           <div class="pyr-callout">
-            <div class="pyr-callout-value is-pending">Menunggu proses</div>
-            <div class="pyr-callout-cap">bulan masih berjalan &middot; hari ke-3 dari 31</div>
+            <div class="pyr-callout-value">602</div>
+            <div class="pyr-callout-cap">hadir sesuai jadwal (show) &middot; dari 638 BOC</div>
           </div>
         </div>
       </div>
@@ -2797,34 +2808,34 @@
     <div class="outcome-row">
       <div class="card outcome-tile">
         <div class="label">+ Walk-in di luar booking</div>
-        <div class="value">0 unit</div>
+        <div class="value">71 unit</div>
         <div class="sub">Datang langsung setelah reminder, tanpa booking formal &middot; sejauh ini bulan berjalan</div>
       </div>
       <div class="card outcome-tile">
         <div class="label">Total tiba di bengkel (CAI)</div>
-        <div class="value">415 unit</div>
-        <div class="sub">13,0% dari database &middot; sejauh ini bulan berjalan</div>
+        <div class="value">673 unit</div>
+        <div class="sub">17,7% dari database &middot; sejauh ini bulan berjalan</div>
       </div>
       <div class="card outcome-tile">
         <div class="label">Realisasi Service Order</div>
-        <div class="value">0 unit</div>
-        <div class="sub">0,0% dari total database &middot; sejauh ini bulan berjalan</div>
+        <div class="value">614 unit</div>
+        <div class="sub">16,1% dari total database &middot; sejauh ini bulan berjalan</div>
       </div>
     </div>
 
     <div class="card callstatus-card">
       <div class="callstatus-donut-block">
-        <svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Grafik donut"><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--series-1)" stroke-width="20" stroke-dasharray="244.939 81.787" stroke-dashoffset="-0.000" transform="rotate(-90 62.0 62.0)"><title>Connected &middot; 1.165</title></circle><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--text-muted)" stroke-width="20" stroke-dasharray="81.787 244.939" stroke-dashoffset="-244.939" transform="rotate(-90 62.0 62.0)"><title>Un-connected &middot; 389</title></circle><text x="62.0" y="60.0" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">1.554</text><text x="62.0" y="77.0" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">panggilan</text></svg>
+        <svg width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Grafik donut"><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--series-1)" stroke-width="20" stroke-dasharray="246.967 79.759" stroke-dashoffset="-0.000" transform="rotate(-90 62.0 62.0)"><title>Connected &middot; 1.381</title></circle><circle cx="62.0" cy="62.0" r="52.00" fill="none" style="stroke:var(--text-muted)" stroke-width="20" stroke-dasharray="79.759 246.967" stroke-dashoffset="-246.967" transform="rotate(-90 62.0 62.0)"><title>Un-connected &middot; 446</title></circle><text x="62.0" y="60.0" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">1.827</text><text x="62.0" y="77.0" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">panggilan</text></svg>
         <div class="donut-legend">
           <div class="panel-desc" style="margin:0 0 2px;">Status Panggilan &middot; Oktober 2026</div>
-          <div class="ditem"><span class="swatch" style="background:var(--series-1)"></span><span>Connected &middot; <b>1.165</b> (75,0%)</span></div><div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span><span>Un-connected &middot; <b>389</b> (25,0%)</span></div>
+          <div class="ditem"><span class="swatch" style="background:var(--series-1)"></span><span>Connected &middot; <b>1.381</b> (75,6%)</span></div><div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span><span>Un-connected &middot; <b>446</b> (24,4%)</span></div>
           <div class="donut-note">Terhubung = telepon tersambung; tidak selalu sama dengan angka Contacted di samping (pencatatan manual, lihat Metodologi).</div>
         </div>
       </div>
       <div class="callstatus-stats">
         <div class="callstatus-stat">
           <div class="label">Contacted (berhasil dikontak)</div>
-          <div class="value">1.496</div>
+          <div class="value">1.977</div>
           <div class="sub">Sudah bicara &amp; dijelaskan program reminder</div>
         </div>
         <div class="callstatus-stat">
@@ -2834,8 +2845,8 @@
         </div>
         <div class="callstatus-stat">
           <div class="label">Non BOC yang masuk</div>
-          <div class="value">1.033</div>
-          <div class="sub">populasi penuh n=3189 baris &middot; unit yang masuk bengkel tanpa booking formal</div>
+          <div class="value">1.256</div>
+          <div class="sub">populasi penuh n=3804 baris &middot; unit yang masuk bengkel tanpa booking formal</div>
         </div>
       </div>
     </div>
@@ -2843,18 +2854,18 @@
     <div class="panel-grid">
       <div class="card panel">
         <h3>Model Kendaraan Terlibat</h3>
-        <div class="panel-desc n-note">populasi penuh &middot; 1.496 unit yang berhasil dihubungi (Contacted)</div>
+        <div class="panel-desc n-note">populasi penuh &middot; 1.977 unit yang berhasil dihubungi (Contacted)</div>
         <div class="rank-list">
-<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','innova')"><div class="rlabel">Innova</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">458 <span>30,6%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','avanza')"><div class="rlabel">Avanza</div><div class="rank-track"><div class="rank-fill" style="width:71%"></div></div><div class="rank-val">327 <span>21,9%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','rush')"><div class="rlabel">Rush</div><div class="rank-track"><div class="rank-fill" style="width:43%"></div></div><div class="rank-val">198 <span>13,2%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','fortuner')"><div class="rlabel">Fortuner</div><div class="rank-track"><div class="rank-fill" style="width:25%"></div></div><div class="rank-val">113 <span>7,6%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','calya')"><div class="rlabel">Calya</div><div class="rank-track"><div class="rank-fill" style="width:22%"></div></div><div class="rank-val">101 <span>6,8%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','lainnya')"><div class="rlabel">Lainnya (Agya, Raize, dll.)</div><div class="rank-track"><div class="rank-fill" style="width:65%"></div></div><div class="rank-val">299 <span>20,0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','innova')"><div class="rlabel">Innova</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">631 <span>31,9%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','avanza')"><div class="rlabel">Avanza</div><div class="rank-track"><div class="rank-fill" style="width:59%"></div></div><div class="rank-val">373 <span>18,9%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','rush')"><div class="rlabel">Rush</div><div class="rank-track"><div class="rank-fill" style="width:43%"></div></div><div class="rank-val">272 <span>13,8%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','fortuner')"><div class="rlabel">Fortuner</div><div class="rank-track"><div class="rank-fill" style="width:23%"></div></div><div class="rank-val">146 <span>7,4%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','calya')"><div class="rlabel">Calya</div><div class="rank-track"><div class="rank-fill" style="width:22%"></div></div><div class="rank-val">138 <span>7,0%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-model','lainnya')"><div class="rlabel">Lainnya (Raize, Agya, dll.)</div><div class="rank-track"><div class="rank-fill" style="width:66%"></div></div><div class="rank-val">417 <span>21,1%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
         </div>
         <div class="bd-drawer" id="drawer-se-model" hidden></div>
       </div>
 
       <div class="card panel">
         <h3>Alasan / Hasil Panggilan</h3>
-        <div class="panel-desc n-note">populasi penuh &middot; 3.189 baris (seluruh database periode ini)</div>
+        <div class="panel-desc n-note">populasi penuh &middot; 3.804 baris (seluruh database periode ini)</div>
         <div class="rank-list">
-<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','tidak_diangkat')"><div class="rlabel">Tidak diangkat/dihubungi</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">927 <span>29%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','sudah_booking')"><div class="rlabel">Sudah booking</div><div class="rank-track"><div class="rank-fill" style="width:47%"></div></div><div class="rank-val">433 <span>14%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','sudah_masuk')"><div class="rlabel">Sudah masuk/servis</div><div class="rank-track"><div class="rank-fill" style="width:36%"></div></div><div class="rank-val">332 <span>10%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','lainnya')"><div class="rlabel">Lainnya</div><div class="rank-track"><div class="rank-fill" style="width:88%"></div></div><div class="rank-val">813 <span>25%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','atur_jadwal')"><div class="rlabel">Atur jadwal dulu</div><div class="rank-track"><div class="rank-fill" style="width:37%"></div></div><div class="rank-val">340 <span>11%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','tempat_lain')"><div class="rlabel">Servis di tempat lain</div><div class="rank-track"><div class="rank-fill" style="width:37%"></div></div><div class="rank-val">344 <span>11%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','tidak_diangkat')"><div class="rlabel">Tidak diangkat/dihubungi</div><div class="rank-track"><div class="rank-fill" style="width:100%"></div></div><div class="rank-val">992 <span>26%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','sudah_booking')"><div class="rlabel">Sudah booking</div><div class="rank-track"><div class="rank-fill" style="width:64%"></div></div><div class="rank-val">634 <span>17%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','sudah_masuk')"><div class="rlabel">Sudah masuk/servis</div><div class="rank-track"><div class="rank-fill" style="width:45%"></div></div><div class="rank-val">451 <span>12%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','lainnya')"><div class="rlabel">Lainnya</div><div class="rank-track"><div class="rank-fill" style="width:90%"></div></div><div class="rank-val">895 <span>24%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','atur_jadwal')"><div class="rlabel">Atur jadwal dulu</div><div class="rank-track"><div class="rank-fill" style="width:35%"></div></div><div class="rank-val">352 <span>9%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div><div class="rank-row is-clickable" tabindex="0" onclick="toggleBreak(event,'se-alasan','tempat_lain')"><div class="rlabel">Servis di tempat lain</div><div class="rank-track"><div class="rank-fill" style="width:48%"></div></div><div class="rank-val">480 <span>13%</span></div><svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
         </div>
         <div class="bd-drawer" id="drawer-se-alasan" hidden></div>
       </div>
@@ -3060,7 +3071,28 @@
     if(banner) banner.classList.add('show');
   }
 
+  // ---------------- live-render survival (added, non-breaking) ----------------
+  // The rest of this script's wiring/applying logic only ran once at initial
+  // page load, over the static rows baked by Python. When a later script
+  // replaces table.retention's rows from live `db` data, the new .edit-field
+  // elements have no listeners and no saved values applied. lastRemoteData
+  // remembers every remote doc this page has ever seen (keyed by VIN) so it
+  // can be re-applied, and activeSaveRow remembers whichever backend (#1 or
+  // #2) actually won, so its save handler can be re-wired onto new inputs.
+  // window.__tcareRewireFollowups is the single hook a re-renderer calls.
+  var lastRemoteData = {};
+  var activeSaveRow = null;
+
+  function rewireFollowups(){
+    if(activeSaveRow) wireInputs(activeSaveRow);
+    Object.keys(lastRemoteData).forEach(function(vin){
+      applyRemote(vin, lastRemoteData[vin], false);
+    });
+  }
+  window.__tcareRewireFollowups = rewireFollowups;
+
   function applyRemote(vin, data, isPending){
+    if(data) lastRemoteData[vin] = data;
     var els = rowInputs(vin);
     if(!els.booking || !els.note) return;
     if(document.activeElement !== els.booking && typeof data.booking === 'string'){
@@ -3112,6 +3144,7 @@
       });
     }
 
+    activeSaveRow = saveRow;
     wireInputs(saveRow);
     try {
       var col = db.collection(COHORT_KEY);
@@ -3179,6 +3212,7 @@
         });
     }
 
+    activeSaveRow = saveRow;
     wireInputs(saveRow);
     refreshList().catch(function(err){
       console.error('followup api list failed', err);
@@ -14311,6 +14345,693 @@
   });
 
 </script>
+<script>
+/* ============================================================
+   LIVE DATA WIRING — added for Task #5 (Artifact `db` sync).
+   Consumes the hourly-written `dashboard_data/current` doc and
+   re-renders the Retensi + SBE Funnel tab-pages in place. Pure
+   addition: does not touch the WA Blast / WA Summary / Metodologi
+   tabs or scripts, does not redeclare any identifier those scripts
+   rely on (everything below lives inside one IIFE), and only
+   reaches outside this IIFE to:
+     - read `window.claude.use('db')`
+     - read/write the pre-existing global `DATA` object and call the
+       pre-existing global `toggleBreak`/`closeBreak` functions (the
+       shared SBE/retensi breakdown-drawer runtime baked earlier in
+       this same document) - never redefined here.
+     - call `window.__tcareRewireFollowups()` (exposed by the
+       follow-up script above) after every Retensi Daftar re-render.
+   Before the first snapshot arrives, the existing static (Python-
+   baked) markup is left exactly as-is - it is a reasonable "last
+   known good" fallback. If `window.claude.use('db')` throws, is
+   unavailable, or a snapshot's data is missing/errored, this fails
+   silently to the console only.
+   ============================================================ */
+(function(){
+  'use strict';
+
+  // ---------------- formatting helpers (ported from live-dashboard.html) ----------------
+
+  var MONTHS_ID = {1:'Januari',2:'Februari',3:'Maret',4:'April',5:'Mei',6:'Juni',
+                   7:'Juli',8:'Agustus',9:'September',10:'Oktober',11:'November',12:'Desember'};
+  var MONTHS_ID_SHORT = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'Mei',6:'Jun',
+                          7:'Jul',8:'Agu',9:'Sep',10:'Okt',11:'Nov',12:'Des'};
+
+  function fmtInt(n){
+    if(n === null || n === undefined || isNaN(n)) return '-';
+    n = Math.round(n);
+    var neg = n < 0; n = Math.abs(n);
+    var s = String(n), out = [];
+    while(s.length > 3){ out.unshift(s.slice(-3)); s = s.slice(0, -3); }
+    out.unshift(s);
+    return (neg ? '-' : '') + out.join('.');
+  }
+  function fmtPct(x, decimals){
+    if(decimals === undefined) decimals = 1;
+    if(x === null || x === undefined || isNaN(x)) x = 0;
+    return x.toFixed(decimals).replace('.', ',') + '%';
+  }
+  function pctVal(part, whole){
+    if(!whole) return 0;
+    return 100.0 * part / whole;
+  }
+  function pad2(n){ return (n < 10 ? '0' : '') + n; }
+  function esc(s){
+    if(s === null || s === undefined) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function monthLabelID(d){ return MONTHS_ID[d.getMonth() + 1] + ' ' + d.getFullYear(); }
+  function shortDateID(d){ return pad2(d.getDate()) + ' ' + MONTHS_ID_SHORT[d.getMonth() + 1] + ' ' + d.getFullYear(); }
+  function daysInMonth(year, month1to12){ return new Date(year, month1to12, 0).getDate(); }
+  function fmtTimestamp(iso){
+    try{
+      var d = new Date(iso);
+      if(isNaN(d.getTime())) return '-';
+      return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+    } catch(e){ return '-'; }
+  }
+
+  function parseDDMMYYYY(raw){
+    if(!raw) return null;
+    var m = /^(\d{1,2})[.\/](\d{1,2})[.\/](\d{2,4})/.exec(String(raw).trim());
+    if(!m) return null;
+    var d = parseInt(m[1], 10), mo = parseInt(m[2], 10), y = parseInt(m[3], 10);
+    if(y < 100) y += 2000;
+    if(mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+    return { d: d, m: mo, y: y, sortKey: y * 10000 + mo * 100 + d };
+  }
+  function fmtDateShort(raw){
+    var p = parseDDMMYYYY(raw);
+    if(!p) return raw ? esc(raw) : '-';
+    return pad2(p.d) + ' ' + MONTHS_ID_SHORT[p.m] + ' ' + p.y;
+  }
+
+  // ---------------- funnel geometry (ported verbatim from generate_dashboard.py / live-dashboard.html) ----------------
+
+  var FLOOR = 0.25, TOP_WIDTH = 94.0, LABEL_WIDTH_BOX = 264.0, LABEL_FACTOR = 0.86;
+
+  function stageFraction(value, topValue){
+    if(!topValue) return 0.0;
+    return Math.max(0, Math.min(1, value / topValue));
+  }
+  function widthFrac(p){ return FLOOR + (1 - FLOOR) * p; }
+  function round2(x){ return Math.round(x * 100) / 100; }
+  function fnum(x){
+    if(Math.abs(x - Math.round(x)) < 1e-9) return String(Math.round(x));
+    var s = x.toPrecision(6);
+    if(s.indexOf('.') >= 0){ s = s.replace(/0+$/, '').replace(/\.$/, ''); }
+    return s;
+  }
+  function funnelGeometry(values){
+    var topValue = values[0];
+    var fracs = [];
+    for(var i = 0; i < values.length; i++){
+      var v = values[i];
+      if(v === null || v === undefined){ fracs.push(fracs.length ? fracs[fracs.length - 1] : 1.0); }
+      else fracs.push(stageFraction(v, topValue));
+    }
+    var out = [];
+    for(var j = 0; j < 4; j++){
+      var topW = TOP_WIDTH * widthFrac(fracs[j]);
+      var botW = (j + 1 < 4) ? TOP_WIDTH * widthFrac(fracs[j + 1]) : topW;
+      var tl = round2((100 - topW) / 2), tr = round2(100 - tl);
+      var bl = round2((100 - botW) / 2), br = round2(100 - bl);
+      var narrowest = Math.min(topW, botW);
+      var labelMaxW = Math.floor(LABEL_FACTOR * (narrowest / 100.0) * LABEL_WIDTH_BOX);
+      out.push({ tl: tl, tr: tr, bl: bl, br: br, label_max_w: labelMaxW,
+                 pending: values[j] === null || values[j] === undefined });
+    }
+    return out;
+  }
+  function pyrRowHtml(geoRow, valueLabel, valueCap, pctLabel, colorVar){
+    var pendingCls = geoRow.pending ? ' is-pending' : '';
+    var bg = geoRow.pending ? '' : (' background:var(' + colorVar + ');');
+    var valueCls = geoRow.pending ? ' is-pending' : '';
+    return '<div class="pyr-row">' +
+      '<div class="pyr-seg' + pendingCls + '" style="--tl:' + fnum(geoRow.tl) + '%; --tr:' + fnum(geoRow.tr) +
+      '%; --br:' + fnum(geoRow.br) + '%; --bl:' + fnum(geoRow.bl) + '%;' + bg + '">' +
+      '<div class="pyr-seg-inner">' +
+      '<span class="pyr-seg-label" style="max-width:' + geoRow.label_max_w + 'px;">' + valueCap[0] + '</span>' +
+      '<span class="pyr-seg-pct">' + pctLabel + '</span>' +
+      '</div></div>' +
+      '<div class="pyr-callout"><div class="pyr-callout-value' + valueCls + '">' + valueLabel + '</div>' +
+      '<div class="pyr-callout-cap">' + valueCap[1] + '</div></div></div>';
+  }
+  function buildFunnel(values, pcts, caps, colors){
+    var geo = funnelGeometry(values);
+    var out = ['<div class="pyramid">'];
+    for(var i = 0; i < 4; i++){
+      var v = values[i];
+      var valueLabel = (v === null || v === undefined) ? 'Menunggu proses' : fmtInt(v);
+      out.push(pyrRowHtml(geo[i], valueLabel, caps[i], pcts[i], colors[i]));
+    }
+    out.push('</div>');
+    return out.join('');
+  }
+
+  // ---------------- donut SVG (ported verbatim) ----------------
+
+  function donutSvg(segments, size, stroke, centerTop, centerSub){
+    size = size || 124; stroke = stroke || 20;
+    var r = (size - stroke) / 2.0, cx = size / 2.0, cy = size / 2.0;
+    var circumf = 2 * Math.PI * r;
+    var total = 0; segments.forEach(function(s){ total += s[0]; }); if(!total) total = 1;
+    var parts = [], offset = 0;
+    segments.forEach(function(s){
+      var v = s[0], varName = s[1], title = s[2];
+      var frac = v / total, segLen = frac * circumf, gap = circumf - segLen;
+      parts.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(' +
+        varName + ')" stroke-width="' + stroke + '" stroke-dasharray="' + segLen.toFixed(3) + ' ' + gap.toFixed(3) +
+        '" stroke-dashoffset="' + (-offset).toFixed(3) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"><title>' +
+        title + '</title></circle>');
+      offset += segLen;
+    });
+    var center = '';
+    if(centerTop){
+      center = '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-family="var(--font-display)" ' +
+        'font-weight="700" font-size="19" fill="var(--text-primary)">' + centerTop + '</text>';
+      if(centerSub) center += '<text x="' + cx + '" y="' + (cy + 15) + '" text-anchor="middle" font-family="var(--font-body)" ' +
+        'font-size="10" fill="var(--text-muted)">' + centerSub + '</text>';
+    }
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size +
+      '" role="img" aria-label="Grafik donut">' + parts.join('') + center + '</svg>';
+  }
+
+  // ---------------- small HTML building blocks ----------------
+  // NOTE: chart-breakdown rows use the pre-existing GLOBAL toggleBreak()/
+  // closeBreak()/DATA already baked into this document (see the big
+  // <script> block right before the WA Blast scripts) - not redeclared
+  // here, just fed fresh data through the shared `DATA` object.
+
+  function rankRowHtml(label, value, pctLabel, widthPct, chartId, key){
+    var cls = 'rank-row' + (chartId ? ' is-clickable' : '');
+    var onclick = chartId ? (' tabindex="0" onclick="toggleBreak(event,\'' + chartId + '\',\'' + key + '\')"') : '';
+    return '<div class="' + cls + '"' + onclick + '><div class="rlabel">' + label + '</div>' +
+      '<div class="rank-track"><div class="rank-fill" style="width:' + widthPct.toFixed(0) + '%"></div></div>' +
+      '<div class="rank-val">' + fmtInt(value) + ' <span>' + pctLabel + '</span></div>' +
+      '<svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>';
+  }
+
+  function legendItemHtml(swatchVar, label, value, pct){
+    // Deliberately never clickable here: the live `full_data` schema only
+    // carries aggregate counts for these particular breakdowns (Komposisi
+    // Sumber Data, Program/Fleet/Punctual/Behavior), not the raw per-record
+    // rows a drawer would need - same judgment call already made and
+    // documented in live-dashboard.html's buildCallstatusBlock/simplePanel.
+    return '<div class="item"><span class="swatch" style="background:var(' + swatchVar + ')"></span>' +
+      '<span class="sl-text">' + label + ' &middot; <b>' + fmtInt(value) + '</b> (' + fmtPct(pct) + ')</span></div>';
+  }
+
+  function segbarHtml(segs){
+    var parts = segs.map(function(s, i){
+      var pct = s[0], v = s[1];
+      var radius = '';
+      if(i === 0 && segs.length === 1) radius = 'border-radius:5px;';
+      else if(i === 0) radius = 'border-radius:5px 0 0 5px;';
+      else if(i === segs.length - 1) radius = 'border-radius:0 5px 5px 0;';
+      return '<div class="seg" style="width:' + pct.toFixed(2) + '%; background:var(' + v + '); ' + radius + '"></div>';
+    });
+    return '<div class="segbar">' + parts.join('') + '</div>';
+  }
+
+  function sectionHeadHtml(eyebrow, title, chip){
+    return '<div class="section-head"><div><div class="eyebrow">' + esc(eyebrow) + '</div><h2>' + esc(title) + '</h2></div>' +
+      (chip || '') + '</div>';
+  }
+
+  function errorCardHtml(title, msg){
+    return '<div class="card panel" style="margin-top:20px;">' +
+      '<h3>' + esc(title) + '</h3>' +
+      '<div class="panel-desc" style="color:var(--status-critical);">Gagal memuat data: ' + esc(msg || 'tidak diketahui') + '</div>' +
+      '</div>';
+  }
+
+  // Rank-list panel (Model, Outlet): top rows plain, "Lainnya" row clickable
+  // (drawer shows `rest`) - feeds the pre-existing global DATA object.
+  function buildRankPanel(top, rest, restTotal, n, chartId, othersCount){
+    othersCount = othersCount || 3;
+    var max = (top && top[0]) ? top[0][1] : 1;
+    var rowsHtml = (top || []).map(function(pair){
+      var name = pair[0], count = pair[1];
+      var w = max ? (100.0 * count / max) : 0;
+      return rankRowHtml(esc(name), count, fmtPct(pctVal(count, n)), w);
+    });
+    if(restTotal > 0){
+      var othersSorted = (rest || []).slice().sort(function(a, b){ return b[1] - a[1]; });
+      var names = othersSorted.slice(0, othersCount).map(function(x){ return x[0]; }).join(', ');
+      var w2 = max ? (100.0 * restTotal / max) : 0;
+      var label = othersSorted.length ? ('Lainnya (' + esc(names) + ', dll.)') : 'Lainnya';
+      rowsHtml.push(rankRowHtml(label, restTotal, fmtPct(pctVal(restTotal, n)), w2, chartId, 'lainnya'));
+      if(window.DATA){
+        window.DATA[chartId] = window.DATA[chartId] || {};
+        window.DATA[chartId].lainnya = {
+          label: 'Lainnya &middot; ' + fmtInt(restTotal) + ' unit',
+          rows: othersSorted.map(function(x){ return [x[0], x[1]]; }),
+        };
+      }
+    }
+    return rowsHtml.join('');
+  }
+
+  // Alasan/Hasil Panggilan rank list - schema only gives counts (no raw text
+  // per category), so unlike the Python-baked original these rows are NOT
+  // clickable here: there is no per-record detail to show in a drawer
+  // without fabricating it (documented the same way in live-dashboard.html).
+  var CALL_OUTCOME_ORDER = ['tidak_diangkat', 'sudah_booking', 'sudah_masuk', 'lainnya', 'atur_jadwal', 'tempat_lain'];
+  function buildAlasanRows(callOutcome){
+    var outcome = (callOutcome && callOutcome.outcome) || {};
+    var n = (callOutcome && callOutcome.n) || 0;
+    var counts = CALL_OUTCOME_ORDER.map(function(k){ return (outcome[k] && outcome[k].count) || 0; });
+    var max = Math.max.apply(null, counts.concat([1]));
+    return CALL_OUTCOME_ORDER.map(function(k){
+      var v = outcome[k] || { label: k, count: 0 };
+      var w = 100.0 * v.count / max;
+      return rankRowHtml(esc(v.label), v.count, fmtPct(pctVal(v.count, n), 0).replace(',0%', '%'), w);
+    }).join('');
+  }
+
+  // Status Panggilan & Kunjungan Non-Booking card. Donut-note wording matches
+  // this page's own established copy ("..., lihat Metodologi).").
+  function buildCallstatusBlock(kpi, nonBoc, monthLabel){
+    var connected = kpi.tot_connected || 0, unconnected = kpi.tot_uncontacted || 0;
+    var contacted = kpi.contacted || 0, lateCall = kpi.tot_late_call || 0;
+    var nonBocCount = (nonBoc && nonBoc.count) || 0, nonBocN = (nonBoc && nonBoc.n) || 0;
+    var connTotal = connected + unconnected;
+    var donut = connTotal > 0
+      ? donutSvg([[connected, '--series-1', 'Connected &middot; ' + fmtInt(connected)],
+                  [unconnected, '--text-muted', 'Un-connected &middot; ' + fmtInt(unconnected)]],
+                 124, 20, fmtInt(connTotal), 'panggilan')
+      : donutSvg([[1, '--gridline', 'Belum ada data']], 124, 20, '&mdash;', 'belum ada data');
+    var legend =
+      '<div class="ditem"><span class="swatch" style="background:var(--series-1)"></span>' +
+      '<span>Connected &middot; <b>' + fmtInt(connected) + '</b> (' + fmtPct(connTotal ? pctVal(connected, connTotal) : 0) + ')</span></div>' +
+      '<div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span>' +
+      '<span>Un-connected &middot; <b>' + fmtInt(unconnected) + '</b> (' + fmtPct(connTotal ? pctVal(unconnected, connTotal) : 0) + ')</span></div>';
+
+    return '<div class="card callstatus-card">' +
+      '<div class="callstatus-donut-block">' + donut +
+        '<div class="donut-legend"><div class="panel-desc" style="margin:0 0 2px;">Status Panggilan &middot; ' + esc(monthLabel) + '</div>' +
+        legend +
+        '<div class="donut-note">Terhubung = telepon tersambung; tidak selalu sama dengan angka Contacted di samping (pencatatan manual, lihat Metodologi).</div>' +
+        '</div></div>' +
+      '<div class="callstatus-stats">' +
+        '<div class="callstatus-stat"><div class="label">Contacted (berhasil dikontak)</div><div class="value">' + fmtInt(contacted) + '</div>' +
+          '<div class="sub">Sudah bicara &amp; dijelaskan program reminder</div></div>' +
+        '<div class="callstatus-stat"><div class="label">Late Call</div><div class="value">' + fmtInt(lateCall) + '</div>' +
+          '<div class="sub">Sudah masuk servis di Perintis duluan sebelum sempat ditelpon reminder</div></div>' +
+        '<div class="callstatus-stat"><div class="label">Non BOC yang masuk</div><div class="value">' + fmtInt(nonBocCount) + '</div>' +
+          '<div class="sub">populasi penuh n=' + fmtInt(nonBocN) + ' baris &middot; unit yang masuk bengkel tanpa booking formal</div></div>' +
+      '</div></div>';
+  }
+
+  // ---------------- RETENSI row/table builders ----------------
+
+  function sortRetensiRows(rows){
+    return rows.slice().sort(function(a, b){
+      var pa = parseDDMMYYYY(a.tgl_delivery_raw), pb = parseDDMMYYYY(b.tgl_delivery_raw);
+      var ka = pa ? pa.sortKey : Infinity, kb = pb ? pb.sortKey : Infinity;
+      if(ka !== kb) return ka - kb;
+      return String(a.nama || '').localeCompare(String(b.nama || ''));
+    });
+  }
+
+  // Single unified row template (both "belum" and "sudah" servis berkala
+  // rows use it) - this page's #page-ret-daftar has only ONE table.retention
+  // with editable Tgl Booking / Keterangan columns (no separate reason-badge
+  // column the way live-dashboard.html's standalone/read-only page has), so
+  // this reuses the exact per-row markup already baked for every row,
+  // matching what wireInputs()/applyRemote() in the follow-up script expect.
+  function retensiRowHtml(idx, r){
+    var vin = esc(r.vin);
+    return '<tr data-row-vin="' + vin + '">' +
+      '<td class="num">' + idx + '</td>' +
+      '<td>' + esc(r.nama) + '</td>' +
+      '<td>' + (esc(r.hp) || '-') + '</td>' +
+      '<td class="model">' + esc(r.model) + '</td>' +
+      '<td class="vin">' + vin + '</td>' +
+      '<td>' + (esc(r.kota) || '-') + '</td>' +
+      '<td>' + fmtDateShort(r.tgl_delivery_raw) + '</td>' +
+      '<td class="booking"><input type="text" class="edit-field edit-booking" data-vin="' + vin + '" placeholder="dd/mm/yyyy, jam..." autocomplete="off"></td>' +
+      '<td class="note"><textarea class="edit-field edit-note" data-vin="' + vin + '" rows="1" placeholder="catatan follow-up..."></textarea>' +
+      '<span class="save-status" data-status-vin="' + vin + '"></span></td>' +
+      '</tr>';
+  }
+
+  // ---------------- per-tab render functions ----------------
+
+  function renderRetRingkasan(retensi, generatedAtDate){
+    var section = document.querySelector('#page-ret-ringkasan section#ret-ringkasan');
+    if(!section) return;
+    var total = retensi.total || 0;
+    var included = retensi.included || [];
+    var excluded = retensi.excluded || [];
+    var nIncluded = included.length, nExcluded = excluded.length;
+    var nExcludedWo = excluded.filter(function(r){ return r.exclude_source === 'wo'; }).length;
+    var nExcludedMaster = excluded.filter(function(r){ return r.exclude_source === 'master'; }).length;
+    var pctDone = pctVal(nExcluded, total), pctOpen = pctVal(nIncluded, total);
+    var dueLabel = (retensi.due_month && retensi.due_month.label) || '-';
+    var runLabel = monthLabelID(generatedAtDate);
+
+    section.innerHTML =
+      '<div class="section-head"><div>' +
+        '<div class="eyebrow">Ringkasan &middot; ' + esc(runLabel) + '</div>' +
+        '<h2>Retensi servis berkala 6 bulan &middot; DELIVERY DATE ' + esc(dueLabel) + '</h2>' +
+      '</div></div>' +
+      '<p class="lede">DELIVERY DATE ' + esc(dueLabel) + ' &mdash; yaitu pelanggan yang mobilnya diserahkan (delivery) di bulan itu &mdash; ' +
+      'seharusnya kembali untuk servis berkala (kelipatan 10.000 KM) di bulan ' + esc(runLabel) + ' ini, karena jadwal servis berkala ' +
+      'jatuh 6 bulan setelah delivery. Daftar di bawah menyaring yang <b>belum</b> terdeteksi melakukan servis berkala tersebut, baik di ' +
+      'Data WO bulan berjalan maupun di TCare Customer Database (histori servis seluruh cabang/outlet).</p>' +
+      '<div class="kpi-row">' +
+        '<div class="card kpi-tile"><div class="label">Total pelanggan &middot; DELIVERY DATE ' + esc(dueLabel) + '</div>' +
+          '<div class="value">' + fmtInt(total) + '</div><div class="sub">unit tercatat di PDFU</div></div>' +
+        '<div class="card kpi-tile good"><div class="label">Sudah servis berkala</div><div class="value">' + fmtInt(nExcluded) + '</div>' +
+          '<div class="sub">' + fmtPct(pctDone) + ' dari total pelanggan &middot; ' + fmtInt(nExcludedWo) + ' via Data WO, ' + fmtInt(nExcludedMaster) + ' via TCare DB</div></div>' +
+        '<div class="card kpi-tile warn"><div class="label">Belum servis berkala</div><div class="value">' + fmtInt(nIncluded) + '</div>' +
+          '<div class="sub">' + fmtPct(pctOpen) + ' dari total pelanggan &middot; perlu follow-up</div></div>' +
+        '<div class="card kpi-tile"><div class="label">Sumber silang</div><div class="value">3 sheet</div>' +
+          '<div class="sub">PDFU & SBI New + Data WO + TCare Customer DB</div></div>' +
+      '</div>' +
+      '<div class="insight-strip">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
+        '<div><b>' + fmtInt(nIncluded) + ' dari ' + fmtInt(total) + ' kendaraan</b> (' + fmtPct(pctOpen) + ') di DELIVERY DATE ' + esc(dueLabel) +
+        ' belum terdeteksi servis berkala di bulan ' + esc(runLabel) + ' &mdash; ini daftar prioritas untuk tim reminder menghubungi pelanggan.</div>' +
+      '</div>';
+  }
+
+  function renderRetDaftar(retensi){
+    var tbody = document.querySelector('#page-ret-daftar table.retention tbody');
+    if(!tbody) return;
+    var includedSorted = sortRetensiRows(retensi.included || []);
+    var excludedSorted = sortRetensiRows(retensi.excluded || []);
+    var all = includedSorted.concat(excludedSorted);
+    tbody.innerHTML = all.map(function(r, i){ return retensiRowHtml(i + 1, r); }).join('');
+    if(typeof window.__tcareRewireFollowups === 'function'){
+      try { window.__tcareRewireFollowups(); }
+      catch(e){ console.error('[live-wire] rewire followups failed', e); }
+    }
+  }
+
+  function renderSbeRingkasan(sbe, generatedAtDate){
+    var section = document.querySelector('#page-sbe-ringkasan section#sbe-ringkasan');
+    if(!section) return;
+    var cm = sbe.completed, cu = sbe.current;
+    if(!cm || !cu){
+      section.innerHTML = errorCardHtml('SBE Funnel (Analisa Service 4-5-6)', 'Data bulan selesai/berjalan tidak lengkap');
+      return;
+    }
+    var cmK = cm.kpi, cuK = cu.kpi;
+    var cmContactedPct = pctVal(cmK.contacted, cmK.total_database);
+    var cuContactedPct = pctVal(cuK.contacted, cuK.total_database);
+    var cmBoc = cmK.boc, cmBocShow = cmK.boc_show;
+    var cmShowPct = (cmBocShow !== null && cmBocShow !== undefined) ? pctVal(cmBocShow, cmBoc) : 0;
+    var cmSo = cmK.realisasi_so;
+    var cmSoPctOfDb = pctVal(cmSo, cmK.total_database);
+
+    var y = generatedAtDate.getFullYear(), m = generatedAtDate.getMonth() + 1;
+    var dayElapsed = generatedAtDate.getDate(), dim = daysInMonth(y, m);
+    var pctOfMonth = pctVal(dayElapsed, dim);
+    var cuMonthFirstWord = (cu.month_label || '').split(' ')[0];
+    var cmMonthFirstWord = (cm.month_label || '').split(' ')[0];
+
+    section.innerHTML =
+      sectionHeadHtml('Ringkasan Eksekutif', 'Corong konversi reminder service, dua periode terakhir') +
+      '<div class="hero-grid">' +
+        '<div class="card hero-figure-card">' +
+          '<div class="eyebrow">Pencapaian utama &middot; ' + esc(cm.month_label) + ' (bulan selesai)</div>' +
+          '<div class="hero-figure">' + fmtInt(cmSo) + ' <span class="unit">unit realisasi service order</span></div>' +
+          '<div class="desc">Setara <b style="color:var(--text-primary)">' + fmtPct(cmSoPctOfDb) + '</b> dari ' + fmtInt(cmK.total_database) +
+          ' kendaraan di database berhasil dikonversi menjadi kunjungan servis nyata &mdash; hasil dari ' + fmtInt(cmBoc) +
+          ' booking (BOC) yang terealisasi ditambah kontribusi walk-in di luar jalur booking.</div>' +
+        '</div>' +
+        '<div class="hero-side">' +
+          '<div class="card mini-stat"><div class="label">Database aktif &middot; ' + esc(cu.month_label) + '</div>' +
+            '<div class="val">' + fmtInt(cuK.total_database) + '</div><div class="cap">unit, baru ' + dayElapsed + ' hari diproses</div></div>' +
+          '<div class="card mini-stat"><div class="label">Tingkat kontak ' + esc(cuMonthFirstWord) + '</div>' +
+            '<div class="val">' + fmtPct(cuContactedPct) + '</div><div class="cap">' + fmtInt(cuK.contacted) + ' dari ' + fmtInt(cuK.total_database) + ' database</div></div>' +
+          '<div class="card mini-stat"><div class="label">Tingkat kontak ' + esc(cmMonthFirstWord) + '</div>' +
+            '<div class="val">' + fmtPct(cmContactedPct) + '</div><div class="cap">' + fmtInt(cmK.contacted) + ' dari ' + fmtInt(cmK.total_database) + ' database</div></div>' +
+          '<div class="card mini-stat"><div class="label">Booking &rarr; show rate</div>' +
+            '<div class="val">' + fmtPct(cmShowPct) + '</div><div class="cap">' + fmtInt(cmBocShow) + ' dari ' + fmtInt(cmBoc) + ' booking hadir</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="insight-strip">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
+        '<div><b>' + esc(cuMonthFirstWord) + ' baru berjalan ' + dayElapsed + ' dari ' + dim + ' hari (&sim;' + fmtPct(pctOfMonth, 0).replace(',0%', '%') +
+        ' dari bulan)</b>, namun tim sudah mengontak ' + fmtPct(cuContactedPct, 0).replace(',0%', '%') + ' database &mdash; sinyal awal yang sehat. ' +
+        'Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>' +
+      '</div>';
+  }
+
+  // kind: 'agustus' (completed) | 'september' (current) - matches THIS
+  // page's existing section ids/nav labels exactly. chartPrefix: 'ag' | 'se'
+  // - matches the chart ids already baked into the shared global DATA
+  // object (ag-model, ag-sumber, ag-alasan, se-model, se-alasan, se-outlet).
+  function renderSbeBlock(block, kind, chartPrefix, generatedAtDate, isCompleted){
+    var section = document.querySelector('#page-sbe-' + kind + ' section#sbe-' + kind);
+    if(!section) return;
+    if(!block){
+      section.innerHTML = errorCardHtml('SBE Funnel (Analisa Service 4-5-6)', 'Blok data "' + kind + '" tidak tersedia');
+      return;
+    }
+    var kpi = block.kpi;
+    var totalDb = kpi.total_database, contacted = kpi.contacted, boc = kpi.boc, bocShow = kpi.boc_show;
+    var cai = kpi.cai, walkin = kpi.walkin, so = kpi.realisasi_so;
+    var contactedPct = pctVal(contacted, totalDb);
+    var bocPct = pctVal(boc, contacted);
+    var html = '';
+
+    if(isCompleted){
+      html += sectionHeadHtml('Laporan Periode', block.month_label,
+        '<span class="status-chip done">Bulan selesai &middot; 100% database diproses</span>');
+      html += '<p class="lede">Corong lengkap dari total database hingga booking terealisasi (show), berdasarkan rekap tim reminder MRA.</p>';
+
+      var showPct = (bocShow !== null && bocShow !== undefined) ? pctVal(bocShow, boc) : null;
+      var funnelHtml = buildFunnel(
+        [totalDb, contacted, boc, bocShow],
+        [fmtPct(100.0), fmtPct(contactedPct), fmtPct(bocPct), (showPct === null ? '&mdash;' : fmtPct(showPct))],
+        [['Total Database', 'kendaraan usia 4&ndash;6 th tercatat'],
+         ['Berhasil Dikontak', 'dari ' + fmtInt(totalDb) + ' database'],
+         ['Booking (BOC)', 'dari ' + fmtInt(contacted) + ' kontak'],
+         ['Booking Hadir', 'hadir sesuai jadwal (show) &middot; dari ' + fmtInt(boc) + ' BOC']],
+        ['--pyr-1', '--pyr-2', '--pyr-3', '--pyr-4']);
+      html += '<div class="card funnel-card"><div class="funnel-title">Corong Konversi &middot; ' + esc(block.month_label) + '</div>' + funnelHtml + '</div>';
+
+      var caiPctOfDb = pctVal(cai, totalDb), soPctOfArrived = pctVal(so, cai), soPctOfDb = pctVal(so, totalDb);
+      html += '<div class="outcome-row">' +
+        '<div class="card outcome-tile"><div class="label">+ Walk-in di luar booking</div><div class="value">' + fmtInt(walkin) + ' unit</div>' +
+          '<div class="sub">Datang langsung setelah reminder, tanpa booking formal</div></div>' +
+        '<div class="card outcome-tile"><div class="label">Total tiba di bengkel (CAI)</div><div class="value">' + fmtInt(cai) + ' unit</div>' +
+          '<div class="sub">' + fmtInt(bocShow) + ' dari booking + ' + fmtInt(walkin) + ' walk-in &middot; ' + fmtPct(caiPctOfDb) + ' dari database</div></div>' +
+        '<div class="card outcome-tile"><div class="label">Realisasi Service Order</div><div class="value">' + fmtInt(so) + ' unit</div>' +
+          '<div class="sub">' + fmtPct(soPctOfArrived) + ' dari yang tiba &middot; ' + fmtPct(soPctOfDb) + ' dari total database</div></div>' +
+      '</div>';
+
+      html += buildCallstatusBlock(kpi, block.non_boc, block.month_label);
+
+      var panelGridExtra = '';
+      if(typeof block.cat_belum === 'number'){
+        var catDf = kpi.cat_data_funnel || 0, catBelum = block.cat_belum;
+        var dfPct = pctVal(catDf, totalDb), belumPct = pctVal(catBelum, totalDb);
+        var sumberSeg = segbarHtml([[dfPct, '--series-1'], [belumPct, '--text-muted']]);
+        var sumberLegend = legendItemHtml('--series-1', 'Data Funnel MRA', catDf, dfPct) +
+          legendItemHtml('--text-muted', 'Belum dikategorikan', catBelum, belumPct);
+        panelGridExtra += '<div class="card panel"><h3>Komposisi Sumber Data</h3>' +
+          '<div class="panel-desc">Dari ' + fmtInt(totalDb) + ' database, sebagian besar berasal dari jalur Data Funnel MRA; sisanya belum sempat diklasifikasi tim.</div>' +
+          sumberSeg + '<div class="seg-legend">' + sumberLegend + '</div>' +
+          '<div class="bd-drawer" id="drawer-' + chartPrefix + '-sumber" hidden></div></div>';
+      }
+
+      var alasanRows = buildAlasanRows(block.call_outcome);
+      var alasanN = (block.call_outcome && block.call_outcome.n) || 0;
+      panelGridExtra += '<div class="card panel"><h3>Alasan / Hasil Panggilan</h3>' +
+        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(alasanN) + ' baris (seluruh database periode ini)</div>' +
+        '<div class="rank-list">' + alasanRows + '</div>' +
+        '<div class="bd-drawer" id="drawer-' + chartPrefix + '-alasan" hidden></div></div>';
+
+      var modelRows = buildRankPanel(block.model.top, block.model.rest, block.model.rest_total, block.model.n, chartPrefix + '-model');
+      panelGridExtra += '<div class="card panel" style="grid-column:1 / -1;"><h3>Model Kendaraan Terlibat</h3>' +
+        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(block.model.n) + ' unit yang berhasil dihubungi (Contacted)</div>' +
+        '<div class="rank-list">' + modelRows + '</div>' +
+        '<div class="bd-drawer" id="drawer-' + chartPrefix + '-model" hidden></div></div>';
+
+      html += '<div class="panel-grid">' + panelGridExtra + '</div>';
+
+    } else {
+      var y = generatedAtDate.getFullYear(), m = generatedAtDate.getMonth() + 1;
+      var dayElapsed = generatedAtDate.getDate(), dim = daysInMonth(y, m);
+
+      html += sectionHeadHtml('Laporan Periode', block.month_label,
+        '<span class="status-chip progress">Bulan berjalan &middot; hari ke-' + dayElapsed + ' dari ' + dim + '</span>');
+      html += '<p class="lede">Corong sejauh ini untuk kohor <em>On Time T-Care M/M+1</em>. Tahap kunjungan bengkel &amp; realisasi masih menunggu proses lanjutan.</p>';
+
+      var bookingHadirTile = (bocShow === null || bocShow === undefined)
+        ? '<div class="card kpi-tile pending"><div class="label">Booking hadir (show)</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>'
+        : '<div class="card kpi-tile"><div class="label">Booking hadir (show)</div><div class="value">' + fmtInt(bocShow) + '</div>' +
+          '<div class="sub">' + fmtPct(pctVal(bocShow, boc)) + ' dari BOC &middot; sejauh ini bulan berjalan</div></div>';
+      var realisasiSoTile = '<div class="card kpi-tile"><div class="label">Realisasi service order</div><div class="value">' + fmtInt(so) + '</div>' +
+        '<div class="sub">' + fmtPct(pctVal(so, totalDb)) + ' dari total database &middot; sejauh ini bulan berjalan</div></div>';
+
+      html += '<div class="kpi-row">' +
+        '<div class="card kpi-tile"><div class="label">Total database</div><div class="value">' + fmtInt(totalDb) + '</div><div class="sub">unit kendaraan</div></div>' +
+        '<div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">' + fmtInt(contacted) + '</div><div class="sub">' + fmtPct(contactedPct) + ' dari database</div></div>' +
+        '<div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">' + fmtInt(boc) + '</div><div class="sub">' + fmtPct(bocPct) + ' dari yang dikontak</div></div>' +
+        bookingHadirTile + realisasiSoTile +
+      '</div>';
+
+      var funnelHtml2 = buildFunnel(
+        [totalDb, contacted, boc, bocShow],
+        [fmtPct(100.0), fmtPct(contactedPct), fmtPct(bocPct), ((bocShow === null || bocShow === undefined) ? '&mdash;' : fmtPct(pctVal(bocShow, boc)))],
+        [['Total Database', 'kohor On Time T-Care M/M+1'],
+         ['Berhasil Dikontak', 'dari ' + fmtInt(totalDb) + ' database'],
+         ['Booking (BOC)', 'dari ' + fmtInt(contacted) + ' kontak'],
+         (bocShow === null || bocShow === undefined)
+           ? ['Booking Hadir', 'bulan masih berjalan &middot; hari ke-' + dayElapsed + ' dari ' + dim]
+           : ['Booking Hadir', 'hadir sesuai jadwal (show) &middot; dari ' + fmtInt(boc) + ' BOC']],
+        ['--pyr-1', '--pyr-2', '--pyr-3', '--pyr-4']);
+      html += '<div class="card funnel-card"><div class="funnel-title">Corong Konversi &middot; ' + esc(block.month_label) + ' (berjalan)</div>' + funnelHtml2 + '</div>';
+
+      var caiPctOfDb2 = pctVal(cai, totalDb), soPctOfDb2 = pctVal(so, totalDb);
+      html += '<div class="outcome-row">' +
+        '<div class="card outcome-tile"><div class="label">+ Walk-in di luar booking</div><div class="value">' + fmtInt(walkin) + ' unit</div>' +
+          '<div class="sub">Datang langsung setelah reminder, tanpa booking formal &middot; sejauh ini bulan berjalan</div></div>' +
+        '<div class="card outcome-tile"><div class="label">Total tiba di bengkel (CAI)</div><div class="value">' + fmtInt(cai) + ' unit</div>' +
+          '<div class="sub">' + fmtPct(caiPctOfDb2) + ' dari database &middot; sejauh ini bulan berjalan</div></div>' +
+        '<div class="card outcome-tile"><div class="label">Realisasi Service Order</div><div class="value">' + fmtInt(so) + ' unit</div>' +
+          '<div class="sub">' + fmtPct(soPctOfDb2) + ' dari total database &middot; sejauh ini bulan berjalan</div></div>' +
+      '</div>';
+
+      html += buildCallstatusBlock(kpi, block.non_boc, block.month_label);
+
+      var colorVars = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-5'];
+      function simplePanel(title, field){
+        if(!field || !field.n) return '';
+        var tot = field.counts.reduce(function(s, c){ return s + c[1]; }, 0) || 1;
+        var segs = field.counts.map(function(c, i){ return [100.0 * c[1] / tot, colorVars[i % colorVars.length]]; });
+        var legend = field.counts.map(function(c, i){
+          var label = /^[A-Z\s\-\/]+$/.test(c[0]) ? (c[0].charAt(0) + c[0].slice(1).toLowerCase()) : c[0];
+          return legendItemHtml(colorVars[i % colorVars.length], esc(label), c[1], pctVal(c[1], tot));
+        }).join('');
+        return '<div class="card panel"><h3>' + esc(title) + '</h3>' +
+          '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(field.n) + ' baris (seluruh database periode ini)</div>' +
+          segbarHtml(segs) + '<div class="seg-legend">' + legend + '</div></div>';
+      }
+      var panelGridExtra2 = '';
+      panelGridExtra2 += simplePanel('Program T-Care', block.program);
+      panelGridExtra2 += simplePanel('Segmen Fleet / Retail', block.fleet);
+      panelGridExtra2 += simplePanel('Ketepatan Servis Terakhir', block.punctual);
+      panelGridExtra2 += simplePanel('Perilaku Pelanggan', block.behavior);
+
+      var modelRows2 = buildRankPanel(block.model.top, block.model.rest, block.model.rest_total, block.model.n, chartPrefix + '-model');
+      panelGridExtra2 += '<div class="card panel"><h3>Model Kendaraan Terlibat</h3>' +
+        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(block.model.n) + ' unit yang berhasil dihubungi (Contacted)</div>' +
+        '<div class="rank-list">' + modelRows2 + '</div>' +
+        '<div class="bd-drawer" id="drawer-' + chartPrefix + '-model" hidden></div></div>';
+
+      var alasanRows2 = buildAlasanRows(block.call_outcome);
+      var alasanN2 = (block.call_outcome && block.call_outcome.n) || 0;
+      panelGridExtra2 += '<div class="card panel"><h3>Alasan / Hasil Panggilan</h3>' +
+        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(alasanN2) + ' baris (seluruh database periode ini)</div>' +
+        '<div class="rank-list">' + alasanRows2 + '</div>' +
+        '<div class="bd-drawer" id="drawer-' + chartPrefix + '-alasan" hidden></div></div>';
+
+      if(block.outlet){
+        var outletRows = buildRankPanel(block.outlet.top, block.outlet.rest, block.outlet.rest_total, block.outlet.n, chartPrefix + '-outlet', 999);
+        panelGridExtra2 += '<div class="card panel"><h3>Outlet Servis Selain Perintis Perkasa Adam Malik</h3>' +
+          '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(block.outlet.n) + ' baris &middot; outlet lain tempat pelanggan tercatat servis terakhir</div>' +
+          '<div class="rank-list">' + outletRows + '</div>' +
+          '<div class="bd-drawer" id="drawer-' + chartPrefix + '-outlet" hidden></div></div>';
+      }
+
+      html += '<div class="panel-grid">' + panelGridExtra2 + '</div>';
+    }
+
+    section.innerHTML = html;
+  }
+
+  // ---------------- live-status badges + meta-pills ----------------
+
+  function setLivePill(id, ok, errMsg){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.classList.toggle('is-error', !ok);
+    el.title = ok ? 'Live' : ('Error: ' + (errMsg || 'tidak diketahui'));
+  }
+
+  function updateBadges(data, retensi, sbe, generatedAtDate){
+    var retensiOk = !!(retensi && !retensi.error);
+    var sbeOk = !!(sbe && !sbe.error);
+    setLivePill('livePillRetensi', retensiOk, retensi && retensi.error);
+    setLivePill('livePillSbe', sbeOk, sbe && sbe.error);
+
+    var shortDate = shortDateID(generatedAtDate);
+    var pillRetensi = document.getElementById('metaPillRetensi');
+    var pillSbe = document.getElementById('metaPillSbe');
+    if(pillRetensi){ var b1 = pillRetensi.querySelector('b'); if(b1) b1.textContent = shortDate; }
+    if(pillSbe){ var b2 = pillSbe.querySelector('b'); if(b2) b2.textContent = shortDate; }
+
+    var updatedEl = document.getElementById('livePillUpdated');
+    if(updatedEl && data && data.generated_at){
+      updatedEl.innerHTML = 'Diperbarui: <b>' + esc(fmtTimestamp(data.generated_at)) + '</b>';
+    }
+  }
+
+  // ---------------- top-level dispatch ----------------
+
+  function renderAll(data){
+    if(!data || typeof data !== 'object') return;
+    var generatedAtDate = data.generated_at ? new Date(data.generated_at) : new Date();
+    if(isNaN(generatedAtDate.getTime())) generatedAtDate = new Date();
+
+    var retensi = data.retensi;
+    var sbe = data.sbe;
+
+    updateBadges(data, retensi, sbe, generatedAtDate);
+
+    // Per the schema's own guidance: on an `error`, keep showing whatever is
+    // already on screen (the static last-known-good markup, or a previous
+    // live render) rather than blanking/zeroing it out - only the badge
+    // flips to the error state.
+    if(retensi && !retensi.error){
+      try { renderRetRingkasan(retensi, generatedAtDate); } catch(e){ console.error('[live-wire] renderRetRingkasan failed', e); }
+      try { renderRetDaftar(retensi); } catch(e){ console.error('[live-wire] renderRetDaftar failed', e); }
+    }
+    if(sbe && !sbe.error){
+      try { renderSbeRingkasan(sbe, generatedAtDate); } catch(e){ console.error('[live-wire] renderSbeRingkasan failed', e); }
+      try { renderSbeBlock(sbe.completed, 'agustus', 'ag', generatedAtDate, true); } catch(e){ console.error('[live-wire] renderSbeBlock(agustus) failed', e); }
+      try { renderSbeBlock(sbe.current, 'september', 'se', generatedAtDate, false); } catch(e){ console.error('[live-wire] renderSbeBlock(september) failed', e); }
+    }
+  }
+
+  async function initLiveWire(){
+    var db = null;
+    try {
+      db = (window.claude && typeof window.claude.use === 'function') ? await window.claude.use('db') : null;
+    } catch(e) {
+      console.warn('[live-wire] window.claude.use("db") failed', e);
+      return;
+    }
+    if(!db){
+      console.warn('[live-wire] db capability unavailable in this hosting context');
+      return;
+    }
+    try {
+      db.doc('dashboard_data/current').onSnapshot(function(snap){
+        try {
+          var data = (snap && typeof snap.data === 'function') ? snap.data() : null;
+          if(!data) return; // leave whatever's already shown (static baked content, or a prior live render)
+          renderAll(data);
+        } catch(e){ console.error('[live-wire] processing snapshot failed', e); }
+      }, function(err){
+        console.error('[live-wire] onSnapshot error', err);
+      });
+    } catch(e){
+      console.error('[live-wire] subscribe to dashboard_data/current failed', e);
+    }
+  }
+
+  initLiveWire();
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 (function(){
@@ -14932,3 +15653,5 @@
   initWaSummary();
 })();
 </script>
+
+</body></html>
