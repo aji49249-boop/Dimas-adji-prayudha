@@ -1,1951 +1,412 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard T-Care Perintis Perkasa (Live)</title>
-<meta name="description" content="Dashboard live Retensi servis berkala & Funnel SBE T-Care, dibaca langsung dari Google Sheets via Apps Script.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perintis Sistem Management</title>
 <style>
-  /* ============================================================
-     DESIGN TOKENS — ported verbatim from generate_dashboard.py /
-     generate_retention.py STYLE_BLOCK (color-scheme aware, light +
-     dark). Do not change these values; they are the visual contract
-     with the old Python-generated pages.
-     ============================================================ */
   :root{
-    color-scheme: light;
-    --page-bg:#f9f9f7;
-    --surface-1:#fcfcfb;
-    --surface-2:#f2f1ec;
-    --text-primary:#0b0b0b;
-    --text-secondary:#52514e;
-    --text-muted:#898781;
-    --gridline:#e1e0d9;
-    --baseline:#c3c2b7;
-    --border: rgba(11,11,11,0.10);
-
-    --accent:#2a78d6;
-    --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100;
-    --series-5:#e87ba4; --series-6:#008300; --series-7:#4a3aa7; --series-8:#e34948;
-
-    --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
-
-    --pyr-1:#c76a2e; --pyr-2:#c14742; --pyr-3:#9c7355; --pyr-4:#706b5e;
-    --badge-bg:#ffc94d; --badge-border:#a8391f; --badge-text:#5a2600;
-
-    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#d03b3b;
-    --success-text:#006300;
-
-    --font-display:'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-body:'IBM Plex Sans', system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-mono:'IBM Plex Mono', ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --red:#e11d2a;
+    --red-dark:#c81521;
+    --black:#1c1c1c;
+    --green:#1f9254;
+    --orange:#d97706;
+    --bg:#f5f3ef;
+    --card-border:#e5e1da;
+    --text:#1c1c1c;
+    --muted:#6b6b6b;
   }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      color-scheme: dark;
-      --page-bg:#0d0d0d;
-      --surface-1:#1a1a19;
-      --surface-2:#232322;
-      --text-primary:#ffffff;
-      --text-secondary:#c3c2b7;
-      --text-muted:#8f8d86;
-      --gridline:#2c2c2a;
-      --baseline:#383835;
-      --border: rgba(255,255,255,0.10);
-      --accent:#3987e5;
-      --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
-      --series-5:#d55181; --series-6:#1fae1f; --series-7:#9085e9; --series-8:#e66767;
-      --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
-      --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
-      --success-text:#3fca3f;
-    }
-  }
-  :root[data-theme="dark"]{
-    color-scheme: dark;
-    --page-bg:#0d0d0d;
-    --surface-1:#1a1a19;
-    --surface-2:#232322;
-    --text-primary:#ffffff;
-    --text-secondary:#c3c2b7;
-    --text-muted:#8f8d86;
-    --gridline:#2c2c2a;
-    --baseline:#383835;
-    --border: rgba(255,255,255,0.10);
-    --accent:#3987e5;
-    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500;
-    --series-5:#d55181; --series-6:#1fae1f; --series-7:#9085e9; --series-8:#e66767;
-    --ord-1:#86b6ef; --ord-2:#5598e7; --ord-3:#2a78d6; --ord-4:#1c5cab;
-    --status-good:#0ca30c; --status-warning:#fab219; --status-serious:#ec835a; --status-critical:#e66767;
-    --success-text:#3fca3f;
-  }
-
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; }
+  *{box-sizing:border-box;}
   body{
-    background: var(--page-bg);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    font-size:15px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
   }
-  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; margin:0; text-wrap:balance; }
-  p{ margin:0; }
-  a{ color:var(--accent); }
-  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px 80px; }
-
-  /* ---------- header ---------- */
-  header.top{ border-bottom:1px solid var(--border); background:var(--surface-1); }
-  .top-inner{
-    max-width:1180px; margin:0 auto; padding:22px 28px;
-    display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  .layout{display:flex;min-height:100vh;}
+  .sidebar{
+    width:260px;
+    background:var(--black);
+    color:#fff;
+    padding:24px 18px;
+    display:flex;
+    flex-direction:column;
+    flex-shrink:0;
   }
-  .brand{ display:flex; align-items:center; gap:14px; }
-  .brand-mark{
-    width:40px; height:40px; border-radius:10px;
-    background: linear-gradient(155deg, var(--ord-1), var(--ord-4));
-    display:flex; align-items:center; justify-content:center; flex:none;
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+  .brand-icon{
+    width:40px;height:40px;border-radius:10px;background:var(--red);
+    display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;
   }
-  .brand-mark svg{ width:22px; height:22px; display:block; }
-  .brand-text h1{ font-size:19px; letter-spacing:-0.01em; }
-  .brand-text .sub{ font-size:12.5px; color:var(--text-muted); margin-top:2px; }
+  .brand-title{font-weight:700;font-size:15px;line-height:1.25;}
+  .brand-sub{font-size:12px;color:#9a9a9a;}
+  .menu-label{font-size:11px;letter-spacing:.08em;color:#8a8a8a;margin:18px 0 8px;}
+  .menu-item{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px;border-radius:8px;font-size:14px;color:#d9d9d9;
+    margin-bottom:4px;cursor:pointer;
+  }
+  .menu-item.active{background:var(--red);color:#fff;font-weight:600;}
+  .menu-item .ico{margin-right:10px;}
+  .menu-item .count{
+    background:rgba(255,255,255,.15);border-radius:999px;font-size:11px;
+    padding:2px 8px;
+  }
+  .sidebar-footer{margin-top:auto;font-size:11px;color:#8a8a8a;line-height:1.5;padding-top:16px;border-top:1px solid #333;}
+  .main{flex:1;padding:32px 40px;min-width:0;}
+  .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px;flex-wrap:wrap;}
+  .topbar h1{margin:0 0 4px;font-size:26px;}
+  .topbar p{margin:0;color:var(--muted);font-size:14px;}
+  .top-actions{display:flex;gap:10px;align-items:center;}
+  .search{
+    border:1px solid var(--card-border);background:#fff;border-radius:10px;
+    padding:9px 14px;font-size:13px;color:var(--muted);min-width:220px;
+  }
   .pill{
-    font-family:var(--font-mono); font-size:11.5px; font-weight:500;
-    color:var(--text-secondary); background:var(--surface-2);
-    border:1px solid var(--border); border-radius:100px; padding:5px 12px;
-    white-space:nowrap;
+    display:flex;align-items:center;gap:6px;border:1px solid var(--card-border);
+    background:#fff;border-radius:999px;padding:8px 16px;font-size:13px;white-space:nowrap;
   }
-  .pill b{ color:var(--text-primary); font-weight:600; }
-
-  nav.jump{
-    display:flex; gap:22px; padding:12px 28px; max-width:1180px; margin:0 auto;
-    font-size:13px; overflow-x:auto;
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+  .stat{
+    border-radius:14px;padding:20px;color:#fff;min-height:110px;
+    display:flex;flex-direction:column;justify-content:space-between;
   }
-  nav.jump a{ color:var(--text-secondary); text-decoration:none; white-space:nowrap; padding:4px 0; border-bottom:2px solid transparent; }
-  nav.jump a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
-  nav.jump a.active{ color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
-
-  /* ---------- live-status badges + refresh (new, this page only) ---------- */
-  .live-badges{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-  .live-pill{
-    display:inline-flex; align-items:center; gap:6px;
-    font-family:var(--font-mono); font-size:11.5px; font-weight:500;
-    color:var(--text-secondary); background:var(--surface-2);
-    border:1px solid var(--border); border-radius:100px; padding:5px 12px;
-    white-space:nowrap; cursor:default;
+  .stat .icon{
+    width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.2);
+    display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:28px;
   }
-  .live-pill .dot{ width:8px; height:8px; border-radius:50%; flex:none; background:var(--status-good); }
-  .live-pill.is-error .dot{ background:var(--status-critical); }
-  .live-pill.is-error{ cursor:pointer; color:var(--status-critical); }
-  .refresh-btn{
-    font-family:var(--font-body); font-size:12px; font-weight:600; color:var(--text-primary);
-    background:var(--surface-2); border:1px solid var(--border); border-radius:100px;
-    padding:6px 14px; cursor:pointer; display:inline-flex; align-items:center; gap:7px;
+  .stat .label{font-size:11px;letter-spacing:.06em;opacity:.85;text-transform:uppercase;}
+  .stat .value{font-size:26px;font-weight:700;margin-top:4px;}
+  .stat.red{background:var(--red);}
+  .stat.black{background:var(--black);}
+  .stat.green{background:var(--green);}
+  .stat.orange{background:var(--orange);}
+  .section-title{margin:0 0 2px;font-size:18px;}
+  .section-sub{margin:0 0 16px;color:var(--muted);font-size:13px;}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;}
+  thead th{
+    text-align:left;font-size:11px;letter-spacing:.06em;color:var(--muted);
+    text-transform:uppercase;background:#f1efe9;padding:12px 16px;border-bottom:1px solid var(--card-border);
   }
-  .refresh-btn:hover{ background:var(--border); }
-  .refresh-btn:disabled{ opacity:.65; cursor:default; }
-  .refresh-btn .spin{
-    width:12px; height:12px; border:2px solid var(--text-muted); border-top-color:transparent;
-    border-radius:50%; display:none; animation: tcare-spin .7s linear infinite;
+  tbody td{padding:14px 16px;border-bottom:1px solid var(--card-border);font-size:13px;vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr.highlight{background:#fff7ec;}
+  .app-cell{display:flex;align-items:center;gap:12px;}
+  .app-ico{
+    width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    font-size:16px;flex-shrink:0;background:#eef0ff;
   }
-  .refresh-btn.loading .spin{ display:inline-block; }
-  @keyframes tcare-spin{ to{ transform:rotate(360deg); } }
-  .badge-error-detail{
-    display:none; font-size:12px; color:var(--status-critical); padding:8px 28px;
-    max-width:1180px; margin:0 auto; background: color-mix(in srgb, var(--status-critical) 8%, var(--surface-1));
-    border-bottom:1px solid var(--border);
+  .app-name{font-weight:600;}
+  .app-desc{color:var(--muted);font-size:12px;margin-top:2px;}
+  .tag{
+    display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;
   }
-  .badge-error-detail.show{ display:block; }
-  .stale-banner{
-    margin:18px 0 0; padding:10px 14px; border-radius:10px; font-size:12.5px;
-    background: color-mix(in srgb, var(--status-warning) 14%, var(--surface-1));
-    border:1px solid color-mix(in srgb, var(--status-warning) 30%, var(--border));
-    color:var(--text-secondary); display:none;
+  .tag.bengkel{background:#dbeafe;color:#1d4ed8;}
+  .tag.mra{background:#fde8cc;color:#b4620a;}
+  .tag.monitoring{background:#e6e6e6;color:#444;}
+  .link{color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;}
+  .status{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--green);}
+  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+  .actions{display:flex;gap:6px;}
+  .actions a{
+    width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    text-decoration:none;font-size:13px;color:#fff;
   }
-  .stale-banner.show{ display:block; }
-  .empty-state{ padding:70px 20px; text-align:center; color:var(--text-secondary); }
-  .empty-state h3{ font-size:17px; margin-bottom:8px; }
-
-  /* ---------- tab pages (nav.jump driven, mirrors old combined dashboard) ---------- */
-  .tab-page[hidden]{ display:none !important; }
-
-  /* ---------- sections ---------- */
-  section{ padding-top:52px; }
-  .section-head{ margin-bottom:22px; display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-  .section-head h2{ font-size:22px; letter-spacing:-0.01em; }
-  .section-head .status-chip{ font-size:12px; font-weight:600; padding:4px 11px; border-radius:100px; }
-  .status-chip.done{ background:color-mix(in srgb, var(--status-good) 14%, transparent); color:var(--success-text); }
-  .status-chip.progress{ background:color-mix(in srgb, var(--series-4) 16%, transparent); color:var(--series-4); }
-  .eyebrow{ font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
-  .lede{ color:var(--text-secondary); font-size:14.5px; max-width:64ch; margin-top:8px; }
-
-  .card{
-    background:var(--surface-1); border:1px solid var(--border); border-radius:14px;
+  .a-view{background:#2563eb;}
+  .a-copy{background:#d97706;}
+  .a-open{background:var(--red);}
+  .todo-note{
+    margin-top:14px;padding:12px 16px;border:1px dashed #d1a954;background:#fffaf0;
+    border-radius:10px;font-size:13px;color:#8a6116;
   }
-
-  /* ---------- hero / exec summary ---------- */
-  .hero-grid{ display:grid; grid-template-columns: 1.15fr 1fr; gap:18px; }
-  @media (max-width: 860px){ .hero-grid{ grid-template-columns:1fr; } }
-  .hero-figure-card{ padding:28px 30px; display:flex; flex-direction:column; justify-content:center; gap:10px; }
-  .hero-figure-card .eyebrow{ color:var(--text-muted); }
-  .hero-figure{ font-family:var(--font-display); font-weight:700; font-size:56px; line-height:1; letter-spacing:-0.02em; color:var(--text-primary); }
-  .hero-figure .unit{ font-size:26px; font-weight:600; color:var(--text-secondary); margin-left:6px; }
-  .hero-figure-card .desc{ font-size:14px; color:var(--text-secondary); max-width:46ch; }
-  .hero-side{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .mini-stat{ padding:18px 20px; }
-  .mini-stat .label{ font-size:12px; color:var(--text-muted); font-weight:500; }
-  .mini-stat .val{ font-family:var(--font-display); font-size:26px; font-weight:600; margin-top:6px; letter-spacing:-0.01em; }
-  .mini-stat .cap{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
-
-  .insight-strip{
-    margin-top:16px; padding:14px 18px; border-radius:12px;
-    background: color-mix(in srgb, var(--accent) 8%, var(--surface-1));
-    border:1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
-    font-size:13.5px; color:var(--text-secondary); display:flex; gap:10px; align-items:flex-start;
+  @media (max-width:900px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .layout{flex-direction:column;}
+    .sidebar{width:100%;}
+    table{display:block;overflow-x:auto;}
   }
-  .insight-strip svg{ flex:none; width:17px; height:17px; margin-top:2px; color:var(--accent); }
-  .insight-strip b{ color:var(--text-primary); }
-
-  /* ---------- KPI tiles ---------- */
-  .kpi-row{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:20px; }
-  .kpi-row.cols-4{ grid-template-columns:repeat(4,1fr); }
-  @media (max-width:980px){ .kpi-row{ grid-template-columns:repeat(2,1fr); } }
-  .kpi-tile{ padding:17px 18px; }
-  .kpi-tile .label{ font-size:12.5px; color:var(--text-muted); font-weight:500; }
-  .kpi-tile .value{ font-family:var(--font-display); font-size:25px; font-weight:600; margin-top:8px; letter-spacing:-0.01em; }
-  .kpi-tile .sub{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
-  .kpi-tile.pending{ background:var(--surface-2); border-style:dashed; }
-  .kpi-tile.pending .value{ color:var(--text-muted); font-size:16px; font-weight:500; }
-  .kpi-tile.good .value{ color:var(--success-text); }
-  .kpi-tile.warn .value{ color:var(--series-4); }
-
-  /* ---------- funnel (inverted pyramid) ---------- */
-  .funnel-card{ padding:26px 28px 22px; margin-top:20px; }
-  .funnel-title{ font-size:14px; font-weight:600; color:var(--text-secondary); margin-bottom:20px; }
-
-  .pyramid{ display:flex; flex-direction:column; width:fit-content; }
-  .pyr-row{ display:flex; align-items:stretch; height:108px; }
-  @media (max-width:620px){ .pyr-row{ height:auto; min-height:118px; } .pyramid{ width:100%; } }
-
-  .pyr-seg{
-    width:264px; flex:none; position:relative;
-    clip-path: polygon(var(--tl) 0%, var(--tr) 0%, var(--br) 100%, var(--bl) 100%);
-    display:flex; align-items:center; justify-content:center; text-align:center;
-    padding:6px 8px;
-  }
-  @media (max-width:620px){ .pyr-seg{ width:180px; padding:6px 10px; } }
-  .pyr-row:not(:first-child) .pyr-seg{ box-shadow: inset 0 2px 0 var(--surface-1); }
-  .pyr-seg.is-pending{
-    background-image: repeating-linear-gradient(135deg, var(--gridline), var(--gridline) 7px, var(--surface-2) 7px, var(--surface-2) 14px);
-  }
-  .pyr-seg-inner{ display:flex; flex-direction:column; align-items:center; gap:4px; }
-  .pyr-seg-label{ display:block; color:#fff; font-weight:700; font-size:12px; line-height:1.22; letter-spacing:.005em; text-shadow:0 1px 3px rgba(0,0,0,.18); margin:0 auto; }
-  .pyr-seg-pct{
-    display:inline-block; font-family:var(--font-display); font-weight:800; font-size:13.5px;
-    color:#fff; background:rgba(0,0,0,.20); padding:2px 9px; border-radius:100px; letter-spacing:.01em;
-  }
-  .pyr-seg.is-pending .pyr-seg-label{ color:var(--text-secondary); text-shadow:none; font-weight:600; }
-  .pyr-seg.is-pending .pyr-seg-pct{ background:var(--surface-1); color:var(--text-muted); border:1px dashed var(--baseline); }
-
-  .pyr-callout{ flex:0 0 300px; width:300px; padding:8px 0 8px 26px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
-  .pyr-callout-value{ font-family:var(--font-display); font-size:26px; font-weight:700; letter-spacing:-0.01em; color:var(--text-primary); }
-  .pyr-callout-value.is-pending{ font-size:16px; font-weight:600; color:var(--text-muted); }
-  .pyr-callout-cap{ font-size:11.5px; color:var(--text-muted); margin-top:3px; }
-
-  .outcome-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:14px; }
-  @media (max-width:760px){ .outcome-row{ grid-template-columns:1fr; } }
-  .outcome-tile{ padding:18px 20px; border-left:3px solid var(--status-good); }
-  .outcome-tile .label{ font-size:12.5px; color:var(--text-muted); font-weight:500; }
-  .outcome-tile .value{ font-family:var(--font-display); font-size:24px; font-weight:600; margin-top:7px; color:var(--success-text); }
-  .outcome-tile .sub{ font-size:12px; color:var(--text-secondary); margin-top:4px; }
-
-  /* ---------- call status card (donut + stat trio) ---------- */
-  .callstatus-card{ padding:24px 26px; margin-top:14px; display:flex; gap:32px; flex-wrap:wrap; align-items:center; }
-  .callstatus-donut-block{ display:flex; align-items:center; gap:20px; flex:1 1 300px; min-width:260px; }
-  .callstatus-donut-block svg{ flex:none; }
-  .donut-legend{ display:flex; flex-direction:column; gap:7px; }
-  .donut-legend .ditem{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-secondary); }
-  .donut-legend .ditem .swatch{ width:10px; height:10px; border-radius:3px; flex:none; }
-  .donut-legend b{ color:var(--text-primary); font-weight:600; }
-  .donut-note{ font-size:11px; color:var(--text-muted); margin-top:2px; max-width:28ch; line-height:1.4; }
-  .callstatus-stats{ display:flex; gap:14px; flex:2 1 380px; flex-wrap:wrap; }
-  .callstatus-stat{ flex:1 1 150px; padding:14px 16px; border-radius:12px; background:var(--surface-2); border:1px solid var(--border); }
-  .callstatus-stat .label{ font-size:11.5px; color:var(--text-muted); font-weight:500; }
-  .callstatus-stat .value{ font-family:var(--font-display); font-size:22px; font-weight:600; margin-top:6px; letter-spacing:-0.01em; }
-  .callstatus-stat .sub{ font-size:11px; color:var(--text-secondary); margin-top:5px; line-height:1.4; }
-  @media (max-width:760px){ .callstatus-card{ flex-direction:column; align-items:stretch; } }
-
-  /* ---------- panel grid for breakdowns ---------- */
-  .panel-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
-  @media (max-width:860px){ .panel-grid{ grid-template-columns:1fr; } }
-  .panel{ padding:20px 22px; }
-  .panel h3{ font-size:13.5px; font-weight:600; }
-  .panel .n-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted); font-weight:500; }
-  .panel .panel-desc{ font-size:12px; color:var(--text-secondary); margin-top:3px; margin-bottom:16px; }
-
-  /* segmented (share-of-whole) bar */
-  .segbar{ display:flex; gap:2px; height:22px; border-radius:5px; overflow:hidden; }
-  .segbar .seg{ height:100%; }
-  .seg-legend .swatch{ width:9px; height:9px; border-radius:2.5px; flex:none; }
-  .seg-legend b{ color:var(--text-primary); font-weight:600; }
-
-  /* ranked single-hue bar list */
-  .rank-list{ display:flex; flex-direction:column; gap:3px; }
-  .rank-row{
-    display:grid; grid-template-columns:168px 1fr 90px 16px; align-items:center; column-gap:12px;
-    padding:5px 6px; margin:0 -6px; border-radius:8px;
-  }
-  .rank-row .rlabel{ font-size:12.5px; color:var(--text-secondary); line-height:1.3; }
-  .rank-track{ height:11px; background:var(--gridline); border-radius:4px; }
-  .rank-fill{ height:100%; background:var(--series-1); border-radius:4px; }
-  .rank-val{ font-size:12px; color:var(--text-primary); font-weight:600; text-align:right; }
-  .rank-val span{ color:var(--text-muted); font-weight:500; }
-  .rank-chev{ width:16px; height:16px; color:var(--text-muted); flex:none; transition:transform .15s ease; }
-
-  .rank-row.is-clickable{ cursor:pointer; }
-  .rank-row.is-clickable:hover{ background:var(--surface-2); }
-  .rank-row.is-clickable:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
-  .rank-row:not(.is-clickable) .rank-chev{ visibility:hidden; }
-  .rank-row.is-active{ background:color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
-  .rank-row.is-active .rlabel, .rank-row.is-active .rank-val{ color:var(--text-primary); }
-  .rank-row.is-active .rank-chev{ transform:rotate(180deg); color:var(--accent); }
-
-  /* segmented-bar legend as clickable rows */
-  .seg-legend{ display:flex; flex-direction:column; gap:2px; margin-top:14px; }
-  .seg-legend .item{
-    font-size:12.5px; color:var(--text-secondary); display:flex; align-items:center; gap:8px;
-    padding:6px 8px; margin:0 -8px; border-radius:8px; width:100%;
-  }
-  .seg-legend .item .sl-text{ flex:1; min-width:0; }
-  .seg-legend .item.is-clickable{ cursor:pointer; }
-  .seg-legend .item.is-clickable:hover{ background:var(--surface-2); }
-  .seg-legend .item.is-clickable:focus-visible{ outline:2px solid var(--accent); outline-offset:1px; }
-  .seg-legend .item:not(.is-clickable) .rank-chev{ visibility:hidden; }
-  .seg-legend .item.is-active{ background:color-mix(in srgb, var(--accent) 9%, var(--surface-1)); }
-  .seg-legend .item.is-active .rank-chev{ transform:rotate(180deg); color:var(--accent); }
-
-  /* breakdown drawer */
-  .bd-drawer{
-    margin-top:10px; padding:13px 16px; border-radius:10px;
-    background:var(--surface-2); border:1px solid var(--border);
-    animation: bd-in .15s ease;
-  }
-  @keyframes bd-in{ from{ opacity:0; transform:translateY(-3px); } to{ opacity:1; transform:translateY(0); } }
-  .bd-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
-  .bd-head span{ font-size:12px; font-weight:700; color:var(--text-primary); }
-  .bd-head span em{ font-style:normal; color:var(--text-muted); font-weight:500; }
-  .bd-close{
-    background:none; border:none; color:var(--text-muted); font-size:17px; line-height:1; cursor:pointer;
-    padding:2px 5px; border-radius:5px;
-  }
-  .bd-close:hover{ background:var(--border); color:var(--text-primary); }
-  .bd-rows{ display:flex; flex-direction:column; gap:5px; }
-  .bd-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; font-size:12px; }
-  .bd-lbl{ color:var(--text-secondary); }
-  .bd-val{ color:var(--text-primary); font-weight:600; flex:none; }
-  .bd-extra{ color:var(--text-muted); font-weight:500; }
-  .bd-note{ font-size:11.5px; color:var(--text-muted); margin-top:9px; padding-top:9px; border-top:1px solid var(--border); }
-
-  /* ---------- retention table (read-only — no edit fields in the live version) ---------- */
-  .tbl-scroll{ overflow-x:auto; border-radius:10px; border:1px solid var(--border); }
-  table.retention{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:820px; }
-  table.retention thead th{ text-align:left; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); background:var(--surface-2); padding:9px 12px; white-space:nowrap; position:sticky; top:0; }
-  table.retention tbody td{ padding:9px 12px; border-top:1px solid var(--border); vertical-align:top; }
-  table.retention tbody tr:hover{ background: color-mix(in srgb, var(--accent) 5%, transparent); }
-  table.retention td.num{ color:var(--text-muted); font-family:var(--font-mono); font-size:11.5px; }
-  table.retention td.model{ white-space:nowrap; }
-  table.retention td.vin{ font-family:var(--font-mono); font-size:11px; color:var(--text-secondary); white-space:nowrap; }
-  table.retention td.note{ color:var(--text-secondary); max-width:280px; }
-  .reason-badge{
-    display:inline-block; font-size:11px; padding:3px 9px; border-radius:100px;
-    background:var(--surface-2); border:1px solid var(--border); color:var(--text-secondary); white-space:nowrap;
-  }
-  .reason-badge.wo{ color:var(--success-text); border-color: color-mix(in srgb, var(--status-good) 35%, var(--border)); }
-  .reason-badge.master{ color:var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
-
-  ::selection{ background: color-mix(in srgb, var(--accent) 30%, transparent); }
-</style>
-<style>
-  /* ============================================================
-     WA BLAST ACTIVITY tab — ported verbatim from
-     generate_tcare_dashboard.py's WA_BLAST_STYLE. Manual log: Bulan /
-     Kategori Databes / Total Databes / VIN upload, persisted via the
-     Apps Script backend (wa-blast-backend-Code.gs) since this page is
-     never a Claude Artifact (no `db` capability here).
-     ============================================================ */
-  .wa-blast-table{ width:100%; border-collapse:collapse; font-size:12.5px; min-width:820px; }
-  .wa-blast-table thead th{ text-align:left; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); background:var(--surface-2); padding:9px 12px; white-space:nowrap; }
-  .wa-blast-table tbody td{ padding:9px 12px; border-top:1px solid var(--border); vertical-align:top; }
-  .wa-blast-table td.num{ color:var(--text-muted); font-family:var(--font-mono); font-size:11.5px; }
-  .wa-blast-table input.edit-field{ min-width:120px; }
-  .wa-vin-cell{ min-width:230px; }
-  .wa-vin-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .wa-vin-count{ font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--accent); background:none; border:1px dashed var(--baseline); border-radius:6px; padding:4px 8px; cursor:pointer; }
-  .wa-vin-count[data-has="0"]{ color:var(--text-muted); }
-  .wa-upload-btn{ font-size:11.5px; color:var(--text-secondary); background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:4px 10px; cursor:pointer; white-space:nowrap; }
-  .wa-upload-btn:hover{ background:var(--surface-1); }
-  .wa-vin-drawer{ margin-top:8px; padding:10px 12px; border-radius:8px; background:var(--surface-2); border:1px solid var(--border); max-width:380px; }
-  .wa-vin-list{ display:flex; flex-wrap:wrap; gap:5px; max-height:150px; overflow-y:auto; }
-  .wa-vin-chip{ font-family:var(--font-mono); font-size:10.5px; background:var(--surface-1); border:1px solid var(--border); border-radius:4px; padding:2px 6px; }
-  .wa-vin-clear{ margin-top:8px; font-size:11px; color:var(--status-critical); background:none; border:none; cursor:pointer; padding:0; }
-  .wa-vin-empty{ font-size:11.5px; color:var(--text-muted); }
-  .wa-delete-row{ background:none; border:none; color:var(--text-muted); font-size:16px; cursor:pointer; padding:2px 6px; border-radius:5px; line-height:1; }
-  .wa-delete-row:hover{ background:var(--border); color:var(--status-critical); }
-  .wa-btn-add{ font-size:12.5px; font-weight:600; color:#fff; background:var(--accent); border:none; border-radius:8px; padding:8px 14px; cursor:pointer; }
-  .wa-btn-add:hover{ opacity:.9; }
-  .wa-btn-add:disabled{ opacity:.5; cursor:not-allowed; }
-  .wa-btn-group{ display:flex; gap:8px; flex-wrap:wrap; }
-  .wa-btn-sync{ font-size:12.5px; font-weight:600; color:var(--text-primary); background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 14px; cursor:pointer; }
-  .wa-btn-sync:hover{ background:var(--surface-1); }
-  .wa-btn-sync:disabled{ opacity:.5; cursor:not-allowed; }
-  .wa-sync-status{ display:block; font-size:11.5px; color:var(--text-muted); margin-top:8px; line-height:1.4; }
-  .wa-sync-status a{ color:var(--accent); font-weight:600; }
-  .wa-empty-state{ padding:24px; text-align:center; color:var(--text-muted); font-size:13px; }
-  .wa-unavailable{ padding:16px; text-align:center; color:var(--text-muted); font-size:12.5px; }
-</style>
-<style>
-  /* ============================================================
-     RINGKASAN BLAST YANG BOOKING tab — ported verbatim from
-     generate_tcare_dashboard.py's WA_SUMMARY_STYLE.
-     ============================================================ */
-  .wa-charts-row{ display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap; margin-top:6px; }
-  .wa-chart-block{ display:flex; flex-direction:column; gap:12px; }
-  .wa-chart-title{ font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
-
-  .wa-stack-bar{ display:flex; flex-direction:column; width:132px; height:420px; border-radius:14px; overflow:hidden; border:1px solid var(--border); flex:none; }
-  .wa-stack-seg{ display:flex; align-items:center; justify-content:center; min-height:22px; position:relative; }
-  .wa-stack-seg:not(:last-child){ box-shadow: inset 0 -2px 0 var(--surface-1); }
-  .wa-stack-val{ color:#fff; font-family:var(--font-display); font-weight:800; font-size:15px; letter-spacing:.01em; text-shadow:0 1px 3px rgba(0,0,0,.28); }
-
-  .wa-bars-row{ display:flex; align-items:flex-end; gap:16px; height:420px; }
-  .wa-bar-col{ display:flex; flex-direction:column; align-items:center; justify-content:flex-end; width:58px; height:100%; flex:none; }
-  .wa-bar-count{ font-family:var(--font-display); font-weight:800; font-size:14px; color:var(--text-primary); margin-bottom:6px; }
-  .wa-bar-track{ width:100%; flex:1 1 auto; display:flex; align-items:flex-end; }
-  .wa-bar-fill{ width:100%; border-radius:8px 8px 3px 3px; min-height:6px; display:flex; align-items:flex-start; justify-content:center; padding-top:6px; }
-  .wa-bar-pct{ color:#fff; font-weight:800; font-size:11.5px; text-shadow:0 1px 2px rgba(0,0,0,.3); }
-
-  .wa-stack-legend{ display:flex; flex-direction:column; gap:9px; padding-top:2px; min-width:220px; flex:1 1 240px; }
-  .wa-legend-item{ display:flex; align-items:flex-start; gap:10px; font-size:14px; color:var(--text-secondary); line-height:1.4; }
-  .wa-legend-item .swatch{ width:13px; height:13px; border-radius:3px; flex:none; margin-top:4px; }
-  .wa-legend-item b{ color:var(--text-primary); font-weight:600; }
-  .wa-legend-item .cap{ color:var(--text-secondary); font-size:14.5px; }
-  .wa-legend-item .cap-num{ font-family:var(--font-display); font-weight:800; font-size:19px; color:var(--text-primary); }
 </style>
 </head>
 <body>
-
-<header class="top">
-  <div class="top-inner">
+<div class="layout">
+  <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 4h18l-6.5 8.2V19l-5 2v-8.8L3 4z" fill="#ffffff" fill-opacity="0.95"/>
-        </svg>
-      </div>
-      <div class="brand-text">
-        <h1>Dashboard T-Care Perintis Perkasa</h1>
-        <div class="sub">Live &middot; Retensi servis berkala per DELIVERY DATE &amp; Funnel reminder T-Care usia 4&ndash;6 tahun</div>
+      <div class="brand-icon">🔧</div>
+      <div>
+        <div class="brand-title">Perintis<br/>Sistem Management</div>
+        <div class="brand-sub">Perintis Perkasa</div>
       </div>
     </div>
-    <div class="live-badges" id="liveBadges">
-      <span class="live-pill" id="badgeRetensi"><span class="dot"></span><span class="txt">Retensi (PDFU &amp; SBI New)</span></span>
-      <span class="live-pill" id="badgeSbe"><span class="dot"></span><span class="txt">SBE Funnel (Analisa Service 4-5-6)</span></span>
-      <span class="pill" id="pillUpdated">Diperbarui: &mdash;</span>
-      <button class="refresh-btn" id="refreshBtn" type="button"><span class="spin"></span><span class="btxt">Refresh</span></button>
+
+    <div class="menu-label">MENU</div>
+    <div class="menu-item active" data-cat="all" onclick="filterApps('all')"><span><span class="ico">▦</span>Dashboard</span></div>
+
+    <div class="menu-label">ALUR SERVIS</div>
+    <div class="menu-item" data-cat="bengkel" onclick="filterApps('bengkel')"><span><span class="ico">🔧</span>Proses di Bengkel</span><span class="count">4</span></div>
+    <div class="menu-item" data-cat="mra" onclick="filterApps('mra')"><span><span class="ico">🔻</span>MRA Monitoring</span><span class="count">4</span></div>
+    <div class="menu-item" data-cat="monitoring" onclick="filterApps('monitoring')"><span><span class="ico">🛠</span>Monitoring &amp; Manajemen</span><span class="count">2</span></div>
+
+    <div class="menu-label">TIM</div>
+    <div class="menu-item" data-cat="hps" onclick="filterApps('hps')"><span><span class="ico">👥</span>HPS</span><span class="count">4</span></div>
+
+    <div class="sidebar-footer">
+      Perintis Perkasa<br/>
+      Toyota Authorized Service · v1.0
     </div>
-  </div>
-  <nav class="jump">
-    <a href="#ret-ringkasan" data-page="ret-ringkasan">Retensi &middot; Ringkasan</a>
-    <a href="#ret-daftar" data-page="ret-daftar">Retensi &middot; Daftar</a>
-    <a href="#sbe-ringkasan" data-page="sbe-ringkasan">Funnel SBE &middot; Ringkasan</a>
-    <a href="#sbe-completed" data-page="sbe-completed">Funnel SBE &middot; Bulan Selesai</a>
-    <a href="#sbe-current" data-page="sbe-current">Funnel SBE &middot; Bulan Berjalan</a>
-    <a href="#wa-blast" data-page="wa-blast">WA Blast Activity</a>
-    <a href="#wa-summary" data-page="wa-summary">Ringkasan Blast yang Booking</a>
-  </nav>
-</header>
+  </aside>
 
-<div class="badge-error-detail" id="badgeErrorDetail"></div>
-
-<div class="wrap">
-  <div class="stale-banner" id="staleBanner"></div>
-  <div id="tcareRoot">
-    <div class="empty-state"><h3>Memuat data&hellip;</h3><p>Mengambil data terbaru dari Google Sheets.</p></div>
-  </div>
-
-  <!-- ============================================================
-       WA BLAST ACTIVITY + RINGKASAN BLAST YANG BOOKING — static tabs,
-       ported from generate_tcare_dashboard.py. Unlike the tabs inside
-       #tcareRoot above, these are NOT regenerated by the live data
-       fetch/auto-refresh (their markup lives here, outside #tcareRoot,
-       so repeated fetches never touch them) — they are manually
-       maintained by whoever has the page open, persisted via the
-       wa-blast-backend-Code.gs Apps Script API (no Claude `db` here,
-       since this page is never a Claude Artifact).
-       ============================================================ -->
-  <div class="tab-page" id="page-wa-blast" hidden>
-    <section id="wa-blast">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">WA Blast Activity</div>
-          <h2>Aktivitas WA Blast &middot; Log Manual</h2>
-        </div>
-        <div class="wa-btn-group">
-          <button type="button" class="wa-btn-add" id="waAddRowBtn">+ Tambah Baris</button>
-          <button type="button" class="wa-btn-sync" id="waSyncBtn" title="Kirim data terbaru ke Google Sheet supaya bisa dicocokkan dengan data booking">Sinkronkan ke Google Sheet</button>
-        </div>
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Ringkasan seluruh aplikasi yang terhubung dalam satu alur servis.</p>
       </div>
-      <p class="lede">Catatan manual aktivitas WA Blast per bulan &amp; kategori database. Semua isian di sini diedit langsung di halaman ini dan tersimpan otomatis &mdash; tidak diregenerasi oleh refresh data live di atas. Kolom VIN/Nomor Rangka bisa diisi dengan mengunggah file Excel atau CSV (kolom berjudul &ldquo;VIN&rdquo; atau &ldquo;Rangka&rdquo; akan otomatis terdeteksi). Setelah menambah/mengubah data, klik &ldquo;Sinkronkan ke Google Sheet&rdquo; supaya tab &ldquo;Ringkasan Blast yang Booking&rdquo; ikut terbarui.</p>
-      <div class="wa-sync-status" id="waSyncStatus"></div>
-
-      <div class="card panel">
-        <div class="tbl-scroll">
-          <table class="wa-blast-table">
-            <thead>
-              <tr>
-                <th>No</th><th>Bulan</th><th>Kategori Databes</th><th>Total Databes</th><th>VIN/Nomor Rangka</th><th></th>
-              </tr>
-            </thead>
-            <tbody id="waBlastBody"></tbody>
-          </table>
-        </div>
-        <div class="wa-empty-state" id="waEmptyState" hidden>Belum ada data. Klik &ldquo;+ Tambah Baris&rdquo; untuk mulai mencatat.</div>
+      <div class="top-actions">
+        <input class="search" placeholder="🔍  Cari aplikasi..." />
+        <div class="pill" onclick="filterApps('all')" style="cursor:pointer;"><span class="dot"></span> Semua</div>
       </div>
-    </section>
-  </div>
+    </div>
 
-  <div class="tab-page" id="page-wa-summary" hidden>
-    <section id="wa-summary">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">Ringkasan Blast yang Booking</div>
-          <h2>VIN WA Blast yang Sudah Booking &middot; per Kategori</h2>
-        </div>
+    <div class="stats">
+      <div class="stat red">
+        <div class="icon">▦</div>
+        <div><div class="label">Aplikasi Terhubung</div><div class="value">10</div></div>
       </div>
-      <p class="lede">Grafik kiri menunjukkan total unit yang di-blast per Kategori Databes (di tab WA Blast Activity); grafik kanan menunjukkan berapa dari unit tersebut yang sudah booking &mdash; warna tiap kategori disamakan di kedua grafik supaya mudah dibandingkan. Dihitung otomatis secara berkala di latar belakang.</p>
+      <div class="stat black">
+        <div class="icon">≡</div>
+        <div><div class="label">Tahap Alur Servis</div><div class="value">3</div></div>
+      </div>
+      <div class="stat green">
+        <div class="icon">✓</div>
+        <div><div class="label">Status Sistem</div><div class="value">Aktif</div></div>
+      </div>
+      <div class="stat orange">
+        <div class="icon">📅</div>
+        <div><div class="label">Pembaruan Terakhir</div><div class="value">24 Nov 2026</div></div>
+      </div>
+    </div>
 
-      <div class="card callstatus-card" id="waOverallCard">
-        <div class="callstatus-donut-block" id="waOverallDonutBlock">
-          <div id="waOverallDonut"></div>
-          <div class="donut-legend">
-            <div class="panel-desc" style="margin:0 0 2px;" id="waOverallUpdated">Menunggu data...</div>
-            <div class="ditem"><span class="swatch" style="background:var(--series-3)"></span><span>Sudah Booking &middot; <b id="waOverallLegendMatched">0</b></span></div>
-            <div class="ditem"><span class="swatch" style="background:var(--gridline)"></span><span>Belum Booking &middot; <b id="waOverallLegendRemaining">0</b></span></div>
-            <div class="donut-note">Dihitung dari seluruh Kategori Databes yang tercatat di tab WA Blast Activity.</div>
-          </div>
-        </div>
-        <div class="callstatus-stats" id="waOverallWrap">
-          <div class="callstatus-stat">
-            <div class="label">Total Unit Di-Blast</div>
-            <div class="value" id="waOverallStatTotal">0</div>
-            <div class="sub">seluruh Kategori Databes</div>
-          </div>
-          <div class="callstatus-stat">
-            <div class="label">Sudah Booking</div>
-            <div class="value" id="waOverallStatMatched">0</div>
-            <div class="sub">unit yang di-blast dan sudah booking ke bengkel</div>
-          </div>
-          <div class="callstatus-stat">
-            <div class="label">Rate Booking</div>
-            <div class="value" id="waOverallStatPct">0%</div>
-            <div class="sub">persentase unit di-blast yang sudah booking</div>
-          </div>
-        </div>
-        <div class="wa-empty-state" id="waOverallEmpty" hidden>Belum ada data ringkasan. Ini akan otomatis terisi setelah kategori &amp; VIN diisi di tab WA Blast Activity dan proses sinkronisasi berjalan.</div>
-      </div>
+    <h2 class="section-title" id="sectionTitle">Semua Aplikasi</h2>
+    <p class="section-sub" id="sectionSub">Klik ikon mata untuk detail, atau buka langsung ke aplikasinya.</p>
 
-      <div class="card panel">
-        <h3>Blast vs. Booking per Kategori</h3>
-        <div class="panel-desc n-note" id="waSummaryUpdated">Menunggu data...</div>
-        <div class="wa-charts-row" id="waSummaryWrap">
-          <div class="wa-chart-block">
-            <div class="wa-chart-title">Total Unit Di-Blast</div>
-            <div class="wa-stack-bar" id="waTotalBar"></div>
-          </div>
-          <div class="wa-chart-block">
-            <div class="wa-chart-title">Sudah Booking</div>
-            <div class="wa-bars-row" id="waBookingBars"></div>
-          </div>
-          <div class="wa-stack-legend" id="waSummaryLegend"></div>
-        </div>
-        <div class="wa-empty-state" id="waSummaryEmpty" hidden>Belum ada data ringkasan. Ini akan otomatis terisi setelah kategori &amp; VIN diisi di tab WA Blast Activity dan proses sinkronisasi berjalan (setiap &plusmn;1 jam).</div>
-      </div>
-    </section>
-  </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Aplikasi</th>
+          <th>Tahap</th>
+          <th>Tautan</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-cat="mra">
+          <td class="app-cell">
+            <div class="app-ico">📅</div>
+            <div>
+              <div class="app-name">Booking Online</div>
+              <div class="app-desc">Cek ketersediaan slot &amp; booking servis online.</div>
+            </div>
+          </td>
+          <td><span class="tag mra">MRA Monitoring</span></td>
+          <td class="link">ketersediaan-slot-booking-servis-pe.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://ketersediaan-slot-booking-servis-pe.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://ketersediaan-slot-booking-servis-pe.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr data-cat="bengkel">
+          <td class="app-cell">
+            <div class="app-ico">🔑</div>
+            <div>
+              <div class="app-name">Key Drop</div>
+              <div class="app-desc">Serah terima kunci kendaraan servis digital.</div>
+            </div>
+          </td>
+          <td><span class="tag bengkel">Proses di Bengkel</span></td>
+          <td class="link">key-drop-perintis.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://key-drop-perintis.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://key-drop-perintis.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr data-cat="bengkel">
+          <td class="app-cell">
+            <div class="app-ico">📊</div>
+            <div>
+              <div class="app-name">Production Monitoring</div>
+              <div class="app-desc">Papan produksi digital progres unit di bengkel.</div>
+            </div>
+          </td>
+          <td><span class="tag bengkel">Proses di Bengkel</span></td>
+          <td class="link">papan-produksi-perintis-perkasa.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://papan-produksi-perintis-perkasa.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://papan-produksi-perintis-perkasa.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr data-cat="bengkel">
+          <td class="app-cell">
+            <div class="app-ico">🧼</div>
+            <div>
+              <div class="app-name">Antrian Digital Washing</div>
+              <div class="app-desc">Nomor antrean pencucian mobil digital.</div>
+            </div>
+          </td>
+          <td><span class="tag bengkel">Proses di Bengkel</span></td>
+          <td class="link">antrian-washing.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://antrian-washing.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://antrian-washing.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr class="highlight" data-cat="bengkel">
+          <td class="app-cell">
+            <div class="app-ico">🚗</div>
+            <div>
+              <div class="app-name">CR 7 Perintis</div>
+              <div class="app-desc">Tracking part belum diganti, follow up pelanggan &amp; deadline servis.</div>
+            </div>
+          </td>
+          <td><span class="tag bengkel">Proses di Bengkel</span></td>
+          <td class="link">cr7-nu.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://cr7-nu.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://cr7-nu.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr data-cat="mra">
+          <td class="app-cell">
+            <div class="app-ico">💬</div>
+            <div>
+              <div class="app-name">PSFU Digital</div>
+              <div class="app-desc">Pencatatan follow-up pelanggan purna servis.</div>
+            </div>
+          </td>
+          <td><span class="tag mra">MRA Monitoring</span></td>
+          <td class="link">psfu-digital.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://psfu-digital.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://psfu-digital.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr data-cat="mra">
+          <td class="app-cell">
+            <div class="app-ico">📈</div>
+            <div>
+              <div class="app-name">MRA Report Funneling</div>
+              <div class="app-desc">Dashboard funneling &amp; retensi MRA.</div>
+            </div>
+          </td>
+          <td><span class="tag mra">MRA Monitoring</span></td>
+          <td class="link">dashboard-funneling-retention.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://dashboard-funneling-retention.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://dashboard-funneling-retention.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr class="highlight" data-cat="mra">
+          <td class="app-cell">
+            <div class="app-ico">🔔</div>
+            <div>
+              <div class="app-name">Collaborasi Remainder MRA &amp; SA</div>
+              <div class="app-desc">Reminder &amp; kolaborasi follow-up pelanggan antara MRA dan SA, progress &amp; summary report.</div>
+            </div>
+          </td>
+          <td><span class="tag mra">MRA Monitoring</span></td>
+          <td class="link">reminder-mra-sa.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://reminder-mra-sa.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://reminder-mra-sa.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr class="highlight" data-cat="monitoring">
+          <td class="app-cell">
+            <div class="app-ico">🏁</div>
+            <div>
+              <div class="app-name">Pit Wall - Adam Malik</div>
+              <div class="app-desc">Dashboard performa bengkel: target cabang (CPUS, TMO, PART, REV), TCARE Retention, Top Performer, Tim Teknisi &amp; SA, ringkasan OPL Bahan.</div>
+            </div>
+          </td>
+          <td><span class="tag monitoring">Monitoring &amp; Manajemen</span></td>
+          <td class="link">pitwalk-perintis.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://pitwalk-perintis.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://pitwalk-perintis.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+        <tr class="highlight" data-cat="monitoring">
+          <td class="app-cell">
+            <div class="app-ico">📈</div>
+            <div>
+              <div class="app-name">Management Graph 2026</div>
+              <div class="app-desc">Dashboard realisasi vs target 2026 (CPUS, TMO, Revenue Part, Unit Entry, Revenue Total) untuk bengkel &amp; suku cadang, data live dari Google Sheets.</div>
+            </div>
+          </td>
+          <td><span class="tag monitoring">Monitoring &amp; Manajemen</span></td>
+          <td class="link">management-graph-2026.vercel.app</td>
+          <td><span class="status"><span class="dot"></span>Aktif</span></td>
+          <td class="actions">
+            <a class="a-view" href="https://management-graph-2026.vercel.app" target="_blank" title="Lihat">👁</a>
+            <a class="a-copy" href="#" title="Salin tautan">⧉</a>
+            <a class="a-open" href="https://management-graph-2026.vercel.app" target="_blank" title="Buka">↗</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p id="emptyState" style="display:none;color:var(--muted);font-size:13px;padding:20px 4px;">Belum ada aplikasi pada kategori ini.</p>
+  </main>
 </div>
 
-<!-- ============================================================
-     RENDERER — pure function of (data, rootEl). No fetch, no
-     localStorage, no DOM outside rootEl. Exposed as window.TCareRenderer
-     so it can be reused unmodified in another hosting context (e.g. a
-     Claude Artifact) that gets `data` a different way.
-     ============================================================ -->
 <script>
-(function(){
-  'use strict';
-
-  // ---------------- shared formatting helpers (ported from both *.py fmt_*) ----------------
-
-  var MONTHS_ID = {1:'Januari',2:'Februari',3:'Maret',4:'April',5:'Mei',6:'Juni',
-                   7:'Juli',8:'Agustus',9:'September',10:'Oktober',11:'November',12:'Desember'};
-  var MONTHS_ID_SHORT = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'Mei',6:'Jun',
-                          7:'Jul',8:'Agu',9:'Sep',10:'Okt',11:'Nov',12:'Des'};
-
-  function fmtInt(n){
-    if(n === null || n === undefined || isNaN(n)) return '-';
-    n = Math.round(n);
-    var neg = n < 0; n = Math.abs(n);
-    var s = String(n), out = [];
-    while(s.length > 3){ out.unshift(s.slice(-3)); s = s.slice(0, -3); }
-    out.unshift(s);
-    return (neg ? '-' : '') + out.join('.');
-  }
-  function fmtPct(x, decimals){
-    if(decimals === undefined) decimals = 1;
-    if(x === null || x === undefined || isNaN(x)) x = 0;
-    return x.toFixed(decimals).replace('.', ',') + '%';
-  }
-  function pctVal(part, whole){
-    if(!whole) return 0;
-    return 100.0 * part / whole;
-  }
-  function pad2(n){ return (n < 10 ? '0' : '') + n; }
-  function esc(s){
-    if(s === null || s === undefined) return '';
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-  function monthLabelID(d){ return MONTHS_ID[d.getMonth() + 1] + ' ' + d.getFullYear(); }
-  function daysInMonth(year, month1to12){ return new Date(year, month1to12, 0).getDate(); }
-
-  // DD/MM/YYYY (or DD.MM.YYYY) parser, mirrors generate_retention.py's parse_ddmmyyyy / DATE_RE
-  function parseDDMMYYYY(raw){
-    if(!raw) return null;
-    var m = /^(\d{1,2})[.\/](\d{1,2})[.\/](\d{2,4})/.exec(String(raw).trim());
-    if(!m) return null;
-    var d = parseInt(m[1], 10), mo = parseInt(m[2], 10), y = parseInt(m[3], 10);
-    if(y < 100) y += 2000;
-    if(mo < 1 || mo > 12 || d < 1 || d > 31) return null;
-    return { d: d, m: mo, y: y, sortKey: y * 10000 + mo * 100 + d };
-  }
-  function fmtDateShort(raw){
-    var p = parseDDMMYYYY(raw);
-    if(!p) return raw ? esc(raw) : '-';
-    return pad2(p.d) + ' ' + MONTHS_ID_SHORT[p.m] + ' ' + p.y;
-  }
-
-  // ---------------- funnel geometry (ported verbatim from generate_dashboard.py) ----------------
-
-  var FLOOR = 0.25, TOP_WIDTH = 94.0, LABEL_WIDTH_BOX = 264.0, LABEL_FACTOR = 0.86;
-
-  function stageFraction(value, topValue){
-    if(!topValue) return 0.0;
-    return Math.max(0, Math.min(1, value / topValue));
-  }
-  function widthFrac(p){ return FLOOR + (1 - FLOOR) * p; }
-  function round2(x){ return Math.round(x * 100) / 100; }
-  function fnum(x){
-    // trims a clip-path percentage like Python's f"{x:g}"
-    if(Math.abs(x - Math.round(x)) < 1e-9) return String(Math.round(x));
-    var s = x.toPrecision(6);
-    if(s.indexOf('.') >= 0){ s = s.replace(/0+$/, '').replace(/\.$/, ''); }
-    return s;
-  }
-  function funnelGeometry(values){
-    var topValue = values[0];
-    var fracs = [];
-    for(var i = 0; i < values.length; i++){
-      var v = values[i];
-      if(v === null || v === undefined){ fracs.push(fracs.length ? fracs[fracs.length - 1] : 1.0); }
-      else fracs.push(stageFraction(v, topValue));
-    }
-    var out = [];
-    for(var j = 0; j < 4; j++){
-      var topW = TOP_WIDTH * widthFrac(fracs[j]);
-      var botW = (j + 1 < 4) ? TOP_WIDTH * widthFrac(fracs[j + 1]) : topW;
-      var tl = round2((100 - topW) / 2), tr = round2(100 - tl);
-      var bl = round2((100 - botW) / 2), br = round2(100 - bl);
-      var narrowest = Math.min(topW, botW);
-      var labelMaxW = Math.floor(LABEL_FACTOR * (narrowest / 100.0) * LABEL_WIDTH_BOX);
-      out.push({ tl: tl, tr: tr, bl: bl, br: br, label_max_w: labelMaxW,
-                 pending: values[j] === null || values[j] === undefined });
-    }
-    return out;
-  }
-
-  function pyrRowHtml(geoRow, valueLabel, valueCap, pctLabel, colorVar){
-    var pendingCls = geoRow.pending ? ' is-pending' : '';
-    var bg = geoRow.pending ? '' : (' background:var(' + colorVar + ');');
-    var valueCls = geoRow.pending ? ' is-pending' : '';
-    return '<div class="pyr-row">' +
-      '<div class="pyr-seg' + pendingCls + '" style="--tl:' + fnum(geoRow.tl) + '%; --tr:' + fnum(geoRow.tr) +
-      '%; --br:' + fnum(geoRow.br) + '%; --bl:' + fnum(geoRow.bl) + '%;' + bg + '">' +
-      '<div class="pyr-seg-inner">' +
-      '<span class="pyr-seg-label" style="max-width:' + geoRow.label_max_w + 'px;">' + valueCap[0] + '</span>' +
-      '<span class="pyr-seg-pct">' + pctLabel + '</span>' +
-      '</div></div>' +
-      '<div class="pyr-callout"><div class="pyr-callout-value' + valueCls + '">' + valueLabel + '</div>' +
-      '<div class="pyr-callout-cap">' + valueCap[1] + '</div></div></div>';
-  }
-
-  function buildFunnel(values, pcts, caps, colors){
-    var geo = funnelGeometry(values);
-    var out = ['<div class="pyramid">'];
-    for(var i = 0; i < 4; i++){
-      var v = values[i];
-      var valueLabel = (v === null || v === undefined) ? 'Menunggu proses' : fmtInt(v);
-      out.push(pyrRowHtml(geo[i], valueLabel, caps[i], pcts[i], colors[i]));
-    }
-    out.push('</div>');
-    return out.join('');
-  }
-
-  // ---------------- donut SVG (ported verbatim from generate_dashboard.py donut_svg) ----------------
-
-  function donutSvg(segments, size, stroke, centerTop, centerSub){
-    size = size || 124; stroke = stroke || 20;
-    var r = (size - stroke) / 2.0, cx = size / 2.0, cy = size / 2.0;
-    var circumf = 2 * Math.PI * r;
-    var total = 0; segments.forEach(function(s){ total += s[0]; }); if(!total) total = 1;
-    var parts = [], offset = 0;
-    segments.forEach(function(s){
-      var v = s[0], varName = s[1], title = s[2];
-      var frac = v / total, segLen = frac * circumf, gap = circumf - segLen;
-      parts.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(' +
-        varName + ')" stroke-width="' + stroke + '" stroke-dasharray="' + segLen.toFixed(3) + ' ' + gap.toFixed(3) +
-        '" stroke-dashoffset="' + (-offset).toFixed(3) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"><title>' +
-        title + '</title></circle>');
-      offset += segLen;
-    });
-    var center = '';
-    if(centerTop){
-      center = '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-family="var(--font-display)" ' +
-        'font-weight="700" font-size="19" fill="var(--text-primary)">' + centerTop + '</text>';
-      if(centerSub) center += '<text x="' + cx + '" y="' + (cy + 15) + '" text-anchor="middle" font-family="var(--font-body)" ' +
-        'font-size="10" fill="var(--text-muted)">' + centerSub + '</text>';
-    }
-    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size +
-      '" role="img" aria-label="Grafik donut">' + parts.join('') + center + '</svg>';
-  }
-
-  // ---------------- small HTML building blocks (ported from generate_dashboard.py) ----------------
-
-  function rankRowHtml(label, value, pctLabel, widthPct, chartId, key){
-    var cls = 'rank-row' + (chartId ? ' is-clickable' : '');
-    var onclick = chartId ? (' tabindex="0" onclick="TCareToggleBreak(event,\'' + chartId + '\',\'' + key + '\')"') : '';
-    return '<div class="' + cls + '"' + onclick + '><div class="rlabel">' + label + '</div>' +
-      '<div class="rank-track"><div class="rank-fill" style="width:' + widthPct.toFixed(0) + '%"></div></div>' +
-      '<div class="rank-val">' + fmtInt(value) + ' <span>' + pctLabel + '</span></div>' +
-      '<svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>';
-  }
-
-  function legendItemHtml(swatchVar, label, value, pct, chartId, key){
-    var onclick = chartId ? (' onclick="TCareToggleBreak(event,\'' + chartId + '\',\'' + key + '\')"') : '';
-    var cls = chartId ? 'item is-clickable' : 'item';
-    var tabindex = chartId ? ' tabindex="0"' : '';
-    return '<div class="' + cls + '"' + tabindex + onclick + '><span class="swatch" style="background:var(' + swatchVar + ')"></span>' +
-      '<span class="sl-text">' + label + ' &middot; <b>' + fmtInt(value) + '</b> (' + fmtPct(pct) + ')</span>' +
-      '<svg class="rank-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>';
-  }
-
-  function segbarHtml(segs){
-    var parts = segs.map(function(s, i){
-      var pct = s[0], v = s[1];
-      var radius = '';
-      if(i === 0 && segs.length === 1) radius = 'border-radius:5px;';
-      else if(i === 0) radius = 'border-radius:5px 0 0 5px;';
-      else if(i === segs.length - 1) radius = 'border-radius:0 5px 5px 0;';
-      return '<div class="seg" style="width:' + pct.toFixed(2) + '%; background:var(' + v + '); ' + radius + '"></div>';
-    });
-    return '<div class="segbar">' + parts.join('') + '</div>';
-  }
-
-  // ---------------- breakdown drawer runtime (ported from JS_RUNTIME, reused as-is) ----------------
-  // window.TCARE_DRAWER_DATA is rebuilt on every renderFullData() call; keyed by chartId -> key -> {label, rows:[[label,count],...]}
-
-  window.TCARE_DRAWER_DATA = window.TCARE_DRAWER_DATA || {};
-
-  window.TCareToggleBreak = function(evt, chartId, key){
-    evt.stopPropagation();
-    var drawer = document.getElementById('drawer-' + chartId);
-    if(!drawer) return;
-    var container = drawer.previousElementSibling;
-    var row = evt.currentTarget;
-    var already = drawer.dataset.key === key && !drawer.hidden;
-    if(container){
-      var actives = container.querySelectorAll('.is-active');
-      for(var i = 0; i < actives.length; i++){ actives[i].classList.remove('is-active'); }
-    }
-    if(already){ drawer.hidden = true; drawer.dataset.key = ''; return; }
-    var chart = window.TCARE_DRAWER_DATA[chartId] || {};
-    var item = chart[key];
-    if(!item) return;
-    var rowsHtml = item.rows.map(function(r){
-      var extra = r[2] ? (' <span class="bd-extra">' + r[2] + '</span>') : '';
-      return '<div class="bd-row"><span class="bd-lbl">' + esc(r[0]) + '</span><span class="bd-val">' + fmtInt(r[1]) + extra + '</span></div>';
-    }).join('');
-    var noteHtml = item.note ? ('<div class="bd-note">' + item.note + '</div>') : '';
-    drawer.innerHTML =
-      '<div class="bd-head"><span>Rincian &middot; ' + item.label + '</span>' +
-      '<button class="bd-close" type="button" onclick="TCareCloseBreak(\'' + chartId + '\')" aria-label="Tutup rincian">&times;</button></div>' +
-      '<div class="bd-rows">' + rowsHtml + '</div>' + noteHtml;
-    drawer.hidden = false;
-    drawer.dataset.key = key;
-    row.classList.add('is-active');
+  var catLabels = {
+    all: 'Semua Aplikasi',
+    bengkel: 'Proses di Bengkel',
+    mra: 'MRA Monitoring',
+    monitoring: 'Monitoring & Manajemen',
+    hps: 'Tim HPS'
   };
 
-  window.TCareCloseBreak = function(chartId){
-    var drawer = document.getElementById('drawer-' + chartId);
-    if(!drawer) return;
-    drawer.hidden = true;
-    drawer.dataset.key = '';
-    var container = drawer.previousElementSibling;
-    if(container){
-      var actives = container.querySelectorAll('.is-active');
-      for(var i = 0; i < actives.length; i++){ actives[i].classList.remove('is-active'); }
-    }
-  };
+  function filterApps(cat){
+    var rows = document.querySelectorAll('tbody tr');
+    var visibleCount = 0;
+    rows.forEach(function(row){
+      var show = (cat === 'all') || (row.getAttribute('data-cat') === cat);
+      row.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
 
-  document.addEventListener('keydown', function(evt){
-    if(evt.key !== 'Enter' && evt.key !== ' ') return;
-    var el = evt.target;
-    if(el && el.classList && el.classList.contains('is-clickable')){ evt.preventDefault(); el.click(); }
-  });
+    document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+    document.querySelector('table').style.display = visibleCount === 0 ? 'none' : 'table';
 
-  // ---------------- error / empty helpers ----------------
+    document.getElementById('sectionTitle').textContent = catLabels[cat] || 'Semua Aplikasi';
+    document.getElementById('sectionSub').textContent = cat === 'all'
+      ? 'Klik ikon mata untuk detail, atau buka langsung ke aplikasinya.'
+      : 'Menampilkan ' + visibleCount + ' aplikasi pada kategori ini.';
 
-  function errorCard(title, msg){
-    return '<section><div class="card panel" style="margin-top:20px;">' +
-      '<h3>' + esc(title) + '</h3>' +
-      '<div class="panel-desc" style="color:var(--status-critical);">Gagal memuat data: ' + esc(msg || 'tidak diketahui') + '</div>' +
-      '</div></section>';
-  }
-
-  // ---------------- RETENSI builders (ported from generate_retention.py render_html) ----------------
-
-  function reasonBadgeHtml(r){
-    if(r.exclude_source === 'wo'){
-      var kmLabel = (r.wo_km !== null && r.wo_km !== undefined) ? (fmtInt(r.wo_km) + ' KM') : '-';
-      return '<span class="reason-badge wo">WO &middot; ' + esc(kmLabel) + '</span>';
-    }
-    if(r.exclude_source === 'master'){
-      var bits = [esc(r.master_job || '-')];
-      if(r.master_branch) bits.push('@ ' + esc(r.master_branch));
-      if(r.master_date) bits.push('(' + esc(r.master_date) + ')');
-      return '<span class="reason-badge master">TCare DB &middot; ' + bits.join(' ') + '</span>';
-    }
-    return '<span class="reason-badge">-</span>';
-  }
-
-  function sortRetensiRows(rows){
-    return rows.slice().sort(function(a, b){
-      var pa = parseDDMMYYYY(a.tgl_delivery_raw), pb = parseDDMMYYYY(b.tgl_delivery_raw);
-      var ka = pa ? pa.sortKey : Infinity, kb = pb ? pb.sortKey : Infinity;
-      if(ka !== kb) return ka - kb;
-      return String(a.nama || '').localeCompare(String(b.nama || ''));
+    document.querySelectorAll('.menu-item[data-cat]').forEach(function(item){
+      item.classList.toggle('active', item.getAttribute('data-cat') === cat);
     });
   }
-
-  function buildRetRingkasan(retensi, generatedAtDate){
-    if(!retensi || retensi.error){
-      return errorCard('Retensi (PDFU & SBI New)', retensi && retensi.error);
-    }
-    var total = retensi.total || 0;
-    var included = retensi.included || [];
-    var excluded = retensi.excluded || [];
-    var nIncluded = included.length, nExcluded = excluded.length;
-    var nExcludedWo = excluded.filter(function(r){ return r.exclude_source === 'wo'; }).length;
-    var nExcludedMaster = excluded.filter(function(r){ return r.exclude_source === 'master'; }).length;
-    var pctDone = pctVal(nExcluded, total), pctOpen = pctVal(nIncluded, total);
-    var dueLabel = (retensi.due_month && retensi.due_month.label) || '-';
-    var runLabel = monthLabelID(generatedAtDate);
-
-    return '<section id="ret-ringkasan">' +
-      '<div class="section-head"><div>' +
-      '<div class="eyebrow">Ringkasan &middot; ' + esc(runLabel) + '</div>' +
-      '<h2>Retensi servis berkala 6 bulan &middot; DELIVERY DATE ' + esc(dueLabel) + '</h2>' +
-      '</div></div>' +
-      '<p class="lede">DELIVERY DATE ' + esc(dueLabel) + ' &mdash; yaitu pelanggan yang mobilnya diserahkan (delivery) di bulan itu &mdash; ' +
-      'seharusnya kembali untuk servis berkala (kelipatan 10.000 KM) di bulan ' + esc(runLabel) + ' ini, karena jadwal servis berkala ' +
-      'jatuh 6 bulan setelah delivery. Daftar di bawah menyaring yang <b>belum</b> terdeteksi melakukan servis berkala tersebut, baik di ' +
-      'Data WO bulan berjalan maupun di TCare Customer Database (histori servis seluruh cabang/outlet).</p>' +
-      '<div class="kpi-row cols-4">' +
-        '<div class="card kpi-tile"><div class="label">Total pelanggan &middot; DELIVERY DATE ' + esc(dueLabel) + '</div>' +
-          '<div class="value">' + fmtInt(total) + '</div><div class="sub">unit tercatat di PDFU</div></div>' +
-        '<div class="card kpi-tile good"><div class="label">Sudah servis berkala</div><div class="value">' + fmtInt(nExcluded) + '</div>' +
-          '<div class="sub">' + fmtPct(pctDone) + ' dari total pelanggan &middot; ' + fmtInt(nExcludedWo) + ' via Data WO, ' + fmtInt(nExcludedMaster) + ' via TCare DB</div></div>' +
-        '<div class="card kpi-tile warn"><div class="label">Belum servis berkala</div><div class="value">' + fmtInt(nIncluded) + '</div>' +
-          '<div class="sub">' + fmtPct(pctOpen) + ' dari total pelanggan &middot; perlu follow-up</div></div>' +
-        '<div class="card kpi-tile"><div class="label">Sumber silang</div><div class="value">3 sheet</div>' +
-          '<div class="sub">PDFU & SBI New + Data WO + TCare Customer DB</div></div>' +
-      '</div>' +
-      '<div class="insight-strip">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
-        '<div><b>' + fmtInt(nIncluded) + ' dari ' + fmtInt(total) + ' kendaraan</b> (' + fmtPct(pctOpen) + ') di DELIVERY DATE ' + esc(dueLabel) +
-        ' belum terdeteksi servis berkala di bulan ' + esc(runLabel) + ' &mdash; ini daftar prioritas untuk tim reminder menghubungi pelanggan.</div>' +
-      '</div>' +
-    '</section>';
-  }
-
-  function retensiRowHtml(idx, r, kind){
-    var vin = esc(r.vin);
-    var lastCol = kind === 'included'
-      ? ('<td class="note">' + esc(r.wo_note) + (r.wo_note ? '' : '-') + '</td>')
-      : ('<td>' + reasonBadgeHtml(r) + '</td>');
-    return '<tr data-row-vin="' + vin + '">' +
-      '<td class="num">' + idx + '</td>' +
-      '<td>' + esc(r.nama) + '</td>' +
-      '<td>' + (esc(r.hp) || '-') + '</td>' +
-      '<td class="model">' + esc(r.model) + '</td>' +
-      '<td class="vin">' + vin + '</td>' +
-      '<td>' + (esc(r.kota) || '-') + '</td>' +
-      '<td>' + fmtDateShort(r.tgl_delivery_raw) + '</td>' +
-      lastCol +
-      '</tr>';
-  }
-
-  function buildRetDaftar(retensi){
-    if(!retensi || retensi.error){
-      return errorCard('Retensi (PDFU & SBI New)', retensi && retensi.error);
-    }
-    var included = sortRetensiRows(retensi.included || []);
-    var excluded = sortRetensiRows(retensi.excluded || []);
-
-    var includedRows = included.map(function(r, i){ return retensiRowHtml(i + 1, r, 'included'); }).join('\n');
-    var excludedRows = excluded.map(function(r, i){ return retensiRowHtml(i + 1, r, 'excluded'); }).join('\n');
-
-    return '<section id="ret-daftar">' +
-      '<div class="card panel">' +
-        '<h3>Daftar Retensi &middot; Belum Servis Berkala</h3>' +
-        '<div class="panel-desc n-note">n=' + included.length + ' unit &middot; belum terdeteksi servis berkala bulan ini</div>' +
-        '<div class="tbl-scroll"><table class="retention"><thead><tr>' +
-          '<th>No</th><th>Nama Customer</th><th>No HP</th><th>Model</th><th>VIN</th><th>Kota</th><th>Tgl Delivery</th><th>Catatan</th>' +
-        '</tr></thead><tbody>' + includedRows + '</tbody></table></div>' +
-      '</div>' +
-      '<div class="card panel" style="margin-top:16px;">' +
-        '<h3>Daftar Retensi &middot; Sudah Servis Berkala</h3>' +
-        '<div class="panel-desc n-note">n=' + excluded.length + ' unit &middot; dikecualikan karena sudah terdeteksi servis berkala (lihat Alasan)</div>' +
-        '<div class="tbl-scroll"><table class="retention"><thead><tr>' +
-          '<th>No</th><th>Nama Customer</th><th>No HP</th><th>Model</th><th>VIN</th><th>Kota</th><th>Tgl Delivery</th><th>Alasan</th>' +
-        '</tr></thead><tbody>' + excludedRows + '</tbody></table></div>' +
-      '</div>' +
-    '</section>';
-  }
-
-  // ---------------- SBE builders (ported from generate_dashboard.py) ----------------
-
-  // Rank-list panel (Model, Outlet): top rows plain, "Lainnya" row clickable (drawer shows `rest`).
-  // Mirrors rank_row_html usage in build_agustus_section / build_september_section.
-  function buildRankPanel(top, rest, restTotal, n, chartId, othersCount){
-    othersCount = othersCount || 3;
-    var max = (top && top[0]) ? top[0][1] : 1;
-    var rowsHtml = (top || []).map(function(pair){
-      var name = pair[0], count = pair[1];
-      var w = max ? (100.0 * count / max) : 0;
-      return rankRowHtml(esc(name), count, fmtPct(pctVal(count, n)), w);
-    });
-    if(restTotal > 0){
-      var othersSorted = (rest || []).slice().sort(function(a, b){ return b[1] - a[1]; });
-      var names = othersSorted.slice(0, othersCount).map(function(x){ return x[0]; }).join(', ');
-      var w2 = max ? (100.0 * restTotal / max) : 0;
-      var label = othersSorted.length ? ('Lainnya (' + esc(names) + ', dll.)') : 'Lainnya';
-      rowsHtml.push(rankRowHtml(label, restTotal, fmtPct(pctVal(restTotal, n)), w2, chartId, 'lainnya'));
-      window.TCARE_DRAWER_DATA[chartId] = window.TCARE_DRAWER_DATA[chartId] || {};
-      window.TCARE_DRAWER_DATA[chartId].lainnya = {
-        label: 'Lainnya &middot; ' + fmtInt(restTotal) + ' unit',
-        rows: othersSorted.map(function(x){ return [x[0], x[1]]; }),
-      };
-    }
-    return rowsHtml.join('');
-  }
-
-  // Alasan/Hasil Panggilan rank list — schema only gives counts (no raw text per
-  // category), so unlike the Python original these rows are NOT clickable here:
-  // there is no per-record detail to show in a drawer without fabricating it.
-  var CALL_OUTCOME_ORDER = ['tidak_diangkat', 'sudah_booking', 'sudah_masuk', 'lainnya', 'atur_jadwal', 'tempat_lain'];
-  function buildAlasanRows(callOutcome){
-    var outcome = (callOutcome && callOutcome.outcome) || {};
-    var n = (callOutcome && callOutcome.n) || 0;
-    var counts = CALL_OUTCOME_ORDER.map(function(k){ return (outcome[k] && outcome[k].count) || 0; });
-    var max = Math.max.apply(null, counts.concat([1]));
-    return CALL_OUTCOME_ORDER.map(function(k){
-      var v = outcome[k] || { label: k, count: 0 };
-      var w = 100.0 * v.count / max;
-      return rankRowHtml(esc(v.label), v.count, fmtPct(pctVal(v.count, n), 0).replace(',0%', '%'), w);
-    }).join('');
-  }
-
-  // Status Panggilan & Kunjungan Non-Booking card (ported from build_callstatus_block).
-  // All figures here are always full-population per the schema ("no sample/full
-  // distinction" — the backend reads live sheets directly), so the caption always
-  // says "populasi penuh", unlike the old Python generator's sample/full toggle.
-  function buildCallstatusBlock(kpi, nonBoc, monthLabel){
-    var connected = kpi.tot_connected || 0, unconnected = kpi.tot_uncontacted || 0;
-    var contacted = kpi.contacted || 0, lateCall = kpi.tot_late_call || 0;
-    var nonBocCount = (nonBoc && nonBoc.count) || 0, nonBocN = (nonBoc && nonBoc.n) || 0;
-    var connTotal = connected + unconnected;
-    var donut = connTotal > 0
-      ? donutSvg([[connected, '--series-1', 'Connected &middot; ' + fmtInt(connected)],
-                  [unconnected, '--text-muted', 'Un-connected &middot; ' + fmtInt(unconnected)]],
-                 124, 20, fmtInt(connTotal), 'panggilan')
-      : donutSvg([[1, '--gridline', 'Belum ada data']], 124, 20, '&mdash;', 'belum ada data');
-    var legend =
-      '<div class="ditem"><span class="swatch" style="background:var(--series-1)"></span>' +
-      '<span>Connected &middot; <b>' + fmtInt(connected) + '</b> (' + fmtPct(connTotal ? pctVal(connected, connTotal) : 0) + ')</span></div>' +
-      '<div class="ditem"><span class="swatch" style="background:var(--text-muted)"></span>' +
-      '<span>Un-connected &middot; <b>' + fmtInt(unconnected) + '</b> (' + fmtPct(connTotal ? pctVal(unconnected, connTotal) : 0) + ')</span></div>';
-
-    return '<div class="card callstatus-card">' +
-      '<div class="callstatus-donut-block">' + donut +
-        '<div class="donut-legend"><div class="panel-desc" style="margin:0 0 2px;">Status Panggilan &middot; ' + esc(monthLabel) + '</div>' +
-        legend +
-        '<div class="donut-note">Terhubung = telepon tersambung; tidak selalu sama dengan angka Contacted di samping (pencatatan manual).</div>' +
-        '</div></div>' +
-      '<div class="callstatus-stats">' +
-        '<div class="callstatus-stat"><div class="label">Contacted (berhasil dikontak)</div><div class="value">' + fmtInt(contacted) + '</div>' +
-          '<div class="sub">Sudah bicara &amp; dijelaskan program reminder</div></div>' +
-        '<div class="callstatus-stat"><div class="label">Late Call</div><div class="value">' + fmtInt(lateCall) + '</div>' +
-          '<div class="sub">Sudah masuk servis di Perintis duluan sebelum sempat ditelpon reminder</div></div>' +
-        '<div class="callstatus-stat"><div class="label">Non BOC yang masuk</div><div class="value">' + fmtInt(nonBocCount) + '</div>' +
-          '<div class="sub">populasi penuh n=' + fmtInt(nonBocN) + ' baris &middot; unit yang masuk bengkel tanpa booking formal</div></div>' +
-      '</div></div>';
-  }
-
-  function sectionHeadHtml(eyebrow, title, chip){
-    return '<div class="section-head"><div><div class="eyebrow">' + esc(eyebrow) + '</div><h2>' + esc(title) + '</h2></div>' +
-      (chip || '') + '</div>';
-  }
-
-  // --- SBE Ringkasan (hero) tab — mirrors render_html()'s section#ringkasan ---
-  function buildSbeRingkasan(sbe, generatedAtDate){
-    if(!sbe || sbe.error){ return errorCard('SBE Funnel (Analisa Service 4-5-6)', sbe && sbe.error); }
-    var cm = sbe.completed, cu = sbe.current;
-    if(!cm || !cu){ return errorCard('SBE Funnel (Analisa Service 4-5-6)', 'Data bulan selesai/berjalan tidak lengkap'); }
-
-    var cmK = cm.kpi, cuK = cu.kpi;
-    var cmContactedPct = pctVal(cmK.contacted, cmK.total_database);
-    var cuContactedPct = pctVal(cuK.contacted, cuK.total_database);
-    var cmBoc = cmK.boc, cmBocShow = cmK.boc_show;
-    var cmShowPct = (cmBocShow !== null && cmBocShow !== undefined) ? pctVal(cmBocShow, cmBoc) : 0;
-    var cmSo = cmK.realisasi_so;
-    var cmSoPctOfDb = pctVal(cmSo, cmK.total_database);
-
-    var y = generatedAtDate.getFullYear(), m = generatedAtDate.getMonth() + 1;
-    var dayElapsed = generatedAtDate.getDate(), dim = daysInMonth(y, m);
-    var pctOfMonth = pctVal(dayElapsed, dim);
-    var cuMonthFirstWord = (cu.month_label || '').split(' ')[0];
-
-    return '<section id="sbe-ringkasan">' +
-      sectionHeadHtml('Ringkasan Eksekutif', 'Corong konversi reminder service, dua periode terakhir') +
-      '<div class="hero-grid">' +
-        '<div class="card hero-figure-card">' +
-          '<div class="eyebrow">Pencapaian utama &middot; ' + esc(cm.month_label) + ' (bulan selesai)</div>' +
-          '<div class="hero-figure">' + fmtInt(cmSo) + ' <span class="unit">unit realisasi service order</span></div>' +
-          '<div class="desc">Setara <b style="color:var(--text-primary)">' + fmtPct(cmSoPctOfDb) + '</b> dari ' + fmtInt(cmK.total_database) +
-          ' kendaraan di database berhasil dikonversi menjadi kunjungan servis nyata &mdash; hasil dari ' + fmtInt(cmBoc) +
-          ' booking (BOC) yang terealisasi ditambah kontribusi walk-in di luar jalur booking.</div>' +
-        '</div>' +
-        '<div class="hero-side">' +
-          '<div class="card mini-stat"><div class="label">Database aktif &middot; ' + esc(cu.month_label) + '</div>' +
-            '<div class="val">' + fmtInt(cuK.total_database) + '</div><div class="cap">unit, baru ' + dayElapsed + ' hari diproses</div></div>' +
-          '<div class="card mini-stat"><div class="label">Tingkat kontak ' + esc(cuMonthFirstWord) + '</div>' +
-            '<div class="val">' + fmtPct(cuContactedPct) + '</div><div class="cap">' + fmtInt(cuK.contacted) + ' dari ' + fmtInt(cuK.total_database) + ' database</div></div>' +
-          '<div class="card mini-stat"><div class="label">Tingkat kontak ' + esc((cm.month_label || '').split(' ')[0]) + '</div>' +
-            '<div class="val">' + fmtPct(cmContactedPct) + '</div><div class="cap">' + fmtInt(cmK.contacted) + ' dari ' + fmtInt(cmK.total_database) + ' database</div></div>' +
-          '<div class="card mini-stat"><div class="label">Booking &rarr; show rate</div>' +
-            '<div class="val">' + fmtPct(cmShowPct) + '</div><div class="cap">' + fmtInt(cmBocShow) + ' dari ' + fmtInt(cmBoc) + ' booking hadir</div></div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="insight-strip">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>' +
-        '<div><b>' + esc(cuMonthFirstWord) + ' baru berjalan ' + dayElapsed + ' dari ' + dim + ' hari (&sim;' + fmtPct(pctOfMonth, 0).replace(',0%', '%') +
-        ' dari bulan)</b>, namun tim sudah mengontak ' + fmtPct(cuContactedPct, 0).replace(',0%', '%') + ' database &mdash; sinyal awal yang sehat. ' +
-        'Booking (BOC) dan hasil kunjungan bengkel bulan ini masih menunggu proses lanjutan tim di lapangan.</div>' +
-      '</div>' +
-    '</section>';
-  }
-
-  // --- SBE "Bulan Selesai" (completed) / "Bulan Berjalan" (current) tabs ---
-  // Mirrors build_agustus_section()/build_september_section() + the section
-  // markup in render_html(). `kind` is 'completed' or 'current'.
-  function buildSbeBlock(block, kind, generatedAtDate){
-    if(!block){ return errorCard('SBE Funnel (Analisa Service 4-5-6)', 'Blok data "' + kind + '" tidak tersedia'); }
-    var kpi = block.kpi;
-    var totalDb = kpi.total_database, contacted = kpi.contacted, boc = kpi.boc, bocShow = kpi.boc_show;
-    var cai = kpi.cai, walkin = kpi.walkin, so = kpi.realisasi_so;
-    var contactedPct = pctVal(contacted, totalDb);
-    var bocPct = pctVal(boc, contacted);
-    var isCompleted = (kind === 'completed');
-
-    var chartPrefix = isCompleted ? 'cm' : 'cu';
-    var html = '<section id="sbe-' + kind + '">';
-
-    if(isCompleted){
-      html += sectionHeadHtml('Laporan Periode', block.month_label,
-        '<span class="status-chip done">Bulan selesai &middot; 100% database diproses</span>');
-      html += '<p class="lede">Corong lengkap dari total database hingga booking terealisasi (show), berdasarkan rekap tim reminder MRA.</p>';
-
-      var showPct = (bocShow !== null && bocShow !== undefined) ? pctVal(bocShow, boc) : null;
-      var funnelHtml = buildFunnel(
-        [totalDb, contacted, boc, bocShow],
-        [fmtPct(100.0), fmtPct(contactedPct), fmtPct(bocPct), (showPct === null ? '&mdash;' : fmtPct(showPct))],
-        [['Total Database', 'kendaraan usia 4&ndash;6 th tercatat'],
-         ['Berhasil Dikontak', 'dari ' + fmtInt(totalDb) + ' database'],
-         ['Booking (BOC)', 'dari ' + fmtInt(contacted) + ' kontak'],
-         ['Booking Hadir', 'hadir sesuai jadwal (show) &middot; dari ' + fmtInt(boc) + ' BOC']],
-        ['--pyr-1', '--pyr-2', '--pyr-3', '--pyr-4']);
-
-      html += '<div class="card funnel-card"><div class="funnel-title">Corong Konversi &middot; ' + esc(block.month_label) + '</div>' + funnelHtml + '</div>';
-
-      var caiPctOfDb = pctVal(cai, totalDb), soPctOfArrived = pctVal(so, cai), soPctOfDb = pctVal(so, totalDb);
-      html += '<div class="outcome-row">' +
-        '<div class="card outcome-tile"><div class="label">+ Walk-in di luar booking</div><div class="value">' + fmtInt(walkin) + ' unit</div>' +
-          '<div class="sub">Datang langsung setelah reminder, tanpa booking formal</div></div>' +
-        '<div class="card outcome-tile"><div class="label">Total tiba di bengkel (CAI)</div><div class="value">' + fmtInt(cai) + ' unit</div>' +
-          '<div class="sub">' + fmtInt(bocShow) + ' dari booking + ' + fmtInt(walkin) + ' walk-in &middot; ' + fmtPct(caiPctOfDb) + ' dari database</div></div>' +
-        '<div class="card outcome-tile"><div class="label">Realisasi Service Order</div><div class="value">' + fmtInt(so) + ' unit</div>' +
-          '<div class="sub">' + fmtPct(soPctOfArrived) + ' dari yang tiba &middot; ' + fmtPct(soPctOfDb) + ' dari total database</div></div>' +
-      '</div>';
-
-      html += buildCallstatusBlock(kpi, block.non_boc, block.month_label);
-
-      // Komposisi Sumber Data — completed-only (cat_belum only present here)
-      var panelGridExtra = '';
-      if(typeof block.cat_belum === 'number'){
-        var catDf = kpi.cat_data_funnel || 0, catBelum = block.cat_belum;
-        var dfPct = pctVal(catDf, totalDb), belumPct = pctVal(catBelum, totalDb);
-        var sumberSeg = segbarHtml([[dfPct, '--series-1'], [belumPct, '--text-muted']]);
-        var sumberLegend = legendItemHtml('--series-1', 'Data Funnel MRA', catDf, dfPct) +
-          '<div class="item"><span class="swatch" style="background:var(--text-muted)"></span><span class="sl-text">Belum dikategorikan &middot; <b>' +
-          fmtInt(catBelum) + '</b> (' + fmtPct(belumPct) + ')</span></div>';
-        panelGridExtra += '<div class="card panel"><h3>Komposisi Sumber Data</h3>' +
-          '<div class="panel-desc">Dari ' + fmtInt(totalDb) + ' database, sebagian besar berasal dari jalur Data Funnel MRA; sisanya belum sempat diklasifikasi tim.</div>' +
-          sumberSeg + '<div class="seg-legend">' + sumberLegend + '</div></div>';
-      }
-
-      var alasanRows = buildAlasanRows(block.call_outcome);
-      var alasanN = (block.call_outcome && block.call_outcome.n) || 0;
-      panelGridExtra += '<div class="card panel"><h3>Alasan / Hasil Panggilan</h3>' +
-        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(alasanN) + ' baris (seluruh database periode ini)</div>' +
-        '<div class="rank-list">' + alasanRows + '</div></div>';
-
-      var modelRows = buildRankPanel(block.model.top, block.model.rest, block.model.rest_total, block.model.n, chartPrefix + '-model');
-      panelGridExtra += '<div class="card panel" style="grid-column:1 / -1;"><h3>Model Kendaraan Terlibat</h3>' +
-        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(block.model.n) + ' unit yang berhasil dihubungi (Contacted)</div>' +
-        '<div class="rank-list">' + modelRows + '</div>' +
-        '<div class="bd-drawer" id="drawer-' + chartPrefix + '-model" hidden></div></div>';
-
-      html += '<div class="panel-grid">' + panelGridExtra + '</div>';
-
-    } else {
-      // current / "bulan berjalan" block
-      var y = generatedAtDate.getFullYear(), m = generatedAtDate.getMonth() + 1;
-      var dayElapsed = generatedAtDate.getDate(), dim = daysInMonth(y, m);
-
-      html += sectionHeadHtml('Laporan Periode', block.month_label,
-        '<span class="status-chip progress">Bulan berjalan &middot; hari ke-' + dayElapsed + ' dari ' + dim + '</span>');
-      html += '<p class="lede">Corong sejauh ini untuk kohor <em>On Time T-Care M/M+1</em>. Tahap kunjungan bengkel &amp; realisasi masih menunggu proses lanjutan.</p>';
-
-      var bookingHadirTile = (bocShow === null || bocShow === undefined)
-        ? '<div class="card kpi-tile pending"><div class="label">Booking hadir (show)</div><div class="value">Menunggu</div><div class="sub">bulan masih berjalan</div></div>'
-        : '<div class="card kpi-tile"><div class="label">Booking hadir (show)</div><div class="value">' + fmtInt(bocShow) + '</div>' +
-          '<div class="sub">' + fmtPct(pctVal(bocShow, boc)) + ' dari BOC &middot; sejauh ini bulan berjalan</div></div>';
-      var realisasiSoTile = '<div class="card kpi-tile"><div class="label">Realisasi service order</div><div class="value">' + fmtInt(so) + '</div>' +
-        '<div class="sub">' + fmtPct(pctVal(so, totalDb)) + ' dari total database &middot; sejauh ini bulan berjalan</div></div>';
-
-      html += '<div class="kpi-row">' +
-        '<div class="card kpi-tile"><div class="label">Total database</div><div class="value">' + fmtInt(totalDb) + '</div><div class="sub">unit kendaraan</div></div>' +
-        '<div class="card kpi-tile"><div class="label">Berhasil dikontak</div><div class="value">' + fmtInt(contacted) + '</div><div class="sub">' + fmtPct(contactedPct) + ' dari database</div></div>' +
-        '<div class="card kpi-tile"><div class="label">Booking (BOC)</div><div class="value">' + fmtInt(boc) + '</div><div class="sub">' + fmtPct(bocPct) + ' dari yang dikontak</div></div>' +
-        bookingHadirTile + realisasiSoTile +
-      '</div>';
-
-      var funnelHtml2 = buildFunnel(
-        [totalDb, contacted, boc, bocShow],
-        [fmtPct(100.0), fmtPct(contactedPct), fmtPct(bocPct), ((bocShow === null || bocShow === undefined) ? '&mdash;' : fmtPct(pctVal(bocShow, boc)))],
-        [['Total Database', 'kohor On Time T-Care M/M+1'],
-         ['Berhasil Dikontak', 'dari ' + fmtInt(totalDb) + ' database'],
-         ['Booking (BOC)', 'dari ' + fmtInt(contacted) + ' kontak'],
-         (bocShow === null || bocShow === undefined)
-           ? ['Booking Hadir', 'bulan masih berjalan &middot; hari ke-' + dayElapsed + ' dari ' + dim]
-           : ['Booking Hadir', 'hadir sesuai jadwal (show) &middot; dari ' + fmtInt(boc) + ' BOC']],
-        ['--pyr-1', '--pyr-2', '--pyr-3', '--pyr-4']);
-      html += '<div class="card funnel-card"><div class="funnel-title">Corong Konversi &middot; ' + esc(block.month_label) + ' (berjalan)</div>' + funnelHtml2 + '</div>';
-
-      var caiPctOfDb2 = pctVal(cai, totalDb), soPctOfDb2 = pctVal(so, totalDb);
-      html += '<div class="outcome-row">' +
-        '<div class="card outcome-tile"><div class="label">+ Walk-in di luar booking</div><div class="value">' + fmtInt(walkin) + ' unit</div>' +
-          '<div class="sub">Datang langsung setelah reminder, tanpa booking formal &middot; sejauh ini bulan berjalan</div></div>' +
-        '<div class="card outcome-tile"><div class="label">Total tiba di bengkel (CAI)</div><div class="value">' + fmtInt(cai) + ' unit</div>' +
-          '<div class="sub">' + fmtPct(caiPctOfDb2) + ' dari database &middot; sejauh ini bulan berjalan</div></div>' +
-        '<div class="card outcome-tile"><div class="label">Realisasi Service Order</div><div class="value">' + fmtInt(so) + ' unit</div>' +
-          '<div class="sub">' + fmtPct(soPctOfDb2) + ' dari total database &middot; sejauh ini bulan berjalan</div></div>' +
-      '</div>';
-
-      html += buildCallstatusBlock(kpi, block.non_boc, block.month_label);
-
-      // Program / Fleet / Punctual / Behavior — current-only, hidden entirely when n===0
-      var colorVars = ['--series-1', '--series-2', '--series-3', '--series-4', '--series-5'];
-      function simplePanel(title, field){
-        if(!field || !field.n) return '';
-        var total = field.counts.reduce(function(s, c){ return s + c[1]; }, 0) || 1;
-        var segs = field.counts.map(function(c, i){ return [100.0 * c[1] / total, colorVars[i % colorVars.length]]; });
-        var legend = field.counts.map(function(c, i){
-          var label = /^[A-Z\s\-\/]+$/.test(c[0]) ? (c[0].charAt(0) + c[0].slice(1).toLowerCase()) : c[0];
-          return legendItemHtml(colorVars[i % colorVars.length], esc(label), c[1], pctVal(c[1], total));
-        }).join('');
-        return '<div class="card panel"><h3>' + esc(title) + '</h3>' +
-          '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(field.n) + ' baris (seluruh database periode ini)</div>' +
-          segbarHtml(segs) + '<div class="seg-legend">' + legend + '</div></div>';
-      }
-      var panelGridExtra2 = '';
-      panelGridExtra2 += simplePanel('Program T-Care', block.program);
-      panelGridExtra2 += simplePanel('Segmen Fleet / Retail', block.fleet);
-      panelGridExtra2 += simplePanel('Ketepatan Servis Terakhir', block.punctual);
-      panelGridExtra2 += simplePanel('Perilaku Pelanggan', block.behavior);
-
-      var modelRows2 = buildRankPanel(block.model.top, block.model.rest, block.model.rest_total, block.model.n, chartPrefix + '-model');
-      panelGridExtra2 += '<div class="card panel"><h3>Model Kendaraan Terlibat</h3>' +
-        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(block.model.n) + ' unit yang berhasil dihubungi (Contacted)</div>' +
-        '<div class="rank-list">' + modelRows2 + '</div>' +
-        '<div class="bd-drawer" id="drawer-' + chartPrefix + '-model" hidden></div></div>';
-
-      var alasanRows2 = buildAlasanRows(block.call_outcome);
-      var alasanN2 = (block.call_outcome && block.call_outcome.n) || 0;
-      panelGridExtra2 += '<div class="card panel"><h3>Alasan / Hasil Panggilan</h3>' +
-        '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(alasanN2) + ' baris (seluruh database periode ini)</div>' +
-        '<div class="rank-list">' + alasanRows2 + '</div></div>';
-
-      if(block.outlet){
-        var outletRows = buildRankPanel(block.outlet.top, block.outlet.rest, block.outlet.rest_total, block.outlet.n, chartPrefix + '-outlet', 999);
-        // outlet "Lainnya" label uses outlet-count phrasing, not names — override the drawer-data label built by buildRankPanel is fine, just fix visible row label:
-        panelGridExtra2 += '<div class="card panel"><h3>Outlet Servis Selain Perintis Perkasa</h3>' +
-          '<div class="panel-desc n-note">populasi penuh &middot; ' + fmtInt(block.outlet.n) + ' baris &middot; outlet lain tempat pelanggan tercatat servis terakhir</div>' +
-          '<div class="rank-list">' + outletRows + '</div>' +
-          '<div class="bd-drawer" id="drawer-' + chartPrefix + '-outlet" hidden></div></div>';
-      }
-
-      html += '<div class="panel-grid">' + panelGridExtra2 + '</div>';
-    }
-
-    html += '</section>';
-    return html;
-  }
-
-  // ---------------- top-level entry point ----------------
-
-  function renderFullData(data, rootEl){
-    if(!rootEl) throw new Error('renderFullData: rootEl is required');
-    if(!data || typeof data !== 'object'){
-      rootEl.innerHTML = '<div class="empty-state"><h3>Data tidak valid</h3><p>Respons kosong atau rusak.</p></div>';
-      return;
-    }
-    window.TCARE_DRAWER_DATA = {}; // reset per render — rebuilt by buildRankPanel calls below
-
-    var generatedAtDate = data.generated_at ? new Date(data.generated_at) : new Date();
-    if(isNaN(generatedAtDate.getTime())) generatedAtDate = new Date();
-
-    var retensi = data.retensi || { error: 'Field "retensi" tidak ada pada respons' };
-    var sbe = data.sbe || { error: 'Field "sbe" tidak ada pada respons' };
-
-    var pageRetRingkasan = buildRetRingkasan(retensi, generatedAtDate);
-    var pageRetDaftar = buildRetDaftar(retensi);
-    var pageSbeRingkasan = buildSbeRingkasan(sbe, generatedAtDate);
-    var pageSbeCompleted = (sbe && !sbe.error) ? buildSbeBlock(sbe.completed, 'completed', generatedAtDate)
-      : errorCard('SBE Funnel (Analisa Service 4-5-6)', sbe && sbe.error);
-    var pageSbeCurrent = (sbe && !sbe.error) ? buildSbeBlock(sbe.current, 'current', generatedAtDate)
-      : errorCard('SBE Funnel (Analisa Service 4-5-6)', sbe && sbe.error);
-
-    rootEl.innerHTML =
-      '<div class="tab-page" id="page-ret-ringkasan">' + pageRetRingkasan + '</div>' +
-      '<div class="tab-page" id="page-ret-daftar" hidden>' + pageRetDaftar + '</div>' +
-      '<div class="tab-page" id="page-sbe-ringkasan" hidden>' + pageSbeRingkasan + '</div>' +
-      '<div class="tab-page" id="page-sbe-completed" hidden>' + pageSbeCompleted + '</div>' +
-      '<div class="tab-page" id="page-sbe-current" hidden>' + pageSbeCurrent + '</div>';
-  }
-
-  window.TCareRenderer = { renderFullData: renderFullData };
-
-})();
 </script>
-
-<!-- ============================================================
-     BOOTSTRAP — fetch/cache/badges/auto-refresh/tab-switching.
-     This is the only section that knows about the live backend URL,
-     localStorage, and the tab nav chrome; it calls into
-     window.TCareRenderer for everything data-driven, so the renderer
-     above can be reused unmodified in a different hosting context.
-     ============================================================ -->
-<script>
-(function(){
-  'use strict';
-
-  var API_URL = 'https://script.google.com/macros/s/AKfycbxXhsc4-35ifIWfnoMz7h1DkisIfr4D1xOjcmHiDtIeqwG9unySuUrsjCafFurw5lr-aA/exec';
-  var CACHE_KEY = 'tcare_live_dashboard_cache_v1';
-  var AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 minutes
-
-  var root = document.getElementById('tcareRoot');
-  var refreshBtn = document.getElementById('refreshBtn');
-  var pillUpdated = document.getElementById('pillUpdated');
-  var badgeRetensi = document.getElementById('badgeRetensi');
-  var badgeSbe = document.getElementById('badgeSbe');
-  var badgeErrorDetail = document.getElementById('badgeErrorDetail');
-  var staleBanner = document.getElementById('staleBanner');
-  var navLinks = Array.prototype.slice.call(document.querySelectorAll('nav.jump a[data-page]'));
-
-  var activeTabId = (location.hash || '').replace('#', '') || 'ret-ringkasan';
-
-  // Tabs that are NOT data-driven (their markup is static, sits outside
-  // #tcareRoot, and is never touched by fetchAndRender()'s innerHTML
-  // replacement) — see the WA Blast Activity / Ringkasan Blast yang Booking
-  // block in index.html. #tcareRoot itself only ever holds the 5
-  // live-data tab-pages, so it's hidden outright while one of these is active.
-  var WA_ONLY_TABS = ['wa-blast', 'wa-summary'];
-
-  // ---------------- tab switching (shared by static WA tabs + live-data tabs) ----------------
-
-  function showPage(id){
-    // Pages live in two places: the 5 live-data tab-pages get (re)created
-    // inside #tcareRoot on every fetch, while the 2 WA Blast tab-pages are
-    // static siblings of #tcareRoot that never get re-created — so this
-    // queries the whole document, not just root, every call.
-    var pages = Array.prototype.slice.call(document.querySelectorAll('.tab-page'));
-    var found = false;
-    pages.forEach(function(p){
-      var match = (p.id === 'page-' + id);
-      p.hidden = !match;
-      if(match) found = true;
-    });
-    if(!found){
-      var knownIds = navLinks.map(function(a){ return a.getAttribute('data-page'); });
-      if(knownIds.indexOf(id) === -1){
-        // Genuinely unknown/garbage hash — fall back to the first available page.
-        if(pages.length){ id = pages[0].id.replace('page-', ''); showPage(id); }
-        return;
-      }
-      // A known tab (e.g. a live-data tab whose fetch hasn't finished yet) —
-      // just mark it active and wait; renderData() will call showPage() again
-      // once the live-data tab-pages exist.
-    }
-    activeTabId = id;
-    root.hidden = (WA_ONLY_TABS.indexOf(id) !== -1);
-    navLinks.forEach(function(a){ a.classList.toggle('active', a.getAttribute('data-page') === id); });
-    if(window.history && history.replaceState) history.replaceState(null, '', '#' + id);
-  }
-  navLinks.forEach(function(a){
-    a.addEventListener('click', function(evt){
-      evt.preventDefault();
-      showPage(a.getAttribute('data-page'));
-      window.scrollTo(0, 0);
-    });
-  });
-  showPage(activeTabId); // handle a direct #wa-blast / #wa-summary link immediately, without waiting on the live-data fetch below
-
-  // ---------------- formatting helpers local to the bootstrap ----------------
-
-  function pad2(n){ return (n < 10 ? '0' : '') + n; }
-  function fmtTimestamp(iso){
-    try{
-      var d = new Date(iso);
-      if(isNaN(d.getTime())) return '-';
-      return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
-    } catch(e){ return '-'; }
-  }
-
-  // ---------------- badges ----------------
-
-  function setBadge(el, ok, errMsg){
-    el.classList.toggle('is-error', !ok);
-    var label = el.querySelector('.txt') ? el.querySelector('.txt').textContent : '';
-    el.title = ok ? (label + ': live') : (label + ' — error: ' + (errMsg || 'tidak diketahui'));
-    el.onclick = ok ? null : function(){
-      badgeErrorDetail.textContent = label + ': ' + (errMsg || 'tidak diketahui');
-      badgeErrorDetail.classList.toggle('show');
-    };
-  }
-
-  function updateBadges(data){
-    var retensiOk = !!(data && data.retensi && !data.retensi.error);
-    var sbeOk = !!(data && data.sbe && !data.sbe.error);
-    setBadge(badgeRetensi, retensiOk, data && data.retensi && data.retensi.error);
-    setBadge(badgeSbe, sbeOk, data && data.sbe && data.sbe.error);
-    if(data && data.generated_at){
-      pillUpdated.innerHTML = 'Diperbarui: <b>' + fmtTimestamp(data.generated_at) + '</b>';
-    }
-  }
-
-  // ---------------- cache (plain page, not an Artifact preview — ordinary localStorage is fine) ----------------
-
-  function readCache(){
-    try{
-      var raw = localStorage.getItem(CACHE_KEY);
-      if(!raw) return null;
-      var obj = JSON.parse(raw);
-      if(obj && obj.data) return obj;
-    } catch(e){ /* private window / blocked storage — treat as no cache */ }
-    return null;
-  }
-  function writeCache(data){
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ data: data, cached_at: new Date().toISOString() })); }
-    catch(e){ /* quota / blocked — resilience best-effort only, never fatal */ }
-  }
-
-  // ---------------- render + loading state ----------------
-
-  function renderData(data){
-    try{
-      window.TCareRenderer.renderFullData(data, root);
-    } catch(e){
-      console.error('TCareRenderer.renderFullData failed', e);
-      root.innerHTML = '<div class="empty-state"><h3>Gagal menampilkan data</h3><p>' +
-        (e && e.message ? String(e.message) : 'Kesalahan tidak diketahui') + '</p></div>';
-    }
-    showPage(activeTabId);
-    updateBadges(data);
-  }
-
-  function showEmptyState(message){
-    root.innerHTML = '<div class="empty-state"><h3>Data belum tersedia</h3><p>' + message + '</p></div>';
-  }
-
-  function setLoading(isLoading){
-    refreshBtn.disabled = isLoading;
-    refreshBtn.classList.toggle('loading', isLoading);
-  }
-
-  // ---------------- fetch ----------------
-  // Plain cross-origin fetch() GET against the Apps Script web app — no custom
-  // headers, so this stays a CORS "simple request" (no preflight), matching the
-  // pattern already proven to work from a plain static page elsewhere in this
-  // project (see build_wa_summary_script()'s fetchAndRenderFromApi()).
-
-  function fetchAndRender(){
-    setLoading(true);
-    fetch(API_URL)
-      .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function(data){
-        if(!data || typeof data !== 'object' || !('retensi' in data) || !('sbe' in data)){
-          throw new Error('Bentuk data tidak sesuai (field retensi/sbe hilang)');
-        }
-        writeCache(data);
-        staleBanner.classList.remove('show');
-        renderData(data);
-      })
-      .catch(function(err){
-        console.error('fetch full_data failed', err);
-        var cached = readCache();
-        if(cached){
-          staleBanner.textContent = '⚠ Data belum bisa dimuat ulang — menampilkan data tersimpan terakhir (' +
-            fmtTimestamp(cached.cached_at) + ').';
-          staleBanner.classList.add('show');
-          renderData(cached.data);
-        } else {
-          showEmptyState('Tidak bisa memuat data dari server dan belum ada data tersimpan sebelumnya. ' +
-            'Coba refresh beberapa saat lagi. (' + (err && err.message ? err.message : err) + ')');
-          setBadge(badgeRetensi, false, 'Belum ada data');
-          setBadge(badgeSbe, false, 'Belum ada data');
-        }
-      })
-      .then(function(){ setLoading(false); }, function(){ setLoading(false); });
-  }
-
-  refreshBtn.addEventListener('click', function(){ fetchAndRender(); });
-  fetchAndRender();
-  setInterval(fetchAndRender, AUTO_REFRESH_MS);
-})();
-</script>
-
-<!-- ============================================================
-     WA BLAST ACTIVITY — client logic, ported from
-     generate_tcare_dashboard.py's build_wa_blast_script(). The original
-     tries the Claude Artifact `db` capability FIRST and only falls back
-     to the Apps Script API when `db` is unavailable; this page is NEVER
-     a Claude Artifact, so that branch is dropped entirely and this goes
-     straight to the API (wa-blast-backend-Code.gs).
-     ============================================================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-(function(){
-  'use strict';
-
-  var WA_BLAST_API_URL = 'https://script.google.com/macros/s/AKfycbwgs8r_IfZcGcWDPz-9EtfUYgWSPBZAZatQ_D6cj8dovqsv6BQP25UApbAIqUe-o_Kt/exec';
-  var POLL_INTERVAL_MS = 30000;
-
-  var tbody = document.getElementById('waBlastBody');
-  var emptyState = document.getElementById('waEmptyState');
-  var addBtn = document.getElementById('waAddRowBtn');
-  var syncBtn = document.getElementById('waSyncBtn');
-  var syncStatus = document.getElementById('waSyncStatus');
-  var lastRows = []; // most recent rows rendered — used by the sync button below
-
-  function escapeHtml(s){
-    return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  // ---- rendering: works from a plain array of {id, bulan, kategori,
-  // total_databes, vins, vin_filename} objects, exactly what ?action=list returns. ----
-
-  function rowHtml(row, idx){
-    var vins = Array.isArray(row.vins) ? row.vins : [];
-    var vinLabel = vins.length ? (vins.length + ' VIN') : 'Belum ada data';
-    return (
-      '<tr data-id="' + row.id + '">' +
-        '<td class="num">' + (idx + 1) + '</td>' +
-        '<td><input type="text" class="edit-field wa-bulan" value="' + escapeHtml(row.bulan) + '" placeholder="mis. September 2026"></td>' +
-        '<td><input type="text" class="edit-field wa-kategori" value="' + escapeHtml(row.kategori) + '" placeholder="mis. Data Funnel MRA"></td>' +
-        '<td><input type="number" class="edit-field wa-total" value="' + (row.total_databes != null ? row.total_databes : '') + '" placeholder="0"></td>' +
-        '<td class="wa-vin-cell">' +
-          '<div class="wa-vin-row">' +
-            '<button type="button" class="wa-vin-count" data-has="' + (vins.length ? '1' : '0') + '">' + vinLabel + '</button>' +
-            '<label class="wa-upload-btn">Upload Excel<input type="file" class="wa-vin-file" accept=".xlsx,.xls,.csv" hidden></label>' +
-          '</div>' +
-          '<div class="wa-vin-drawer" hidden></div>' +
-        '</td>' +
-        '<td><button type="button" class="wa-delete-row" title="Hapus baris">&times;</button></td>' +
-      '</tr>'
-    );
-  }
-
-  function render(rows){
-    lastRows = rows || [];
-    if(!tbody) return;
-    if(!rows.length){
-      tbody.innerHTML = '';
-      if(emptyState) emptyState.hidden = false;
-      return;
-    }
-    if(emptyState) emptyState.hidden = true;
-    tbody.innerHTML = rows.map(rowHtml).join('');
-    wireRows(rows);
-  }
-
-  // ---- "Sinkronkan ke Google Sheet" — pushes the current rows into the
-  // backend's sheet (used by the "Ringkasan Blast yang Booking" cross-check).
-  // Tries a normal fetch() POST first (no URL-length limit); only falls back
-  // to the GET/window.open trick if that POST itself throws. ----
-
-  function buildSyncPayloadRows(){
-    return lastRows.map(function(r){
-      return {
-        id: r.id,
-        bulan: r.bulan || '',
-        kategori: r.kategori || '',
-        total_databes: r.total_databes != null ? r.total_databes : null,
-        vins: Array.isArray(r.vins) ? r.vins : [],
-        vin_filename: r.vin_filename || '',
-      };
-    });
-  }
-
-  function buildSeedUrl(payloadRows){
-    if(!WA_BLAST_API_URL) return null;
-    var payload = encodeURIComponent(JSON.stringify(payloadRows));
-    return WA_BLAST_API_URL + '?action=seed&payload=' + payload;
-  }
-
-  function syncViaPost(payloadRows){
-    return fetch(WA_BLAST_API_URL, {
-      method: 'POST',
-      // text/plain deliberately — a CORS "simple request", so the browser
-      // skips the OPTIONS preflight Apps Script cannot answer. Body is
-      // still JSON text, parsed manually with JSON.parse() server-side.
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ op: 'replace_all', rows: payloadRows }),
-    }).then(function(r){ return r.json(); });
-  }
-
-  if(syncBtn) syncBtn.addEventListener('click', function(){
-    if(!syncStatus) return;
-    if(!lastRows.length){
-      syncStatus.textContent = 'Belum ada data untuk disinkronkan.';
-      return;
-    }
-    var payloadRows = buildSyncPayloadRows();
-    syncStatus.textContent = 'Menyinkronkan...';
-    syncViaPost(payloadRows).then(function(res){
-      syncStatus.textContent = (res && res.ok)
-        ? ('Tersinkron ke Google Sheet - ' + res.count + ' baris.')
-        : ('Sinkronisasi gagal: ' + (res && res.error ? res.error : 'respons tidak dikenali'));
-    }).catch(function(err){
-      console.error('wa sync via POST failed, falling back to GET/window.open', err);
-      var url = buildSeedUrl(payloadRows);
-      var opened = null;
-      try { opened = window.open(url, '_blank', 'noopener'); } catch(e){ opened = null; }
-      syncStatus.innerHTML = opened
-        ? 'Tab baru dibuka untuk sinkronisasi - cek hasilnya di sana (harusnya muncul <code>{"ok":true,...}</code>; kalau muncul error "413/request too large", datanya terlalu banyak untuk cara ini - beri tahu Claude). Kalau tidak ada tab yang terbuka, <a href="' + url + '" target="_blank" rel="noopener">klik di sini</a>.'
-        : 'Klik link ini untuk menyelesaikan sinkronisasi: <a href="' + url + '" target="_blank" rel="noopener">buka link sinkronisasi</a>.';
-    });
-  });
-
-  function wireRows(rows){
-    var byId = {};
-    rows.forEach(function(r){ byId[r.id] = r; });
-    Array.prototype.slice.call(tbody.querySelectorAll('tr')).forEach(function(tr){
-      var id = tr.getAttribute('data-id');
-      var bulanEl = tr.querySelector('.wa-bulan');
-      var katEl = tr.querySelector('.wa-kategori');
-      var totalEl = tr.querySelector('.wa-total');
-      var fileEl = tr.querySelector('.wa-vin-file');
-      var countBtn = tr.querySelector('.wa-vin-count');
-      var drawer = tr.querySelector('.wa-vin-drawer');
-      var delBtn = tr.querySelector('.wa-delete-row');
-
-      if(bulanEl) bulanEl.addEventListener('change', function(){ saveField(id, 'bulan', bulanEl.value); });
-      if(katEl) katEl.addEventListener('change', function(){ saveField(id, 'kategori', katEl.value); });
-      if(totalEl) totalEl.addEventListener('change', function(){
-        saveField(id, 'total_databes', totalEl.value === '' ? null : Number(totalEl.value));
-      });
-
-      if(fileEl) fileEl.addEventListener('change', function(){
-        var file = fileEl.files && fileEl.files[0];
-        if(file) handleVinFile(id, file, tr);
-        fileEl.value = '';
-      });
-
-      if(countBtn) countBtn.addEventListener('click', function(){
-        if(!drawer) return;
-        if(!drawer.hidden){ drawer.hidden = true; return; }
-        renderVinDrawer(byId[id], drawer, id);
-        drawer.hidden = false;
-      });
-
-      if(delBtn) delBtn.addEventListener('click', function(){
-        if(!window.confirm('Hapus baris ini?')) return;
-        deleteRow(id);
-      });
-    });
-  }
-
-  function renderVinDrawer(row, drawer, id){
-    var vins = (row && Array.isArray(row.vins)) ? row.vins : [];
-    drawer.innerHTML = vins.length
-      ? ('<div class="wa-vin-list">' + vins.map(function(v){ return '<span class="wa-vin-chip">' + escapeHtml(v) + '</span>'; }).join('') + '</div>' +
-         '<button type="button" class="wa-vin-clear">Hapus data VIN</button>')
-      : '<div class="wa-vin-empty">Belum ada VIN diupload.</div>';
-    var clearBtn = drawer.querySelector('.wa-vin-clear');
-    if(clearBtn) clearBtn.addEventListener('click', function(){
-      saveField(id, 'vins', []);
-      saveField(id, 'vin_filename', '');
-    });
-  }
-
-  function parseVinsFromRows(rows){
-    var vins = [];
-    if(!rows || !rows.length) return vins;
-    var startIdx = 0, colIdx = 0;
-    // NOTE: built with a plain for-loop reading rows[0][hi] directly, NOT
-    // rows[0].map(...) — SheetJS's sheet_to_json({header:1}) can return a
-    // SPARSE array for a row with empty/skipped cells, and Array.prototype.map
-    // skips holes entirely rather than calling back with undefined, which
-    // previously threw "Cannot read properties of undefined (reading 'indexOf')"
-    // on an uploaded file with a blank leading header cell. Indexing
-    // rows[0][hi] directly in a for-loop returns undefined for a hole too,
-    // but it's immediately coerced to '' below, so the built array stays dense.
-    var headerRowRaw = rows[0] || [];
-    var headerRow = [];
-    for(var hi = 0; hi < headerRowRaw.length; hi++){
-      var hc = headerRowRaw[hi];
-      headerRow.push((hc == null ? '' : String(hc)).toUpperCase().trim());
-    }
-    var headerMatchIdx = -1;
-    for(var i = 0; i < headerRow.length; i++){
-      if(headerRow[i].indexOf('VIN') !== -1 || headerRow[i].indexOf('RANGKA') !== -1){ headerMatchIdx = i; break; }
-    }
-    if(headerMatchIdx !== -1){ colIdx = headerMatchIdx; startIdx = 1; }
-    for(var r = startIdx; r < rows.length; r++){
-      var cell = rows[r] && rows[r][colIdx];
-      var v = (cell == null ? '' : String(cell)).trim().toUpperCase();
-      if(v) vins.push(v);
-    }
-    var seen = {}, out = [];
-    for(var k = 0; k < vins.length; k++){
-      if(!seen[vins[k]]){ seen[vins[k]] = true; out.push(vins[k]); }
-    }
-    return out;
-  }
-
-  function handleVinFile(id, file, tr){
-    var countBtn = tr.querySelector('.wa-vin-count');
-    if(countBtn) countBtn.textContent = 'Memproses...';
-    var reader = new FileReader();
-    reader.onload = function(e){
-      try {
-        if(typeof XLSX === 'undefined') throw new Error('XLSX library not loaded');
-        var data = new Uint8Array(e.target.result);
-        var wb = XLSX.read(data, { type: 'array' });
-        var ws = wb.Sheets[wb.SheetNames[0]];
-        var rows = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, blankrows: false });
-        var vins = parseVinsFromRows(rows);
-        saveField(id, 'vins', vins, function(ok){
-          if(!ok && countBtn) countBtn.textContent = 'Gagal menyimpan';
-        });
-        saveField(id, 'vin_filename', file.name);
-      } catch(err){
-        console.error('wa vin parse failed', err);
-        if(countBtn) countBtn.textContent = 'Gagal membaca file';
-      }
-    };
-    reader.onerror = function(){ if(countBtn) countBtn.textContent = 'Gagal membaca file'; };
-    reader.readAsArrayBuffer(file);
-  }
-
-  // ---- backend: Apps Script API (see claude/wa-blast-backend-Code.gs) ----
-
-  function apiPost(body){
-    return fetch(WA_BLAST_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(body),
-    }).then(function(r){ return r.json(); });
-  }
-
-  function apiUpsert(fields){
-    var body = Object.assign({ op: 'upsert' }, fields);
-    return apiPost(body).then(function(res){
-      refreshFromApi();
-      return res;
-    });
-  }
-
-  function refreshFromApi(){
-    return fetch(WA_BLAST_API_URL + '?action=list')
-      .then(function(r){ return r.json(); })
-      .then(function(rows){ render(Array.isArray(rows) ? rows : []); })
-      .catch(function(err){ console.error('wa list (api) failed', err); });
-  }
-
-  function addRow(){
-    apiUpsert({ bulan: '', kategori: '', total_databes: null, vins: [] })
-      .catch(function(err){ console.error('wa add row failed', err); });
-  }
-
-  function saveField(id, field, value, cb){
-    var body = { id: id };
-    body[field] = value;
-    apiUpsert(body)
-      .then(function(){ if(cb) cb(true); })
-      .catch(function(err){ console.error('wa save failed', field, err); if(cb) cb(false); });
-  }
-
-  function deleteRow(id){
-    apiPost({ op: 'delete', id: id }).then(refreshFromApi)
-      .catch(function(err){ console.error('wa delete failed', err); });
-  }
-
-  if(!WA_BLAST_API_URL){
-    if(tbody) tbody.innerHTML = '<tr><td colspan="6" class="wa-unavailable">Penyimpanan tidak tersedia.</td></tr>';
-    if(addBtn) addBtn.disabled = true;
-  } else {
-    if(addBtn) addBtn.addEventListener('click', addRow);
-    refreshFromApi();
-    setInterval(refreshFromApi, POLL_INTERVAL_MS);
-  }
-})();
-</script>
-
-<!-- ============================================================
-     RINGKASAN BLAST YANG BOOKING — client logic, ported from
-     generate_tcare_dashboard.py's build_wa_summary_script(). Same
-     db-branch removal as above: goes straight to the Apps Script's
-     ?action=refresh_summary endpoint, polled periodically.
-     ============================================================ -->
-<script>
-(function(){
-  'use strict';
-
-  var SERIES_COLORS = ['--series-1','--series-2','--series-3','--series-4','--series-5','--series-6','--series-7','--series-8'];
-  var WA_BLAST_API_URL = 'https://script.google.com/macros/s/AKfycbwgs8r_IfZcGcWDPz-9EtfUYgWSPBZAZatQ_D6cj8dovqsv6BQP25UApbAIqUe-o_Kt/exec';
-  var POLL_INTERVAL_MS_SUMMARY = 600000;
-
-  function escapeHtml(s){
-    return (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function fmtPct(p){
-    return (Math.round(p * 1000) / 10).toString().replace('.', ',') + '%';
-  }
-
-  function fmtNum(n){
-    n = Number(n || 0);
-    try { return n.toLocaleString('id-ID'); } catch(e) { return String(n); }
-  }
-
-  function totalSegHtml(row, idx){
-    var color = SERIES_COLORS[idx % SERIES_COLORS.length];
-    var grow = Math.max(row.total, 0.0001);
-    return (
-      '<div class="wa-stack-seg" style="flex-grow:' + grow + '; background:var(' + color + ')" title="' + escapeHtml(row.kategori) + '">' +
-        '<div class="wa-stack-val">' + fmtNum(row.total) + '</div>' +
-      '</div>'
-    );
-  }
-
-  function bookingBarHtml(row, idx, maxMatched){
-    var color = SERIES_COLORS[idx % SERIES_COLORS.length];
-    var matched = Number(row.matched || 0);
-    var heightPct = 0;
-    if (maxMatched > 0 && matched > 0) {
-      heightPct = Math.max((matched / maxMatched) * 100, 8);
-    }
-    return (
-      '<div class="wa-bar-col" title="' + escapeHtml(row.kategori) + '">' +
-        '<div class="wa-bar-count">' + fmtNum(matched) + '</div>' +
-        '<div class="wa-bar-track">' +
-          '<div class="wa-bar-fill" style="height:' + heightPct.toFixed(1) + '%; background:var(' + color + ')">' +
-            (heightPct > 0 ? '<div class="wa-bar-pct">' + fmtPct(row.pct) + '</div>' : '') +
-          '</div>' +
-        '</div>' +
-      '</div>'
-    );
-  }
-
-  function legendItemHtml(row, idx){
-    var color = SERIES_COLORS[idx % SERIES_COLORS.length];
-    return (
-      '<div class="wa-legend-item">' +
-        '<span class="swatch" style="background:var(' + color + ')"></span>' +
-        '<span><b>' + escapeHtml(row.kategori) + '</b><br><span class="cap"><span class="cap-num">' + fmtNum(row.matched) + '/' + fmtNum(row.total) + '</span> unit booking (' + fmtPct(row.pct) + ')</span></span>' +
-      '</div>'
-    );
-  }
-
-  function buildOverallDonutSvg(matched, total, size, stroke){
-    size = size || 124; stroke = stroke || 20;
-    var r = (size - stroke) / 2;
-    var cx = size / 2, cy = size / 2;
-    var circumf = 2 * Math.PI * r;
-    var denom = total > 0 ? total : 1;
-    var remaining = Math.max(total - matched, 0);
-    var matchedLen = (matched / denom) * circumf;
-    var remainingLen = circumf - matchedLen;
-    var centerTop, centerSub;
-    if(total > 0){
-      centerTop = fmtNum(matched);
-      centerSub = 'sudah booking';
-    } else {
-      centerTop = '—';
-      centerSub = 'belum ada data';
-    }
-    var segs = (total > 0)
-      ? (
-        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(--series-3)" stroke-width="' + stroke + '" stroke-dasharray="' + matchedLen.toFixed(3) + ' ' + remainingLen.toFixed(3) + '" stroke-dashoffset="0" transform="rotate(-90 ' + cx + ' ' + cy + ')"><title>Sudah Booking &middot; ' + fmtNum(matched) + '</title></circle>' +
-        '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(--gridline)" stroke-width="' + stroke + '" stroke-dasharray="' + remainingLen.toFixed(3) + ' ' + matchedLen.toFixed(3) + '" stroke-dashoffset="-' + matchedLen.toFixed(3) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')"><title>Belum Booking &middot; ' + fmtNum(remaining) + '</title></circle>'
-      )
-      : '<circle cx="' + cx + '" cy="' + cy + '" r="' + r.toFixed(2) + '" fill="none" style="stroke:var(--gridline)" stroke-width="' + stroke + '"><title>Belum ada data</title></circle>';
-    var text = '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-family="var(--font-display)" font-weight="700" font-size="19" fill="var(--text-primary)">' + centerTop + '</text>' +
-      '<text x="' + cx + '" y="' + (cy + 15) + '" text-anchor="middle" font-family="var(--font-body)" font-size="10" fill="var(--text-muted)">' + centerSub + '</text>';
-    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="Grafik donut ringkasan keseluruhan">' + segs + text + '</svg>';
-  }
-
-  function renderOverall(rows, updatedAtIso){
-    var donut = document.getElementById('waOverallDonut');
-    var donutBlock = document.getElementById('waOverallDonutBlock');
-    var wrap = document.getElementById('waOverallWrap');
-    var empty = document.getElementById('waOverallEmpty');
-    var updated = document.getElementById('waOverallUpdated');
-    var legendMatched = document.getElementById('waOverallLegendMatched');
-    var legendRemaining = document.getElementById('waOverallLegendRemaining');
-    var statTotal = document.getElementById('waOverallStatTotal');
-    var statMatched = document.getElementById('waOverallStatMatched');
-    var statPct = document.getElementById('waOverallStatPct');
-    var card = document.getElementById('waOverallCard');
-    if(!card) return;
-    rows = Array.isArray(rows) ? rows : [];
-    if(!rows.length){
-      if(wrap) wrap.hidden = true;
-      if(donutBlock) donutBlock.hidden = true;
-      if(empty) empty.hidden = false;
-      return;
-    }
-    if(wrap) wrap.hidden = false;
-    if(donutBlock) donutBlock.hidden = false;
-    if(empty) empty.hidden = true;
-    var totalAll = 0, matchedAll = 0;
-    rows.forEach(function(r){ totalAll += Number(r.total || 0); matchedAll += Number(r.matched || 0); });
-    var remainingAll = Math.max(totalAll - matchedAll, 0);
-    var pctAll = totalAll > 0 ? (matchedAll / totalAll) : 0;
-
-    if(donut) donut.innerHTML = buildOverallDonutSvg(matchedAll, totalAll);
-    if(legendMatched) legendMatched.textContent = fmtNum(matchedAll);
-    if(legendRemaining) legendRemaining.textContent = fmtNum(remainingAll);
-    if(statTotal) statTotal.textContent = fmtNum(totalAll);
-    if(statMatched) statMatched.textContent = fmtNum(matchedAll);
-    if(statPct) statPct.textContent = fmtPct(pctAll);
-    if(updated){
-      var t = updatedAtIso ? new Date(updatedAtIso) : null;
-      if(t && !isNaN(t.getTime())){
-        var dd2 = String(t.getDate()).padStart(2,'0');
-        var mm2 = String(t.getMonth()+1).padStart(2,'0');
-        var hh2 = String(t.getHours()).padStart(2,'0');
-        var mi2 = String(t.getMinutes()).padStart(2,'0');
-        updated.textContent = 'Terakhir diperbarui otomatis: ' + dd2 + '/' + mm2 + ' ' + hh2 + ':' + mi2;
-      } else {
-        updated.textContent = 'n=' + rows.length + ' kategori';
-      }
-    }
-  }
-
-  function renderRows(rows, updatedAtIso){
-    var totalBar = document.getElementById('waTotalBar');
-    var bookingBars = document.getElementById('waBookingBars');
-    var legend = document.getElementById('waSummaryLegend');
-    var wrap = document.getElementById('waSummaryWrap');
-    var empty = document.getElementById('waSummaryEmpty');
-    var updated = document.getElementById('waSummaryUpdated');
-    renderOverall(rows, updatedAtIso);
-    if(!wrap) return;
-    rows = Array.isArray(rows) ? rows : [];
-    if(!rows.length){
-      if(totalBar) totalBar.innerHTML = '';
-      if(bookingBars) bookingBars.innerHTML = '';
-      if(legend) legend.innerHTML = '';
-      wrap.hidden = true;
-      if(empty) empty.hidden = false;
-      if(updated) updated.textContent = 'Belum ada data';
-      return;
-    }
-    wrap.hidden = false;
-    if(empty) empty.hidden = true;
-    var maxMatched = rows.reduce(function(m, r){ return Math.max(m, Number(r.matched || 0)); }, 0);
-    if(totalBar) totalBar.innerHTML = rows.map(totalSegHtml).join('');
-    if(bookingBars) bookingBars.innerHTML = rows.map(function(r, i){ return bookingBarHtml(r, i, maxMatched); }).join('');
-    if(legend) legend.innerHTML = rows.map(legendItemHtml).join('');
-    if(updated){
-      var t = updatedAtIso ? new Date(updatedAtIso) : null;
-      if(t && !isNaN(t.getTime())){
-        var dd = String(t.getDate()).padStart(2,'0');
-        var mm = String(t.getMonth()+1).padStart(2,'0');
-        var hh = String(t.getHours()).padStart(2,'0');
-        var mi = String(t.getMinutes()).padStart(2,'0');
-        updated.textContent = 'Terakhir diperbarui otomatis: ' + dd + '/' + mm + ' ' + hh + ':' + mi;
-      } else {
-        updated.textContent = 'n=' + rows.length + ' kategori';
-      }
-    }
-  }
-
-  function fetchAndRenderFromApi(){
-    return fetch(WA_BLAST_API_URL + '?action=refresh_summary')
-      .then(function(r){ return r.json(); })
-      .then(function(rows){
-        if(!Array.isArray(rows)) throw new Error('unexpected response shape (expected an array)');
-        renderRows(rows, new Date().toISOString());
-      })
-      .catch(function(err){ console.error('wa summary api fetch failed', err); });
-  }
-
-  if(!WA_BLAST_API_URL){
-    var wrap0 = document.getElementById('waSummaryWrap');
-    if(wrap0){
-      wrap0.hidden = true;
-      wrap0.insertAdjacentHTML('afterend', '<div class="wa-unavailable">Penyimpanan tidak tersedia di tampilan ini.</div>');
-    }
-  } else {
-    fetchAndRenderFromApi();
-    setInterval(fetchAndRenderFromApi, POLL_INTERVAL_MS_SUMMARY);
-  }
-})();
-</script>
-
 </body>
 </html>
